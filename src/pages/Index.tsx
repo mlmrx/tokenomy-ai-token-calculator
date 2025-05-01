@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, X, CircleCheck } from 'lucide-react';
+import { Info, X, CircleCheck, Calculator, ChartBar } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import TokenizationChart from '@/components/TokenizationChart';
 import ModelComparisonChart from '@/components/ModelComparisonChart';
 import ProcessFlow from '@/components/ProcessFlow';
-import { modelPricing } from '@/lib/modelData';
+import { modelPricing, estimateTokens, calculateCost, getModelCategories } from '@/lib/modelData';
 
 const Index = () => {
   const { toast } = useToast();
@@ -18,40 +18,42 @@ const Index = () => {
   const [selectedModel, setSelectedModel] = useState('gpt-4o');
   const [tokens, setTokens] = useState(0);
   const [characters, setCharacters] = useState(0);
-  const [cost, setCost] = useState(0);
-  const [userInputs, setUserInputs] = useState<{ text: string; tokens: number; chars: number; cost: number }[]>([]);
+  const [inputCost, setInputCost] = useState(0);
+  const [outputCost, setOutputCost] = useState(0);
+  const [userInputs, setUserInputs] = useState<{ text: string; tokens: number; chars: number; inputCost: number; outputCost: number }[]>([]);
   const [activeTab, setActiveTab] = useState('calculate');
-
-  // Function to estimate tokens based on character count
-  // This is a simple approximation - real tokenization is more complex
-  const estimateTokens = (text: string): number => {
-    // Approximately 4 characters per token for English text
-    return Math.ceil(text.length / 4);
-  };
-
+  const modelCategories = getModelCategories();
+  
   // Calculate tokens and cost based on input text and selected model
   const calculateTokens = () => {
     const chars = text.length;
     const estimatedTokenCount = estimateTokens(text);
-    const modelCost = modelPricing[selectedModel]?.input || 0;
-    const calculatedCost = (estimatedTokenCount * modelCost) / 1000;
+    const inputCostValue = calculateCost(estimatedTokenCount, selectedModel, false);
+    const outputCostValue = calculateCost(estimatedTokenCount, selectedModel, true);
 
     setTokens(estimatedTokenCount);
     setCharacters(chars);
-    setCost(calculatedCost);
+    setInputCost(inputCostValue);
+    setOutputCost(outputCostValue);
 
     // Store user inputs for comparison (max 3)
     setUserInputs(prev => {
       const newInputs = [
         ...prev,
-        { text, tokens: estimatedTokenCount, chars, cost: calculatedCost }
+        { 
+          text, 
+          tokens: estimatedTokenCount, 
+          chars, 
+          inputCost: inputCostValue, 
+          outputCost: outputCostValue 
+        }
       ];
       return newInputs.slice(-3); // Keep only the last 3 inputs
     });
 
     toast({
       title: "Token calculation complete",
-      description: `Estimated ${estimatedTokenCount} tokens at a cost of $${calculatedCost.toFixed(6)}`,
+      description: `Estimated ${estimatedTokenCount} tokens at a cost of $${inputCostValue.toFixed(6)} for input`,
     });
   };
 
@@ -75,7 +77,8 @@ const Index = () => {
     setText('');
     setTokens(0);
     setCharacters(0);
-    setCost(0);
+    setInputCost(0);
+    setOutputCost(0);
   };
 
   // Generate model recommendations
@@ -89,20 +92,7 @@ const Index = () => {
       return;
     }
     
-    let bestModel = selectedModel;
-    let bestCost = cost;
-    
-    for (const model in modelPricing) {
-      const modelCost = (tokens * modelPricing[model].input) / 1000;
-      if (modelCost < bestCost) {
-        bestModel = model;
-        bestCost = modelCost;
-      }
-    }
-
     setActiveTab('recommendation');
-
-    // The recommendation will be generated in the recommendation tab
   };
 
   // Calculate tokens on initial load and when text changes
@@ -112,167 +102,290 @@ const Index = () => {
       const estimatedTokenCount = estimateTokens(text);
       setCharacters(chars);
       setTokens(estimatedTokenCount);
-      const modelCost = modelPricing[selectedModel]?.input || 0;
-      setCost((estimatedTokenCount * modelCost) / 1000);
+      const inputCostValue = calculateCost(estimatedTokenCount, selectedModel, false);
+      const outputCostValue = calculateCost(estimatedTokenCount, selectedModel, true);
+      setInputCost(inputCostValue);
+      setOutputCost(outputCostValue);
     } else {
       setCharacters(0);
       setTokens(0);
-      setCost(0);
+      setInputCost(0);
+      setOutputCost(0);
     }
   }, [text, selectedModel]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-purple-100 py-8 px-4">
-      <Card className="max-w-md mx-auto shadow-lg border-purple-200 overflow-hidden">
-        <div className="bg-purple-800 text-white p-4 text-center">
-          <h1 className="text-xl font-bold">AI Token Calculator</h1>
-          <p className="text-purple-200 text-sm">Calculate tokens, estimate costs for AI models</p>
+      <Card className="max-w-4xl mx-auto shadow-lg border-purple-200 overflow-hidden">
+        <div className="bg-purple-800 text-white p-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold flex items-center">
+              <Calculator className="h-5 w-5 mr-2" /> 
+              Advanced AI Token Calculator
+            </h1>
+            <p className="text-purple-200 text-sm">Estimate tokens & costs for modern AI models</p>
+          </div>
         </div>
 
-        <div className="p-4 space-y-4">
-          <Textarea 
-            placeholder="Enter your text here..." 
-            value={text} 
-            onChange={(e) => setText(e.target.value)}
-            className="border-purple-300 focus:border-purple-500"
-          />
-          
-          <Select value={selectedModel} onValueChange={setSelectedModel}>
-            <SelectTrigger className="w-full border-purple-300">
-              <SelectValue placeholder="Select a model" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.keys(modelPricing).map((model) => (
-                <SelectItem key={model} value={model}>{model}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <div className="grid grid-cols-4 gap-2">
-            <Button onClick={generateExample} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">Ex</Button>
-            <Button onClick={clearText} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">CLR</Button>
-            <Button onClick={calculateTokens} className="bg-purple-700 hover:bg-purple-800">CALC</Button>
-            <Button onClick={() => setActiveTab('process')} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">PROC</Button>
-            <Button onClick={() => setActiveTab('compare')} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">CMP</Button>
-            <Button onClick={generateRecommendation} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">REC</Button>
-            <Button onClick={() => setActiveTab('analysis')} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">ANL</Button>
-            <Button onClick={() => setActiveTab('model-compare')} variant="secondary" className="bg-purple-200 hover:bg-purple-300 text-purple-800">MOD</Button>
-          </div>
-
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-5 mb-2">
-              <TabsTrigger value="calculate" className="text-xs">Calc</TabsTrigger>
-              <TabsTrigger value="process" className="text-xs">Process</TabsTrigger>
-              <TabsTrigger value="compare" className="text-xs">Compare</TabsTrigger>
-              <TabsTrigger value="recommendation" className="text-xs">Recommend</TabsTrigger>
-              <TabsTrigger value="model-compare" className="text-xs">Models</TabsTrigger>
-            </TabsList>
+        <div className="p-4 md:p-6 space-y-4">
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <Textarea 
+                placeholder="Enter your text here to calculate tokens..." 
+                value={text} 
+                onChange={(e) => setText(e.target.value)}
+                className="min-h-[150px] border-purple-300 focus:border-purple-500 resize-y"
+              />
+            </div>
             
-            <TabsContent value="calculate" className="bg-purple-50 p-4 rounded-md">
-              <div className="space-y-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select AI Model</label>
+                <Select value={selectedModel} onValueChange={setSelectedModel}>
+                  <SelectTrigger className="w-full border-purple-300">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(modelCategories).map(([category, models]) => (
+                      <SelectGroup key={category}>
+                        <SelectLabel>{category}</SelectLabel>
+                        {models.map(model => (
+                          <SelectItem key={model} value={model}>{model}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button onClick={generateExample} variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">
+                  Example
+                </Button>
+                <Button onClick={clearText} variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">
+                  Clear
+                </Button>
+                <Button onClick={calculateTokens} className="bg-purple-700 hover:bg-purple-800 col-span-2">
+                  Calculate Tokens
+                </Button>
+              </div>
+              
+              <div className="bg-purple-50 p-4 rounded-md space-y-2">
+                <h3 className="font-medium text-purple-800">Results</h3>
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold">Tokens:</span>
+                  <span className="font-medium">Tokens:</span>
                   <span className="text-purple-800 font-bold">{tokens}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold">Characters:</span>
+                  <span className="font-medium">Characters:</span>
                   <span className="text-purple-800 font-bold">{characters}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold">Cost:</span>
-                  <span className="text-purple-800 font-bold">${cost.toFixed(6)}</span>
+                  <span className="font-medium">Input Cost:</span>
+                  <span className="text-purple-800 font-bold">${inputCost.toFixed(6)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Output Cost:</span>
+                  <span className="text-purple-800 font-bold">${outputCost.toFixed(6)}</span>
                 </div>
               </div>
-            </TabsContent>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Button onClick={() => setActiveTab('calculate')} variant="ghost" size="sm" className={activeTab === 'calculate' ? 'bg-purple-100' : ''}>
+              Calculation
+            </Button>
+            <Button onClick={() => setActiveTab('process')} variant="ghost" size="sm" className={activeTab === 'process' ? 'bg-purple-100' : ''}>
+              Process
+            </Button>
+            <Button onClick={() => setActiveTab('compare')} variant="ghost" size="sm" className={activeTab === 'compare' ? 'bg-purple-100' : ''}>
+              Compare
+            </Button>
+            <Button onClick={generateRecommendation} variant="ghost" size="sm" className={activeTab === 'recommendation' ? 'bg-purple-100' : ''}>
+              Recommendations
+            </Button>
+            <Button onClick={() => setActiveTab('analysis')} variant="ghost" size="sm" className={activeTab === 'analysis' ? 'bg-purple-100' : ''}>
+              <ChartBar className="h-4 w-4 mr-1" /> Analysis
+            </Button>
+            <Button onClick={() => setActiveTab('model-compare')} variant="ghost" size="sm" className={activeTab === 'model-compare' ? 'bg-purple-100' : ''}>
+              Model Comparison
+            </Button>
+          </div>
+
+          <div className="mt-4">
+            {activeTab === 'calculate' && (
+              <Card className="p-4 bg-purple-50">
+                <h3 className="font-medium text-purple-800 mb-2">How We Calculate Tokens</h3>
+                <p className="text-sm text-gray-700">
+                  Token estimation is based on a sophisticated algorithm that considers:
+                </p>
+                <ul className="list-disc pl-5 mt-2 text-sm text-gray-700 space-y-1">
+                  <li>Word length and complexity</li>
+                  <li>Punctuation and special characters</li>
+                  <li>Common subword patterns</li>
+                  <li>Numeric characters</li>
+                </ul>
+                <p className="text-sm text-gray-500 mt-3">
+                  <Info className="h-4 w-4 inline mr-1" /> 
+                  While this estimate is more accurate than simple character counting, it's still an approximation. 
+                  Different models tokenize text differently.
+                </p>
+              </Card>
+            )}
             
-            <TabsContent value="process" className="bg-purple-50 p-4 rounded-md">
+            {activeTab === 'process' && (
               <ProcessFlow tokens={tokens} text={text} />
-            </TabsContent>
+            )}
             
-            <TabsContent value="compare" className="bg-purple-50 p-4 rounded-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr>
-                      <th className="text-left">Input</th>
-                      <th className="text-right">Tokens</th>
-                      <th className="text-right">Chars</th>
-                      <th className="text-right">Cost</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userInputs.map((input, index) => (
-                      <tr key={index}>
-                        <td className="truncate max-w-[120px]">
-                          {input.text.substring(0, 20)}...
-                        </td>
-                        <td className="text-right">{input.tokens}</td>
-                        <td className="text-right">{input.chars}</td>
-                        <td className="text-right">${input.cost.toFixed(6)}</td>
+            {activeTab === 'compare' && (
+              <Card className="p-4 bg-purple-50">
+                <h3 className="font-medium text-purple-800 mb-2">Compare Recent Inputs</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-purple-200">
+                        <th className="text-left py-2">Input</th>
+                        <th className="text-right py-2">Tokens</th>
+                        <th className="text-right py-2">Chars</th>
+                        <th className="text-right py-2">Input Cost</th>
+                        <th className="text-right py-2">Output Cost</th>
                       </tr>
-                    ))}
-                    {userInputs.length === 0 && (
-                      <tr>
-                        <td colSpan={4} className="text-center py-4 text-gray-500">
-                          No data yet. Calculate some inputs first.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="recommendation" className="bg-purple-50 p-4 rounded-md">
-              {tokens > 0 ? (
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-2">
-                    <CircleCheck className="text-green-600 h-4 w-4 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Based on your input ({tokens} tokens):</p>
-                      {Object.entries(modelPricing).map(([model, pricing]) => {
-                        const modelCost = (tokens * pricing.input) / 1000;
-                        return (
-                          <p key={model} className={`${model === selectedModel ? 'font-bold' : ''}`}>
-                            {model}: ${modelCost.toFixed(6)}
-                            {model === selectedModel ? ' (current)' : ''}
-                          </p>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-2">
-                    <Info className="text-blue-600 h-4 w-4 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Recommendation:</p>
-                      {tokens < 100 ? (
-                        <p>Short input: Any model works, GPT-3.5 Turbo balances performance/cost</p>
-                      ) : tokens < 1000 ? (
-                        <p>Medium input: GPT-4o may provide better quality for complex tasks</p>
-                      ) : (
-                        <p>Long input: Consider Claude 3 Opus or GPT-4o for full context</p>
+                    </thead>
+                    <tbody>
+                      {userInputs.map((input, index) => (
+                        <tr key={index} className="border-b border-purple-100">
+                          <td className="truncate max-w-[120px] py-2">
+                            {input.text.substring(0, 20)}...
+                          </td>
+                          <td className="text-right py-2">{input.tokens}</td>
+                          <td className="text-right py-2">{input.chars}</td>
+                          <td className="text-right py-2">${input.inputCost.toFixed(6)}</td>
+                          <td className="text-right py-2">${input.outputCost.toFixed(6)}</td>
+                        </tr>
+                      ))}
+                      {userInputs.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="text-center py-4 text-gray-500">
+                            No data yet. Calculate some inputs first.
+                          </td>
+                        </tr>
                       )}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            )}
+            
+            {activeTab === 'recommendation' && (
+              <Card className="p-4 bg-purple-50">
+                <h3 className="font-medium text-purple-800 mb-2">Model Recommendations</h3>
+                {tokens > 0 ? (
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-md p-3 border border-purple-100">
+                      <h4 className="text-sm font-medium text-purple-700 mb-2">Based on your input ({tokens} tokens):</h4>
+                      <div className="max-h-60 overflow-y-auto pr-2">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-purple-100">
+                              <th className="text-left py-1">Model</th>
+                              <th className="text-right py-1">Input Cost</th>
+                              <th className="text-right py-1">Output Cost</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(modelPricing)
+                              .sort((a, b) => (a[1].input * tokens) - (b[1].input * tokens))
+                              .map(([model, pricing]) => {
+                                const modelInputCost = (tokens * pricing.input) / 1000;
+                                const modelOutputCost = (tokens * pricing.output) / 1000;
+                                const isCurrentModel = model === selectedModel;
+                                
+                                return (
+                                  <tr key={model} className={`border-b border-purple-50 ${isCurrentModel ? 'bg-purple-50' : ''}`}>
+                                    <td className="py-1">{model}</td>
+                                    <td className="text-right py-1">${modelInputCost.toFixed(6)}</td>
+                                    <td className="text-right py-1">${modelOutputCost.toFixed(6)}</td>
+                                    <td className="text-right">
+                                      {isCurrentModel && <span className="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">Current</span>}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-md p-3 border border-purple-100">
+                      <h4 className="text-sm font-medium text-purple-700 mb-2">Recommendations:</h4>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                          <CircleCheck className="text-green-600 h-4 w-4 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium">Best value for quality:</p>
+                            <p className="text-xs text-gray-600">
+                              {tokens < 100 
+                                ? "For short inputs like yours, GPT-3.5 Turbo provides good quality at the lowest price point."
+                                : tokens < 1000 
+                                ? "For medium-length inputs like yours, GPT-4o-mini or Claude-3-haiku offer great quality-to-price ratio."
+                                : "For long inputs like yours, consider Llama-3-70b for the best value or Claude-3-sonnet for high quality."}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <CircleCheck className="text-green-600 h-4 w-4 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium">Best for performance:</p>
+                            <p className="text-xs text-gray-600">
+                              {tokens < 500 
+                                ? "GPT-4o provides the best overall performance for most tasks, though at a higher price."
+                                : tokens < 4000 
+                                ? "Claude-3-opus excels at long-form content and reasoning, though at a premium price."
+                                : "For very long inputs, consider chunking your text or using models specializing in long context like Gemini-1.5-pro."}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-2">
+                          <Info className="text-blue-600 h-4 w-4 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium">Cost optimization tips:</p>
+                            <ul className="text-xs text-gray-600 list-disc pl-5 space-y-1 mt-1">
+                              <li>For drafts and iterations, use cheaper models like Llama-3-8b</li>
+                              <li>Use premium models only for final, polished outputs</li>
+                              <li>Consider batching similar requests to reduce overhead</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="text-center py-4 text-gray-500">
-                  Enter some text and calculate tokens first
-                </div>
-              )}
-            </TabsContent>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    Enter some text and calculate tokens first
+                  </div>
+                )}
+              </Card>
+            )}
             
-            <TabsContent value="analysis" className="bg-purple-50 p-4 rounded-md">
+            {activeTab === 'analysis' && (
               <TokenizationChart userInputs={userInputs} />
-            </TabsContent>
+            )}
             
-            <TabsContent value="model-compare" className="bg-purple-50 p-4 rounded-md">
+            {activeTab === 'model-compare' && (
               <ModelComparisonChart modelPricing={modelPricing} />
-            </TabsContent>
-          </Tabs>
+            )}
+          </div>
         </div>
       </Card>
+      
+      <div className="mt-4 text-center text-xs text-gray-500">
+        Built with ♥ as a better version of tiktokenizer.vercel.app | Updated with latest model pricing as of May 2023
+      </div>
     </div>
   );
 };

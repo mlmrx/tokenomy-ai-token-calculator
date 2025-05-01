@@ -12,16 +12,46 @@ export const modelPricing: Record<string, { input: number; output: number }> = {
   'claude-3-sonnet': { input: 0.008, output: 0.024 },
   'claude-3-haiku': { input: 0.00025, output: 0.00125 },
   'llama-3-70b': { input: 0.0002, output: 0.0003 },
-  'llama-3-8b': { input: 0.0001, output: 0.0002 }
+  'llama-3-8b': { input: 0.0001, output: 0.0002 },
+  'gemini-1.5-pro': { input: 0.007, output: 0.014 },
+  'gemini-1.5-flash': { input: 0.0025, output: 0.0075 },
+  'mistral-large': { input: 0.008, output: 0.024 },
+  'mistral-medium': { input: 0.0027, output: 0.0081 },
+  'mistral-small': { input: 0.0002, output: 0.0006 }
 };
 
-// Simple token estimator function (for demonstration purposes)
+// Better token estimator function
 export const estimateTokens = (text: string): number => {
   if (!text) return 0;
   
-  // English text averages roughly 4 characters per token
-  // This is a simple approximation - real tokenization is more complex
-  return Math.ceil(text.length / 4);
+  // More accurate tokenization estimation:
+  // 1. Average English word is about 4-5 characters
+  // 2. Most tokenizers split by subwords
+  // 3. Special characters and punctuation often count as separate tokens
+  // 4. Numbers are often tokenized digit by digit
+  
+  // Count words
+  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+  
+  // Count non-alphanumeric characters that are likely to be separate tokens
+  const specialChars = text.replace(/[a-zA-Z0-9\s]/g, '').length;
+  
+  // Count numeric digits (often tokenized separately)
+  const numDigits = text.replace(/[^0-9]/g, '').length;
+  
+  // Base estimate: words + special characters + some digits
+  // Word tokens: Most English words are 1-2 tokens
+  const wordTokens = words.reduce((sum, word) => {
+    if (word.length <= 2) return sum + 1;  // Short words are usually 1 token
+    if (word.length <= 6) return sum + 1;  // Medium words are usually 1 token
+    return sum + Math.ceil(word.length / 5); // Longer words may be multiple tokens
+  }, 0);
+  
+  // Add special character tokens and numeric tokens
+  const totalEstimate = wordTokens + specialChars * 0.5 + numDigits * 0.5;
+  
+  // Round up and ensure minimum of 1 token for non-empty text
+  return Math.max(1, Math.ceil(totalEstimate));
 };
 
 // Calculate cost based on token count and model
@@ -30,4 +60,15 @@ export const calculateCost = (tokenCount: number, model: string, isOutput: boole
   
   const rate = isOutput ? modelPricing[model].output : modelPricing[model].input;
   return (tokenCount * rate) / 1000;
+};
+
+// Get model categories
+export const getModelCategories = (): Record<string, string[]> => {
+  return {
+    'OpenAI': ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+    'Anthropic': ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
+    'Meta': ['llama-3-70b', 'llama-3-8b'],
+    'Google': ['gemini-1.5-pro', 'gemini-1.5-flash'],
+    'Mistral': ['mistral-large', 'mistral-medium', 'mistral-small']
+  };
 };

@@ -3,18 +3,40 @@
 // Prices are in USD per 1K tokens
 
 export const modelPricing: Record<string, { input: number; output: number }> = {
+  // OpenAI
   'gpt-4o': { input: 0.01, output: 0.03 },
   'gpt-4o-mini': { input: 0.005, output: 0.015 },
   'gpt-4-turbo': { input: 0.01, output: 0.03 },
   'gpt-4': { input: 0.03, output: 0.06 },
   'gpt-3.5-turbo': { input: 0.0015, output: 0.002 },
+  
+  // Anthropic
   'claude-3-opus': { input: 0.015, output: 0.075 },
   'claude-3-sonnet': { input: 0.008, output: 0.024 },
   'claude-3-haiku': { input: 0.00025, output: 0.00125 },
+  
+  // Meta
   'llama-3-70b': { input: 0.0002, output: 0.0003 },
   'llama-3-8b': { input: 0.0001, output: 0.0002 },
+  
+  // Google
   'gemini-1.5-pro': { input: 0.007, output: 0.014 },
   'gemini-1.5-flash': { input: 0.0025, output: 0.0075 },
+  'gemini-ultra-2': { input: 0.01875, output: 0.0375 },
+  
+  // Microsoft
+  'azure-gpt-4o': { input: 0.0095, output: 0.0285 }, // Azure typically offers slight discounts
+  'azure-embedding-ada': { input: 0.0001, output: 0.0001 },
+  'phi-3-mini': { input: 0.0001, output: 0.0002 },
+  'phi-3-medium': { input: 0.0005, output: 0.001 },
+  
+  // Amazon
+  'titan-text-express': { input: 0.0008, output: 0.0016 },
+  'titan-text-lite': { input: 0.0003, output: 0.0004 },
+  'titan-embedding': { input: 0.0001, output: 0.0001 },
+  'claude-3-5-sonnet': { input: 0.008, output: 0.024 }, // Via Amazon Bedrock
+  
+  // Mistral 
   'mistral-large': { input: 0.008, output: 0.024 },
   'mistral-medium': { input: 0.0027, output: 0.0081 },
   'mistral-small': { input: 0.0002, output: 0.0006 }
@@ -68,7 +90,9 @@ export const getModelCategories = (): Record<string, string[]> => {
     'OpenAI': ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
     'Anthropic': ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
     'Meta': ['llama-3-70b', 'llama-3-8b'],
-    'Google': ['gemini-1.5-pro', 'gemini-1.5-flash'],
+    'Google': ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-ultra-2'],
+    'Microsoft': ['azure-gpt-4o', 'azure-embedding-ada', 'phi-3-mini', 'phi-3-medium'],
+    'Amazon': ['titan-text-express', 'titan-text-lite', 'titan-embedding', 'claude-3-5-sonnet'],
     'Mistral': ['mistral-large', 'mistral-medium', 'mistral-small']
   };
 };

@@ -8,7 +8,8 @@ interface TokenizationChartProps {
     text: string;
     tokens: number;
     chars: number;
-    cost: number;
+    inputCost: number;
+    outputCost: number;
   }>;
 }
 
@@ -47,10 +48,19 @@ const TokenizationChart = ({ userInputs }: TokenizationChartProps) => {
             borderWidth: 1
           },
           {
-            label: 'Cost ($)',
-            data: userInputs.map(input => input.cost),
+            label: 'Input Cost ($)',
+            data: userInputs.map(input => input.inputCost),
             backgroundColor: 'rgba(165, 105, 189, 0.5)', 
             borderColor: 'rgba(165, 105, 189, 1)',
+            borderWidth: 1,
+            // Use a secondary y-axis for cost since it's on a different scale
+            yAxisID: 'y1',
+          },
+          {
+            label: 'Output Cost ($)',
+            data: userInputs.map(input => input.outputCost),
+            backgroundColor: 'rgba(133, 193, 233, 0.5)', 
+            borderColor: 'rgba(133, 193, 233, 1)',
             borderWidth: 1,
             // Use a secondary y-axis for cost since it's on a different scale
             yAxisID: 'y1',
@@ -97,7 +107,7 @@ const TokenizationChart = ({ userInputs }: TokenizationChartProps) => {
                 if (label) {
                   label += ': ';
                 }
-                if (context.dataset.label === 'Cost ($)') {
+                if (label.includes('Cost')) {
                   label += '$' + context.parsed.y.toFixed(6);
                 } else {
                   label += context.parsed.y;

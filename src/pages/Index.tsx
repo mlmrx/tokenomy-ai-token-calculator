@@ -36,6 +36,10 @@ const placeholders = [
   "Paste a message, question, or story—then see how AI breaks it into tokens."
 ];
 
+  const randomPlaceholder = useMemo(
+  () => placeholders[Math.floor(Math.random() * placeholders.length)],
+  []                     // ← empty dependency array → runs only on first render
+);
   
   // Calculate tokens and cost based on input text and selected model
   const calculateTokens = () => {

@@ -3,7 +3,16 @@ import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Languages, Share2, FileText, Mail } from "lucide-react";
+import { 
+  Calculator, 
+  Zap, 
+  Memory, 
+  Languages, 
+  Share2, 
+  FileText, 
+  Mail, 
+  HelpCircle 
+} from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -13,12 +22,21 @@ interface MainNavigationProps {
 
 const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigationProps) => {
   return (
-    <div className="flex justify-between items-center w-full px-4 py-2">
-      <Tabs value={activeTab} onValueChange={onTabChange} className="w-auto">
-        <TabsList className="grid grid-cols-3 w-auto">
-          <TabsTrigger value="calculator">Token Calculator</TabsTrigger>
-          <TabsTrigger value="speed">Speed Simulator</TabsTrigger>
-          <TabsTrigger value="memory">Memory Calculator</TabsTrigger>
+    <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 py-4 gap-4">
+      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full md:w-auto">
+        <TabsList className="grid grid-cols-3 w-full md:w-auto">
+          <TabsTrigger value="calculator" className="flex items-center gap-2 px-4 py-2">
+            <Calculator className="h-4 w-4" />
+            <span className="hidden md:inline">Token Calculator</span>
+          </TabsTrigger>
+          <TabsTrigger value="speed" className="flex items-center gap-2 px-4 py-2">
+            <Zap className="h-4 w-4" />
+            <span className="hidden md:inline">Speed Simulator</span>
+          </TabsTrigger>
+          <TabsTrigger value="memory" className="flex items-center gap-2 px-4 py-2">
+            <Memory className="h-4 w-4" />
+            <span className="hidden md:inline">Memory Calculator</span>
+          </TabsTrigger>
         </TabsList>
       </Tabs>
       
@@ -30,7 +48,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
                 <Languages className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent className="bg-popover border border-border shadow-lg">
               <p>Change Language</p>
             </TooltipContent>
           </Tooltip>
@@ -41,8 +59,8 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
                 <Share2 className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Share</p>
+            <TooltipContent className="bg-popover border border-border shadow-lg">
+              <p>Share your calculations</p>
             </TooltipContent>
           </Tooltip>
           
@@ -52,8 +70,8 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
                 <FileText className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Export Data</p>
+            <TooltipContent className="bg-popover border border-border shadow-lg">
+              <p>Export data to CSV/JSON</p>
             </TooltipContent>
           </Tooltip>
           
@@ -63,8 +81,8 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
                 <Mail className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Subscribe to Newsletter</p>
+            <TooltipContent className="bg-popover border border-border shadow-lg">
+              <p>Subscribe to our newsletter</p>
             </TooltipContent>
           </Tooltip>
           
@@ -74,8 +92,10 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
                 <HelpCircle className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              <p>Learn More</p>
+            <TooltipContent className="bg-popover border border-border shadow-lg">
+              <p>Learn more about {activeTab === "calculator" ? "token calculation" : 
+                                  activeTab === "speed" ? "speed simulation" : 
+                                  "memory calculation"}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

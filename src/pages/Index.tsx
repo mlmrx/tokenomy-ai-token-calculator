@@ -1,6 +1,4 @@
-
 import { useState, useEffect, useRef } from 'react';
-import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +32,7 @@ import NewsletterForm from '@/components/NewsletterForm';
 import LanguageSelector from '@/components/LanguageSelector';
 import ShareOptions from '@/components/ShareOptions';
 import ExportData from '@/components/ExportData';
+import Footer from '@/components/Footer';
 
 // Create a TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
@@ -277,14 +276,21 @@ const Index = () => {
       
       <LearnMoreSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
-      <header className="bg-background border-b sticky top-0 z-10">
+      <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto py-4 px-4 md:px-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl md:text-3xl font-bold text-center">AI Token Calculator</h1>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+            <div className="flex flex-col items-center md:items-start mb-4 md:mb-0">
+              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 animate-pulse">
+                TOKENOMY
+              </h1>
+              <p className="text-sm text-muted-foreground">Smart AI Token Management & Optimization</p>
+            </div>
             
             <div className="flex items-center gap-2">
               {!isLoggedIn ? (
-                <Button onClick={() => setLoginDialogOpen(true)}>Log In / Sign Up</Button>
+                <Button onClick={() => setLoginDialogOpen(true)} className="hover-scale">
+                  Log In / Sign Up
+                </Button>
               ) : (
                 <div className="flex items-center gap-2">
                   <span className="hidden sm:inline">Welcome, {userName}</span>
@@ -302,13 +308,12 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto py-6 px-4 md:px-6">
+      <main className="flex-1 container mx-auto py-6 px-4 md:px-6 section-appear">
         {activeTab === "calculator" && (
           <>
             <div className="mb-6">
-              <Card className="w-full">
-                <div className="p-4 md:p-6 relative" style={{
-                  background: `linear-gradient(to right, ${modelTheme.primary}, ${modelTheme.secondary})`,
+              <Card className="w-full shadow-lg">
+                <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" style={{
                   color: "white"
                 }}>
                   <div className="flex flex-col items-center">
@@ -338,8 +343,8 @@ const Index = () => {
                                   <FileText size={16} />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Upload Text File</p>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Upload Text File (.txt format)</p>
                               </TooltipContent>
                             </Tooltip>
 
@@ -354,8 +359,8 @@ const Index = () => {
                                   <Mic size={16} />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Voice Dictate</p>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Start voice dictation (click again to stop)</p>
                               </TooltipContent>
                             </Tooltip>
 
@@ -370,8 +375,8 @@ const Index = () => {
                                   <XIcon size={16} />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Clear Text</p>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Clear all text</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -553,11 +558,23 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          <TokenSpeedSimulator />
+          <div className="speed-bg-gradient p-6 rounded-lg text-white mb-6">
+            <h2 className="text-2xl font-bold mb-2">Speed Simulator</h2>
+            <p className="mb-6 opacity-90">Simulate token generation speed and visualize output in real-time</p>
+            <div className="bg-white/10 p-6 rounded-lg">
+              <TokenSpeedSimulator />
+            </div>
+          </div>
         )}
         
         {activeTab === "memory" && (
-          <MemoryCalculator />
+          <div className="memory-bg-gradient p-6 rounded-lg text-white mb-6">
+            <h2 className="text-2xl font-bold mb-2">Memory Calculator</h2>
+            <p className="mb-6 opacity-90">Calculate memory requirements for large language models</p>
+            <div className="bg-white/10 p-6 rounded-lg">
+              <MemoryCalculator />
+            </div>
+          </div>
         )}
         
         {/* Hidden utility components */}
@@ -567,6 +584,8 @@ const Index = () => {
           <ShareOptions />
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

@@ -1,2 +1,2 @@
 
-export { default as TokenSpeedSimulator } from './TokenSpeedSimulator';
+export { TokenSpeedSimulator } from './TokenSpeedSimulator';

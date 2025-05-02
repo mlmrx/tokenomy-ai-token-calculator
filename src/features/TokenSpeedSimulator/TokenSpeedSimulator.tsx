@@ -1,293 +1,335 @@
 
-/**
- * Token Speed Simulator Component
- * Provides a UI to simulate token generation at various speeds and lengths
- * Displays real-time metrics and streamed tokens with play/pause/reset controls
- */
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTokenSimulator } from './useTokenSimulator';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Pause, RefreshCw, Share2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Card } from '@/components/ui/card';
+import { 
+  Play, Pause, RotateCcw, 
+  Share2, Clock, Cpu, 
+  MessageCircle, AlertCircle 
+} from 'lucide-react';
 
-// Parse URL query params
-const parseQueryParams = () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  return {
-    speed: Number(searchParams.get('speed')) || undefined,
-    length: Number(searchParams.get('length')) || undefined,
-    auto: searchParams.get('auto') === '1',
-  };
-};
-
-// Format time as mm:ss.ms
-const formatTime = (ms: number): string => {
-  const totalSeconds = ms / 1000;
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = Math.floor(totalSeconds % 60);
-  const milliseconds = Math.floor((ms % 1000) / 10);
-  
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
-};
-
-const TokenSpeedSimulator: React.FC = () => {
-  const { toast } = useToast();
-  const location = useLocation();
+/**
+ * TokenSpeedSimulator - A component that simulates token generation at adjustable speeds
+ * Allows users to visualize how fast tokens are generated at different speeds
+ */
+export function TokenSpeedSimulator() {
+  const [inputSpeed, setInputSpeed] = useState<string>('100');
+  const [inputLength, setInputLength] = useState<string>('400');
+  const [errors, setErrors] = useState<{ speed?: string; length?: string }>({});
   const outputRef = useRef<HTMLDivElement>(null);
-  
-  // Input validation state
-  const [speedError, setSpeedError] = useState<string | null>(null);
-  const [lengthError, setLengthError] = useState<string | null>(null);
-  const [chartType, setChartType] = useState("time");
-  
-  // Get URL parameters and localStorage values
-  const queryParams = parseQueryParams();
-  const savedSpeed = localStorage.getItem('tokenSimulator.speed');
-  const savedLength = localStorage.getItem('tokenSimulator.length');
-  
-  const initialSpeed = queryParams.speed || Number(savedSpeed) || 100;
-  const initialLength = queryParams.length || Number(savedLength) || 400;
-  
-  const {
-    tokens,
-    isRunning,
-    isPaused,
-    elapsedTime,
-    effectiveSpeed,
-    speed,
-    length,
-    tokensGenerated,
-    tokensRemaining,
-    percentComplete,
-    start,
-    pause,
-    reset,
-    updateSpeed,
-    updateLength,
-  } = useTokenSimulator({
-    initialSpeed,
-    initialLength,
-    autoStart: queryParams.auto,
-  });
-  
-  // Validate speed on blur
-  const handleSpeedBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    if (isNaN(value) || value < 1 || value > 10000) {
-      setSpeedError('Speed must be between 1-10,000');
-    } else {
-      setSpeedError(null);
-      updateSpeed(value);
-    }
+
+  // Create shareable link with current settings
+  const createShareableLink = () => {
+    const baseUrl = window.location.href.split('?')[0];
+    const params = new URLSearchParams();
+    params.set('speed', simulator.speed.toString());
+    params.set('length', simulator.length.toString());
+    params.set('auto', '1');
+    return `${baseUrl}?${params.toString()}`;
   };
-  
-  // Validate length on blur
-  const handleLengthBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    if (isNaN(value) || value < 1 || value > 10000) {
-      setLengthError('Length must be between 1-10,000');
-    } else {
-      setLengthError(null);
-      updateLength(value);
-    }
+
+  // Copy shareable link to clipboard
+  const copyShareableLink = () => {
+    const link = createShareableLink();
+    navigator.clipboard.writeText(link);
+    // Show toast/notification (assuming you have some notification system)
+    alert('Shareable link copied to clipboard!');
   };
-  
-  // Handle input changes
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value || /^\d+$/.test(value)) {
-      const numValue = Number(value);
-      if (numValue <= 10000) {
-        updateSpeed(numValue || 1);
-        setSpeedError(null);
-      }
-    }
-  };
-  
-  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value || /^\d+$/.test(value)) {
-      const numValue = Number(value);
-      if (numValue <= 10000) {
-        updateLength(numValue || 1);
-        setLengthError(null);
-      }
-    }
-  };
-  
-  // Share functionality
-  const handleShare = () => {
-    const shareUrl = `${window.location.origin}${window.location.pathname}?speed=${speed}&length=${length}&auto=1`;
-    
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareUrl)
-        .then(() => {
-          toast({
-            title: "Link Copied",
-            description: "Share link copied to clipboard",
-          });
-        })
-        .catch(() => {
-          toast({
-            title: "Copy Failed",
-            description: "Failed to copy link to clipboard",
-            variant: "destructive",
-          });
-        });
-    } else {
-      toast({
-        title: "Copy Failed",
-        description: "Browser doesn't support clipboard access",
-        variant: "destructive",
-      });
-    }
-  };
-  
-  // Auto-scroll to bottom of output
+
+  // Parse URL params on mount
   useEffect(() => {
-    if (outputRef.current && tokens.length > 0) {
+    const params = new URLSearchParams(window.location.search);
+    const speedParam = params.get('speed');
+    const lengthParam = params.get('length');
+    const autoParam = params.get('auto');
+    
+    if (speedParam) setInputSpeed(speedParam);
+    if (lengthParam) setInputLength(lengthParam);
+    
+    // Start automatically if auto=1
+    if (autoParam === '1' && speedParam && lengthParam) {
+      setTimeout(() => {
+        startSimulation(parseInt(speedParam), parseInt(lengthParam));
+      }, 500);
+    }
+  }, []);
+
+  // Load saved settings from localStorage
+  useEffect(() => {
+    const savedSpeed = localStorage.getItem('tokenSimulator.speed');
+    const savedLength = localStorage.getItem('tokenSimulator.length');
+    
+    if (savedSpeed && !window.location.search.includes('speed')) {
+      setInputSpeed(savedSpeed);
+    }
+    
+    if (savedLength && !window.location.search.includes('length')) {
+      setInputLength(savedLength);
+    }
+  }, []);
+
+  // Scroll output to bottom when new tokens are added
+  useEffect(() => {
+    if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [tokens]);
+  }, [simulator.tokens]);
+
+  // Validate inputs and start simulation
+  const startSimulation = (speed?: number, length?: number) => {
+    const newErrors: { speed?: string; length?: string } = {};
+    
+    const speedValue = speed || parseInt(inputSpeed);
+    const lengthValue = length || parseInt(inputLength);
+    
+    if (isNaN(speedValue) || speedValue < 1 || speedValue > 10000) {
+      newErrors.speed = 'Speed must be between 1 and 10,000';
+    }
+    
+    if (isNaN(lengthValue) || lengthValue < 1 || lengthValue > 10000) {
+      newErrors.length = 'Length must be between 1 and 10,000';
+    }
+    
+    setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length === 0) {
+      // Save settings to localStorage
+      localStorage.setItem('tokenSimulator.speed', speedValue.toString());
+      localStorage.setItem('tokenSimulator.length', lengthValue.toString());
+      
+      simulator.start(speedValue, lengthValue);
+    }
+  };
+
+  // Initialize simulator hook
+  const simulator = useTokenSimulator();
   
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="speed" className="block mb-2">
-                Speed (tokens/s)
-              </Label>
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-4">
+      {/* Controls Section */}
+      <Card className="p-4 bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border-white/20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label htmlFor="speed" className="text-sm font-medium">
+                Speed (tokens/s):
+              </label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AlertCircle className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm bg-popover/90 backdrop-blur-sm border border-border shadow-lg">
+                    <p>Controls how many tokens are generated per second. Higher values result in faster generation.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <div className="flex items-center gap-2">
+              <Slider
+                id="speed-slider"
+                min={1}
+                max={1000}
+                step={1}
+                value={[parseInt(inputSpeed) || 100]}
+                onValueChange={(val) => setInputSpeed(val[0].toString())}
+                disabled={simulator.isRunning}
+                className="flex-grow"
+              />
               <Input
                 id="speed"
                 type="number"
                 min={1}
                 max={10000}
-                value={speed}
-                onChange={handleSpeedChange}
-                onBlur={handleSpeedBlur}
-                className={`w-full ${speedError ? 'border-red-500' : ''}`}
-                aria-invalid={!!speedError}
-                aria-describedby={speedError ? "speed-error" : undefined}
-                disabled={isRunning && !isPaused}
+                value={inputSpeed}
+                onChange={(e) => setInputSpeed(e.target.value)}
+                className={`w-20 text-white bg-white/10 border-white/20 ${errors.speed ? 'border-red-500' : ''}`}
+                disabled={simulator.isRunning}
               />
-              {speedError && (
-                <p id="speed-error" className="text-red-500 text-sm mt-1">
-                  {speedError}
-                </p>
-              )}
             </div>
-            
-            <div>
-              <Label htmlFor="length" className="block mb-2">
-                Length (total tokens)
-              </Label>
+            {errors.speed && <p className="text-red-400 text-xs mt-1">{errors.speed}</p>}
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label htmlFor="length" className="text-sm font-medium">
+                Length (tokens):
+              </label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AlertCircle className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm bg-popover/90 backdrop-blur-sm border border-border shadow-lg">
+                    <p>Total number of tokens to generate in this simulation.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <div className="flex items-center gap-2">
+              <Slider
+                id="length-slider"
+                min={10}
+                max={2000}
+                step={10}
+                value={[parseInt(inputLength) || 400]}
+                onValueChange={(val) => setInputLength(val[0].toString())}
+                disabled={simulator.isRunning}
+                className="flex-grow"
+              />
               <Input
                 id="length"
                 type="number"
                 min={1}
                 max={10000}
-                value={length}
-                onChange={handleLengthChange}
-                onBlur={handleLengthBlur}
-                className={`w-full ${lengthError ? 'border-red-500' : ''}`}
-                aria-invalid={!!lengthError}
-                aria-describedby={lengthError ? "length-error" : undefined}
-                disabled={isRunning && !isPaused}
+                value={inputLength}
+                onChange={(e) => setInputLength(e.target.value)}
+                className={`w-20 text-white bg-white/10 border-white/20 ${errors.length ? 'border-red-500' : ''}`}
+                disabled={simulator.isRunning}
               />
-              {lengthError && (
-                <p id="length-error" className="text-red-500 text-sm mt-1">
-                  {lengthError}
-                </p>
-              )}
             </div>
+            {errors.length && <p className="text-red-400 text-xs mt-1">{errors.length}</p>}
           </div>
         </div>
         
-        <div>
-          <div className="p-4 border rounded-md h-full">
-            <h2 className="text-lg font-medium mb-3">Real-time Metrics</h2>
-            <div className="grid grid-cols-2 gap-y-2 mb-4">
-              <div className="text-sm">Elapsed Time:</div>
-              <div className="text-sm font-mono">{formatTime(elapsedTime)}</div>
-              
-              <div className="text-sm">Effective Speed:</div>
-              <div className="text-sm font-mono">{effectiveSpeed.toFixed(2)} t/s</div>
-              
-              <div className="text-sm">Tokens Generated:</div>
-              <div className="text-sm font-mono">
-                {tokensGenerated} / {length} ({percentComplete}%)
-              </div>
+        <div className="flex flex-wrap gap-2 justify-center mt-4">
+          {!simulator.isRunning ? (
+            <Button 
+              onClick={() => startSimulation()} 
+              disabled={simulator.tokens.length > 0 && simulator.tokens.length >= parseInt(inputLength)}
+              className="bg-green-500 hover:bg-green-600 transition-colors"
+            >
+              <Play className="mr-2 h-4 w-4" />
+              {simulator.tokens.length > 0 ? "Resume" : "Start"}
+            </Button>
+          ) : (
+            <Button 
+              onClick={simulator.pause} 
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10"
+            >
+              <Pause className="mr-2 h-4 w-4" />
+              Pause
+            </Button>
+          )}
+          
+          <Button 
+            onClick={simulator.reset} 
+            variant="outline"
+            className="border-white/30 text-white hover:bg-white/10"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+          
+          <Button 
+            onClick={copyShareableLink} 
+            variant="outline"
+            className="border-white/30 text-white hover:bg-white/10"
+          >
+            <Share2 className="mr-2 h-4 w-4" />
+            Share
+          </Button>
+        </div>
+      </Card>
+      
+      {/* Metrics Section */}
+      <Card className="p-4 bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border-white/20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-2 rounded-md bg-white/5">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Clock className="h-4 w-4" />
+              <span className="text-xs font-medium">Elapsed Time</span>
             </div>
-            
-            <Progress value={percentComplete} className="h-2 mb-4" />
-            
-            <div className="flex space-x-2 justify-between">
-              <Button
-                onClick={isPaused ? start : isRunning ? pause : start}
-                disabled={speedError !== null || lengthError !== null || (tokensGenerated >= length && !isPaused)}
-                aria-label={isPaused ? "Resume" : isRunning ? "Pause" : "Start"}
-                className="flex-1"
-              >
-                {isPaused ? (
-                  <Play className="mr-1 h-4 w-4" />
-                ) : isRunning ? (
-                  <Pause className="mr-1 h-4 w-4" />
-                ) : (
-                  <Play className="mr-1 h-4 w-4" />
-                )}
-                {isPaused ? "Resume" : isRunning ? "Pause" : "Start"}
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={reset}
-                aria-label="Reset"
-              >
-                <RefreshCw className="h-4 w-4" />
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleShare}
-                aria-label="Share"
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
+            <p className="text-lg font-bold">{simulator.elapsedTime.toFixed(1)}s</p>
+          </div>
+          
+          <div className="p-2 rounded-md bg-white/5">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <MessageCircle className="h-4 w-4" />
+              <span className="text-xs font-medium">Generated</span>
             </div>
+            <p className="text-lg font-bold">{simulator.tokens.length} / {simulator.length}</p>
+          </div>
+          
+          <div className="p-2 rounded-md bg-white/5">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Cpu className="h-4 w-4" />
+              <span className="text-xs font-medium">Actual Speed</span>
+            </div>
+            <p className="text-lg font-bold">{simulator.effectiveSpeed.toFixed(1)} t/s</p>
+          </div>
+          
+          <div className="p-2 rounded-md bg-white/5">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Share2 className="h-4 w-4" />
+              <span className="text-xs font-medium">Remaining</span>
+            </div>
+            <p className="text-lg font-bold">{Math.max(0, simulator.length - simulator.tokens.length)}</p>
           </div>
         </div>
-      </div>
+      </Card>
       
-      <div className="border rounded-md p-4 bg-muted/20">
-        <h2 className="text-lg font-medium mb-2">Output</h2>
-        <ScrollArea className="h-64 w-full p-3 bg-card rounded-md font-mono text-sm">
-          {tokens.length === 0 && !isRunning ? (
-            <div className="text-muted-foreground text-center py-6">
-              Press start to begin token generation
-            </div>
-          ) : tokens.length === 0 && isRunning ? (
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+      {/* Output Section */}
+      <Card className="p-4 bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border-white/20">
+        <div className="mb-2 flex justify-between items-center">
+          <h3 className="text-sm font-medium">Output</h3>
+          <span className="text-xs text-white/60">
+            {simulator.tokens.length === 0 && !simulator.isRunning ? (
+              'Press Start to begin simulation'
+            ) : simulator.tokens.length >= simulator.length ? (
+              'Simulation complete'
+            ) : simulator.isRunning ? (
+              'Generating tokens...'
+            ) : (
+              'Paused'
+            )}
+          </span>
+        </div>
+        
+        <div 
+          ref={outputRef}
+          className="h-[200px] overflow-auto rounded-md bg-black/20 p-3 text-sm font-mono"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          {simulator.tokens.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-white/50">
+              {simulator.isLoading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="h-2 w-2 bg-white rounded-full animate-pulse"></div>
+                  <p>Initializing...</p>
+                </div>
+              ) : (
+                <p>No tokens generated yet</p>
+              )}
             </div>
           ) : (
-            <div className="whitespace-pre-wrap break-all">
-              {tokens.join(' ')}
+            <div className="space-y-1">
+              {simulator.tokens.map((token, i) => (
+                <span 
+                  key={i} 
+                  className="inline-block px-1 mr-1 mb-1 bg-white/10 rounded token-stream"
+                  style={{ animationDelay: `${i * 0.01}s` }}
+                >
+                  {token}
+                </span>
+              ))}
             </div>
           )}
-        </ScrollArea>
+        </div>
+      </Card>
+      
+      {/* Progress Bar */}
+      <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-200"
+          style={{ width: `${Math.min(100, (simulator.tokens.length / simulator.length) * 100)}%` }}
+        ></div>
       </div>
     </div>
   );
-};
-
-export default TokenSpeedSimulator;
+}

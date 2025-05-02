@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -8,13 +7,13 @@ import { Timer, FileText, MessageSquare, User, LucideIcon, Zap } from 'lucide-re
 
 interface MetricCardProps {
   title: string;
-  value: number | string; // Update the type to accept string or number
+  value: number | string;
   unit: string;
   icon: LucideIcon;
   color?: string;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({ title, value, unit, icon: Icon, color }) => {
+const MetricCard: React.FC<MetricCardProps> = ({ title, value, icon: Icon, unit, color }) => {
   return (
     <Card className="shadow-md overflow-hidden border-0">
       <div className={`absolute inset-0 opacity-5 ${color || 'bg-primary'}`} />

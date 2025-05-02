@@ -96,11 +96,12 @@
 }
 
 .hover-scale {
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hover-scale:hover {
   transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .section-appear {
@@ -114,23 +115,24 @@
 
 /* Ensure text visibility */
 body {
-  color: var(--foreground);
+  color: var(--foreground, #000);
+  background-color: var(--background, #fff);
 }
 
 .text-foreground {
-  color: hsl(var(--foreground));
+  color: var(--foreground, #000) !important;
 }
 
 .bg-background {
-  background-color: hsl(var(--background));
+  background-color: var(--background, #fff) !important;
 }
 
 .text-primary {
-  color: hsl(var(--primary));
+  color: var(--primary, #333) !important;
 }
 
 .bg-primary {
-  background-color: hsl(var(--primary));
+  background-color: var(--primary, #8b5cf6) !important;
 }
 
 /* Ensure button visibility */
@@ -141,14 +143,15 @@ button,
 
 button.text-white,
 .button.text-white {
-  color: white;
+  color: white !important;
 }
 
 /* Tooltip visibility */
 .tooltip {
-  background-color: hsl(var(--popover));
-  color: hsl(var(--popover-foreground));
-  border: 1px solid hsl(var(--border));
+  background-color: var(--popover, #fff);
+  color: var(--popover-foreground, #000);
+  border: 1px solid var(--border, #e2e8f0);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Model theme specific styles */
@@ -165,22 +168,115 @@ button.text-white,
 
 /* Ensure select dropdown is visible */
 select, select option {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--background, #fff);
+  color: var(--foreground, #000);
+  border-color: var(--border, #e2e8f0);
 }
 
 /* Make sure form controls have visible text */
 .text-input, input, textarea, select {
-  color: hsl(var(--foreground));
+  color: var(--foreground, #000);
+  background-color: var(--background, #fff);
 }
 
 /* Ensure text visibility in cards */
 .card, .dialog {
-  color: hsl(var(--foreground));
+  color: var(--foreground, #000);
+  background-color: var(--background, #fff);
 }
 
 /* Improve contrast for muted text */
 .text-muted-foreground {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground, #64748b);
   opacity: 0.9;
+}
+
+/* Navigation menu styling */
+.navigation-menu-content {
+  animation-duration: 0.2s;
+  animation-timing-function: ease;
+}
+
+/* Menu items hover effect */
+.navigation-menu-item {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navigation-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Improved input field styling */
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--ring, rgba(139, 92, 246, 0.3));
+  outline-offset: 2px;
+}
+
+/* Enhanced button states */
+button:active {
+  transform: translateY(1px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, var(--primary, #8b5cf6), var(--secondary, #9333ea));
+}
+
+/* Model company theme styling */
+.company-theme-container {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Additional animation for selections */
+.selection-animation {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.selection-animation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Text label visibility */
+label {
+  color: var(--foreground, #000);
+  font-weight: 500;
+}
+
+/* Ensure tabs are visible */
+.tabs-list {
+  background-color: var(--background, #fff);
+  border-color: var(--border, #e2e8f0);
+}
+
+.tab-trigger {
+  color: var(--foreground, #000);
+}
+
+.tab-trigger[data-state="active"] {
+  background-color: var(--primary, #8b5cf6);
+  color: white;
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-center {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  
+  .mobile-hidden {
+    display: none !important;
+  }
 }

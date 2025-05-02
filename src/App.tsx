@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Set favicon
+// Set favicon and title
 const updateFavicon = () => {
   const link = document.querySelector("link[rel='icon']") || document.createElement('link');
   link.setAttribute('type', 'image/svg+xml');
@@ -17,8 +17,8 @@ const updateFavicon = () => {
   link.setAttribute('href', '/favicon.svg');
   document.head.appendChild(link);
   
-  // Also set document title
-  document.title = "TOKENOMY - AI Token Management";
+  // Set document title
+  document.title = "TOKENOMY - Smart AI Token Management & Optimization";
 };
 
 // Call the function once

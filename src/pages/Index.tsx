@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,9 @@ import {
   HelpCircle,
   AlertCircle,
   ListChecks,
-  Zap
+  Zap,
+  Sparkles,
+  LayoutDashboard
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ModelComparisonChart from '@/components/ModelComparisonChart';
@@ -34,6 +35,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import ShareOptions from '@/components/ShareOptions';
 import ExportData from '@/components/ExportData';
 import Footer from '@/components/Footer';
+import NewsletterPopup from '@/components/NewsletterPopup';
 
 // Create a TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
@@ -78,6 +80,39 @@ declare global {
   }
 }
 
+const examplesData = [
+  {
+    title: "Marketing Email",
+    text: "Write a detailed marketing email for a new AI-powered project management tool targeting startup founders.",
+    icon: "📧"
+  },
+  {
+    title: "Educational Content",
+    text: "Explain quantum computing concepts to a high school student.",
+    icon: "🎓"
+  },
+  {
+    title: "Financial Analysis",
+    text: "Analyze the performance of the S&P 500 over the last decade and predict future trends.",
+    icon: "📈"
+  },
+  {
+    title: "Lesson Plan",
+    text: "Create a comprehensive lesson plan about climate change for 8th grade students.",
+    icon: "📚"
+  },
+  {
+    title: "Product Description",
+    text: "Write a compelling product description for a new smart home security system with AI features.",
+    icon: "🏠"
+  },
+  {
+    title: "Creative Story",
+    text: "Write a short sci-fi story about a world where AI has become indistinguishable from humans.",
+    icon: "✨"
+  }
+];
+
 const Index = () => {
   const { toast } = useToast();
   const [text, setText] = useState("");
@@ -92,6 +127,8 @@ const Index = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
+  const [randomExamples, setRandomExamples] = useState<typeof examplesData>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const company = getCompanyFromModel(selectedModel);
@@ -99,22 +136,44 @@ const Index = () => {
   const categoryOptions = getModelCategories();
 
   // Placeholder for user login
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (name: string, provider: string) => {
     setIsLoggedIn(true);
-    setUserName("User");
+    setUserName(name || "User");
     toast({
-      title: "Logged In",
-      description: "You are now logged in.",
+      title: `Logged In via ${provider}`,
+      description: `Welcome, ${name || "User"}!`,
     });
   };
 
-  // Example texts
-  const exampleTexts = [
-    "Write a detailed marketing email for a new AI-powered project management tool targeting startup founders.",
-    "Explain quantum computing concepts to a high school student.",
-    "Analyze the performance of the S&P 500 over the last decade and predict future trends.",
-    "Create a comprehensive lesson plan about climate change for 8th grade students."
-  ];
+  // Select random examples on mount and when model changes
+  useEffect(() => {
+    const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
+    setRandomExamples(shuffled.slice(0, 3));
+  }, [selectedModel]);
+
+  // Show newsletter popup after 15 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNewsletterPopup(true);
+    }, 15000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Initialize with default analysis for empty state
+  useEffect(() => {
+    if (!analyzeResult) {
+      setAnalyzeResult({
+        text: "",
+        model: selectedModel,
+        tokens: 0,
+        costs: { input: 0, output: 0, total: 0 },
+        chars: 0,
+        charsPerToken: 0,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, [selectedModel]);
 
   const setExampleText = (text: string) => {
     setText(text);
@@ -122,7 +181,15 @@ const Index = () => {
 
   const clearText = () => {
     setText("");
-    setAnalyzeResult(null);
+    setAnalyzeResult({
+      text: "",
+      model: selectedModel,
+      tokens: 0,
+      costs: { input: 0, output: 0, total: 0 },
+      chars: 0,
+      charsPerToken: 0,
+      timestamp: new Date().toISOString()
+    });
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,10 +215,14 @@ const Index = () => {
         title: "File Uploaded",
         description: `Loaded ${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
       });
+      
+      // Auto-analyze when file is uploaded
+      handleAnalyze(content);
     };
     reader.readAsText(file);
   };
 
+  // Speech recognition function
   const startRecording = () => {
     if (!navigator.mediaDevices) {
       toast({
@@ -207,8 +278,10 @@ const Index = () => {
     recognition.start();
   };
 
-  const handleAnalyze = () => {
-    if (!text.trim()) {
+  const handleAnalyze = (customText?: string) => {
+    const contentToAnalyze = customText || text;
+    
+    if (!contentToAnalyze.trim() && !customText) {
       toast({
         title: "Empty Text",
         description: "Please enter some text to analyze.",
@@ -222,14 +295,14 @@ const Index = () => {
     // Simulate analysis time
     setTimeout(() => {
       try {
-        const tokens = estimateTokens(text);
+        const tokens = estimateTokens(contentToAnalyze || "");
         const inputCost = calculateCost(tokens, selectedModel);
         const outputCost = calculateCost(tokens, selectedModel, true);
         const tokenInfo = getTokenizationInfo(selectedModel);
         
         setTokenizationScheme(tokenInfo);
         setAnalyzeResult({
-          text,
+          text: contentToAnalyze || "",
           model: selectedModel,
           tokens,
           costs: {
@@ -237,8 +310,8 @@ const Index = () => {
             output: outputCost,
             total: inputCost + outputCost
           },
-          chars: text.length,
-          charsPerToken: text.length / tokens,
+          chars: contentToAnalyze?.length || 0,
+          charsPerToken: contentToAnalyze?.length ? contentToAnalyze.length / tokens : 0,
           timestamp: new Date().toISOString()
         });
         
@@ -255,16 +328,11 @@ const Index = () => {
       } finally {
         setAnalyzing(false);
       }
-    }, 800);
+    }, 400);
   };
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    
-    // Reset analysis state when switching tabs
-    if (activeTab !== value && value === "calculator") {
-      setAnalyzeResult(null);
-    }
   };
 
   return (
@@ -277,19 +345,27 @@ const Index = () => {
       
       <LearnMoreSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
+      <NewsletterPopup 
+        open={showNewsletterPopup} 
+        onOpenChange={setShowNewsletterPopup} 
+      />
+      
       <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto py-4 px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-            <div className="flex flex-col items-center md:items-start mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row justify-center items-center mb-4">
+            <div className="flex flex-col items-center mb-4 md:mb-0">
               <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 TOKENOMY
               </h1>
               <p className="text-sm text-foreground">Smart AI Token Management & Optimization</p>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="absolute right-6 top-4 md:top-6 flex items-center gap-2">
               {!isLoggedIn ? (
-                <Button onClick={() => setLoginDialogOpen(true)} className="hover-scale text-white bg-primary hover:bg-primary/90">
+                <Button 
+                  onClick={() => setLoginDialogOpen(true)} 
+                  className="hover-scale text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-md"
+                >
                   Log In / Sign Up
                 </Button>
               ) : (
@@ -323,12 +399,12 @@ const Index = () => {
                     </p>
                     
                     <div className="w-full max-w-4xl mb-4">
-                      <div className="relative mb-2">
+                      <div className="relative mb-4">
                         <Textarea
                           value={text}
                           onChange={e => setText(e.target.value)}
                           placeholder="Enter your text here to analyze tokens and costs..."
-                          className="min-h-[120px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
+                          className="min-h-[180px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
                         />
                         <div className="absolute top-2 right-2 flex gap-2">
                           <TooltipProvider>
@@ -390,25 +466,28 @@ const Index = () => {
                         </div>
                       </div>
                       
-                      <div className="flex flex-wrap gap-2 justify-center mb-4">
-                        {exampleTexts.map((example, i) => (
+                      <div className="flex flex-wrap gap-3 justify-center mb-4">
+                        {randomExamples.map((example, i) => (
                           <Button 
                             key={i} 
                             variant="outline"
                             size="sm"
-                            onClick={() => setExampleText(example)}
-                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90"
+                            onClick={() => setExampleText(example.text)}
+                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
                           >
-                            Example {i + 1}
+                            <span>{example.icon}</span> {example.title}
                           </Button>
                         ))}
                         <Button 
                           variant="outline"
                           size="sm"
-                          onClick={clearText}
-                          className="bg-white/80 border-white/20 text-foreground hover:bg-white/90"
+                          onClick={() => {
+                            const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
+                            setRandomExamples(shuffled.slice(0, 3));
+                          }}
+                          className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
                         >
-                          <XIcon className="mr-1 h-4 w-4" /> Clear
+                          <Sparkles className="h-4 w-4" /> New Examples
                         </Button>
                       </div>
                     </div>
@@ -465,7 +544,13 @@ const Index = () => {
                       <select
                         className="w-full sm:w-auto min-w-[200px] p-2 border rounded bg-background text-foreground"
                         value={selectedModel}
-                        onChange={(e) => setSelectedModel(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedModel(e.target.value);
+                          // Re-analyze with new model if we have text
+                          if (analyzeResult && analyzeResult.text) {
+                            setTimeout(() => handleAnalyze(analyzeResult.text), 100);
+                          }
+                        }}
                         style={{borderColor: modelTheme.border}}
                       >
                         {Object.keys(categoryOptions).map(category => (
@@ -479,8 +564,8 @@ const Index = () => {
                     </div>
                     
                     <Button
-                      onClick={handleAnalyze}
-                      disabled={analyzing || !text.trim()}
+                      onClick={() => handleAnalyze()}
+                      disabled={analyzing}
                       className="w-full sm:w-auto text-white"
                       style={{
                         backgroundColor: modelTheme.primary,
@@ -491,114 +576,112 @@ const Index = () => {
                     </Button>
                   </div>
                   
-                  {analyzeResult && (
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div className="bg-muted rounded-lg p-4 text-center">
-                          <div className="text-sm text-muted-foreground">Total Tokens</div>
-                          <div className="text-2xl font-bold text-foreground">{analyzeResult.tokens.toLocaleString()}</div>
-                        </div>
-                        <div className="bg-muted rounded-lg p-4 text-center">
-                          <div className="text-sm text-muted-foreground">Characters</div>
-                          <div className="text-2xl font-bold text-foreground">{analyzeResult.chars.toLocaleString()}</div>
-                        </div>
-                        <div className="bg-muted rounded-lg p-4 text-center">
-                          <div className="text-sm text-muted-foreground">Chars/Token</div>
-                          <div className="text-2xl font-bold text-foreground">{analyzeResult.charsPerToken.toFixed(1)}</div>
-                        </div>
-                        <div className="bg-muted rounded-lg p-4 text-center" 
-                          style={{background: `rgba(${parseInt(modelTheme.primary.slice(1,3), 16)}, ${parseInt(modelTheme.primary.slice(3,5), 16)}, ${parseInt(modelTheme.primary.slice(5,7), 16)}, 0.1)`}}>
-                          <div className="text-sm text-muted-foreground">Estimated Cost</div>
-                          <div className="text-2xl font-bold text-foreground">${analyzeResult.costs.total.toFixed(6)}</div>
-                        </div>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      <div className="bg-muted rounded-lg p-4 text-center">
+                        <div className="text-sm text-muted-foreground">Total Tokens</div>
+                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.tokens.toLocaleString() || "0"}</div>
                       </div>
-                      
-                      <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
-                        <TabsList className="w-full justify-start overflow-x-auto bg-background border" 
-                          style={{borderColor: `${modelTheme.border}`}}>
-                          <TabsTrigger 
-                            value="model-comparison" 
-                            className="text-foreground"
-                            style={{
-                              '--active-bg': `${modelTheme.primary}20`,
-                              '--active-color': modelTheme.primary
-                            } as React.CSSProperties}
-                          >
-                            Model Comparison
-                          </TabsTrigger>
-                          <TabsTrigger 
-                            value="tokenization" 
-                            className="text-foreground"
-                            style={{
-                              '--active-bg': `${modelTheme.primary}20`,
-                              '--active-color': modelTheme.primary
-                            } as React.CSSProperties}
-                          >
-                            Tokenization
-                          </TabsTrigger>
-                          <TabsTrigger 
-                            value="process" 
-                            className="text-foreground"
-                            style={{
-                              '--active-bg': `${modelTheme.primary}20`,
-                              '--active-color': modelTheme.primary
-                            } as React.CSSProperties}
-                          >
-                            Process Flow
-                          </TabsTrigger>
-                          <TabsTrigger 
-                            value="process-enhanced" 
-                            className="text-foreground"
-                            style={{
-                              '--active-bg': `${modelTheme.primary}20`,
-                              '--active-color': modelTheme.primary
-                            } as React.CSSProperties}
-                          >
-                            Enhanced Flow
-                          </TabsTrigger>
-                          <TabsTrigger 
-                            value="energy" 
-                            className="text-foreground"
-                            style={{
-                              '--active-bg': `${modelTheme.primary}20`,
-                              '--active-color': modelTheme.primary
-                            } as React.CSSProperties}
-                          >
-                            Energy Usage
-                          </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="model-comparison" className="pt-4">
-                          <ModelComparisonChart selectedModel={selectedModel} />
-                        </TabsContent>
-                        <TabsContent value="tokenization" className="pt-4">
-                          <TokenizationChart userInputs={[{
-                            text: text,
-                            tokens: analyzeResult.tokens,
-                            chars: analyzeResult.chars,
-                            inputCost: analyzeResult.costs.input,
-                            outputCost: analyzeResult.costs.output
-                          }]} />
-                        </TabsContent>
-                        <TabsContent value="process" className="pt-4">
-                          <ProcessFlow text={text} tokens={analyzeResult.tokens} />
-                        </TabsContent>
-                        <TabsContent value="process-enhanced" className="pt-4">
-                          <ProcessFlowEnhanced text={text} tokens={analyzeResult.tokens} />
-                        </TabsContent>
-                        <TabsContent value="energy" className="pt-4">
-                          <EnergyConsumptionTab tokens={analyzeResult.tokens} selectedModel={selectedModel} />
-                        </TabsContent>
-                      </Tabs>
-                      
-                      <div className="border rounded-lg p-4"
-                        style={{borderColor: modelTheme.border}}>
-                        <h3 className="text-lg font-semibold mb-2 text-foreground">Suggested Optimization</h3>
-                        <PromptOptimizer text={text} tokens={analyzeResult.tokens} />
+                      <div className="bg-muted rounded-lg p-4 text-center">
+                        <div className="text-sm text-muted-foreground">Characters</div>
+                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.chars.toLocaleString() || "0"}</div>
                       </div>
-                      
-                      <ExportData data={analyzeResult} />
+                      <div className="bg-muted rounded-lg p-4 text-center">
+                        <div className="text-sm text-muted-foreground">Chars/Token</div>
+                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.charsPerToken.toFixed(1) || "0.0"}</div>
+                      </div>
+                      <div className="bg-muted rounded-lg p-4 text-center" 
+                        style={{background: `rgba(${parseInt(modelTheme.primary.slice(1,3), 16)}, ${parseInt(modelTheme.primary.slice(3,5), 16)}, ${parseInt(modelTheme.primary.slice(5,7), 16)}, 0.1)`}}>
+                        <div className="text-sm text-muted-foreground">Estimated Cost</div>
+                        <div className="text-2xl font-bold text-foreground">${analyzeResult?.costs.total.toFixed(6) || "0.000000"}</div>
+                      </div>
                     </div>
-                  )}
+                    
+                    <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
+                      <TabsList className="w-full justify-start overflow-x-auto bg-background border" 
+                        style={{borderColor: `${modelTheme.border}`}}>
+                        <TabsTrigger 
+                          value="model-comparison" 
+                          className="text-foreground"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          Model Comparison
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="tokenization" 
+                          className="text-foreground"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          Tokenization
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="process" 
+                          className="text-foreground"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          Process Flow
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="process-enhanced" 
+                          className="text-foreground"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          Enhanced Flow
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="energy" 
+                          className="text-foreground"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          Energy Usage
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="model-comparison" className="pt-4">
+                        <ModelComparisonChart selectedModel={selectedModel} />
+                      </TabsContent>
+                      <TabsContent value="tokenization" className="pt-4">
+                        <TokenizationChart userInputs={[{
+                          text: text || "",
+                          tokens: analyzeResult?.tokens || 0,
+                          chars: analyzeResult?.chars || 0,
+                          inputCost: analyzeResult?.costs.input || 0,
+                          outputCost: analyzeResult?.costs.output || 0
+                        }]} />
+                      </TabsContent>
+                      <TabsContent value="process" className="pt-4">
+                        <ProcessFlow text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                      </TabsContent>
+                      <TabsContent value="process-enhanced" className="pt-4">
+                        <ProcessFlowEnhanced text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                      </TabsContent>
+                      <TabsContent value="energy" className="pt-4">
+                        <EnergyConsumptionTab tokens={analyzeResult?.tokens || 0} selectedModel={selectedModel} />
+                      </TabsContent>
+                    </Tabs>
+                    
+                    <div className="border rounded-lg p-4 bg-background"
+                      style={{borderColor: modelTheme.border}}>
+                      <h3 className="text-lg font-semibold mb-2 text-foreground">Suggested Optimization</h3>
+                      <PromptOptimizer text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                    </div>
+                    
+                    <ExportData data={analyzeResult || {}} />
+                  </div>
                 </div>
               </Card>
             </div>
@@ -625,11 +708,20 @@ const Index = () => {
           </div>
         )}
         
-        {/* Hidden utility components */}
-        <div className="hidden">
-          <NewsletterForm />
-          <LanguageSelector />
-          <ShareOptions />
+        {/* Hidden utility components for direct access via URL hash */}
+        <div className="hidden" id="utility-components">
+          <div id="newsletter">
+            <NewsletterForm />
+          </div>
+          <div id="language-selector">
+            <LanguageSelector />
+          </div>
+          <div id="share">
+            <ShareOptions />
+          </div>
+          <div id="export">
+            <ExportData data={analyzeResult || {}} />
+          </div>
         </div>
       </main>
 

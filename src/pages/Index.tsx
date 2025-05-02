@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -429,7 +428,7 @@ const Index = () => {
                             value={text}
                             onChange={e => setText(e.target.value)}
                             placeholder="Enter your text here to analyze tokens and costs..."
-                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
+                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y pr-10"
                           />
                           <div className="absolute top-2 right-2 flex gap-2">
                             <TooltipProvider>
@@ -517,8 +516,7 @@ const Index = () => {
                         </div>
                       </div>
                       
-                      <div className="w-full md:w-1/3 bg-white/10 rounded-lg p-4">
-                        <h3 className="font-medium text-white mb-3">Prompt Optimization</h3>
+                      <div className="w-full md:w-1/3 rounded-lg">
                         <PromptOptimizer text={text || ""} tokens={analyzeResult?.tokens || 0} />
                       </div>
                     </div>
@@ -571,9 +569,9 @@ const Index = () => {
                 
                 <div className="p-4 md:p-6">
                   <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-center">
-                    <div className="w-full sm:w-auto">
+                    <div className="w-full sm:w-auto relative">
                       <select
-                        className="w-full sm:w-auto min-w-[200px] p-2 border rounded bg-background text-foreground"
+                        className="w-full sm:w-auto min-w-[250px] p-2 pl-3 pr-10 border rounded-full bg-background text-foreground appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary focus:outline-none transition-all shadow-sm hover:shadow"
                         value={selectedModel}
                         onChange={(e) => {
                           setSelectedModel(e.target.value);
@@ -592,12 +590,17 @@ const Index = () => {
                           </optgroup>
                         ))}
                       </select>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
                     </div>
                     
                     <Button
                       onClick={() => handleAnalyze()}
                       disabled={analyzing}
-                      className="w-full sm:w-auto text-white"
+                      className="w-full sm:w-auto text-white rounded-full shadow-md transition-all hover:shadow-lg hover:scale-[1.02]"
                       style={{
                         backgroundColor: modelTheme.primary,
                         color: "white"
@@ -608,6 +611,7 @@ const Index = () => {
                   </div>
                   
                   <div className="space-y-6">
+                    {/* These results should be visible by default */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                       <div className="bg-muted rounded-lg p-4 text-center">
                         <div className="text-sm text-muted-foreground">Total Tokens</div>

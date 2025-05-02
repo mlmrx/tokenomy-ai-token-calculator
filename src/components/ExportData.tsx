@@ -51,6 +51,13 @@ const ExportData = ({ data, colorTheme }: ExportDataProps) => {
     });
   };
 
+  // Default theme colors if none provided
+  const themeColors = colorTheme || {
+    primary: "#8b5cf6",
+    secondary: "#a78bfa",
+    border: "#c4b5fd"
+  };
+
   return (
     <Card id="export" className="w-full max-w-md">
       <CardHeader>
@@ -63,27 +70,39 @@ const ExportData = ({ data, colorTheme }: ExportDataProps) => {
         <div className="grid grid-cols-3 gap-2">
           <Button 
             variant="outline" 
-            className="flex flex-col items-center gap-2 h-auto py-4" 
+            className="flex flex-col items-center gap-2 h-auto py-4 transition-all hover:scale-105" 
             onClick={() => handleExport('json')}
-            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+            style={{
+              borderColor: themeColors.border,
+              color: themeColors.primary,
+              background: `${themeColors.primary}10`
+            }}
           >
             <FileJson size={24} />
             <span>JSON</span>
           </Button>
           <Button 
             variant="outline" 
-            className="flex flex-col items-center gap-2 h-auto py-4" 
+            className="flex flex-col items-center gap-2 h-auto py-4 transition-all hover:scale-105" 
             onClick={() => handleExport('csv')}
-            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+            style={{
+              borderColor: themeColors.border,
+              color: themeColors.primary,
+              background: `${themeColors.primary}10`
+            }}
           >
             <FileDown size={24} />
             <span>CSV</span>
           </Button>
           <Button 
             variant="outline" 
-            className="flex flex-col items-center gap-2 h-auto py-4" 
+            className="flex flex-col items-center gap-2 h-auto py-4 transition-all hover:scale-105" 
             onClick={() => handleExport('pdf')}
-            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+            style={{
+              borderColor: themeColors.border,
+              color: themeColors.primary,
+              background: `${themeColors.primary}10`
+            }}
           >
             <FileText size={24} />
             <span>PDF</span>

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Info } from "lucide-react";
 
@@ -7,13 +8,11 @@ interface PromptOptimizerProps {
 }
 
 const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
-  if (!text || tokens === 0) return null;
-  
   // Generate optimization suggestions based on the input text
   const suggestions: string[] = [];
   
   // Check for common inefficient patterns
-  if (text.length > 20) {
+  if (text.length > 0) {
     // Excessive politeness
     if (
       text.toLowerCase().includes("please") && 
@@ -67,7 +66,7 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
     }
   }
   
-  // Add general optimization suggestions
+  // Add general optimization suggestions if no specific issues or text is empty
   if (suggestions.length === 0) {
     // Default suggestions when no specific issues found
     suggestions.push(
@@ -79,6 +78,8 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
   
   // Create an optimized version of the prompt (simplified example)
   const createOptimizedPrompt = () => {
+    if (!text) return "";
+    
     let optimized = text;
     
     // Remove redundant phrases
@@ -102,10 +103,10 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
   };
   
   const optimizedPrompt = createOptimizedPrompt();
-  const estimatedSavings = Math.max(0, Math.round((text.length - optimizedPrompt.length) / text.length * 100));
+  const estimatedSavings = text && optimizedPrompt ? Math.max(0, Math.round((text.length - optimizedPrompt.length) / text.length * 100)) : 0;
   
   return (
-    <div className="mt-2 bg-blue-50 border border-blue-200 rounded-md p-3">
+    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 h-full">
       <div className="flex items-center mb-2">
         <Info className="h-4 w-4 text-blue-600 mr-1" /> 
         <h4 className="text-sm font-medium text-blue-800">Prompt Optimization Suggestions</h4>
@@ -119,16 +120,16 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
         </ul>
       )}
       
-      {estimatedSavings > 0 && (
+      {estimatedSavings > 0 && text && (
         <div className="text-xs mt-1.5 text-blue-600 font-medium">
           Potential token savings: approximately {estimatedSavings}%
         </div>
       )}
       
-      {text !== optimizedPrompt && (
+      {text && text !== optimizedPrompt && (
         <div className="mt-2">
           <div className="text-xs font-medium text-blue-800">Suggested Optimized Prompt:</div>
-          <div className="text-xs bg-white border border-blue-100 rounded p-2 mt-1 whitespace-pre-wrap">
+          <div className="text-xs bg-white border border-blue-100 rounded p-2 mt-1 whitespace-pre-wrap max-h-40 overflow-y-auto">
             {optimizedPrompt}
           </div>
         </div>

@@ -54,7 +54,7 @@ const TokenizationInfo: React.FC<TokenizationInfoProps> = ({ model, tokens }) =>
           </div>
           <div className="bg-muted rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Vocabulary Size</div>
-            <div className="font-medium">Unknown</div>
+            <div className="font-medium">{tokenInfo.vocabSize || "Unknown"}</div>
           </div>
           <div className="bg-muted rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Token Overhead</div>

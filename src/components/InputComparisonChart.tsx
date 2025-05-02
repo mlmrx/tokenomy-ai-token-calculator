@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { History, LineChart } from "lucide-react";
 import { analysisChartColors } from "@/lib/modelThemes";
 
@@ -82,8 +82,8 @@ const InputComparisonChart: React.FC<InputComparisonProps> = ({ recentInputs = [
               <YAxis yAxisId="right" orientation="right" stroke={analysisChartColors.outputCost.border} />
               <Tooltip 
                 formatter={(value, name) => {
-                  if (name === "cost") return [`$${(parseFloat(value as string) / 1000).toFixed(6)}`, "Estimated Cost"];
-                  return [value, name.charAt(0).toUpperCase() + name.slice(1)];
+                  if (name === "cost") return [`$${(parseFloat(String(value)) / 1000).toFixed(6)}`, "Estimated Cost"];
+                  return [value, String(name).charAt(0).toUpperCase() + String(name).slice(1)];
                 }}
               />
               <Legend />

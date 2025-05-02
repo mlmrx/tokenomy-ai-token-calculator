@@ -1,19 +1,19 @@
 
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Doughnut, Bar } from "react-chartjs-2";
-import { 
-  Chart as ChartJS, 
-  ArcElement, 
-  Tooltip as ChartTooltip, 
+import { PieChart, BarChart3 } from "lucide-react";
+import { getModelTheme } from "@/lib/modelThemes";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip as ChartTooltip,
   Legend,
   CategoryScale,
   LinearScale,
   BarElement,
   Title
 } from 'chart.js';
-import { PieChart, BarChart3 } from "lucide-react";
-import { getModelTheme } from "@/lib/modelThemes";
+import { Doughnut, Bar } from 'react-chartjs-2';
 
 // Register ChartJS components
 ChartJS.register(

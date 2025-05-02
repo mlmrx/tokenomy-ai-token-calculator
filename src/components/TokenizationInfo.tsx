@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Info, FileCode, AlertCircle } from "lucide-react";
-import { getTokenizationInfo, ModelInfo } from "@/lib/modelData";
+import { getTokenizationInfo } from "@/lib/modelData";
 import { getCompanyFromModel, getModelTheme } from "@/lib/modelThemes";
 
 interface TokenizationInfoProps {
@@ -50,11 +50,11 @@ const TokenizationInfo: React.FC<TokenizationInfoProps> = ({ model, tokens }) =>
           </div>
           <div className="bg-muted rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Scheme</div>
-            <div className="font-medium">{tokenInfo.tokenizer || "BPE"}</div>
+            <div className="font-medium">{tokenInfo.scheme || "BPE"}</div>
           </div>
           <div className="bg-muted rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Vocabulary Size</div>
-            <div className="font-medium">{tokenInfo.vocabSize ? tokenInfo.vocabSize.toLocaleString() : "Unknown"}</div>
+            <div className="font-medium">Unknown</div>
           </div>
           <div className="bg-muted rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Token Overhead</div>

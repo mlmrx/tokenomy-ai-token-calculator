@@ -6,9 +6,10 @@ import { FileText, FileDown, FileJson } from "lucide-react";
 
 interface ExportDataProps {
   data: any;
+  colorTheme?: any;
 }
 
-const ExportData = ({ data }: ExportDataProps) => {
+const ExportData = ({ data, colorTheme }: ExportDataProps) => {
   const { toast } = useToast();
 
   const handleExport = (format: string) => {
@@ -60,15 +61,30 @@ const ExportData = ({ data }: ExportDataProps) => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-3 gap-2">
-          <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4" onClick={() => handleExport('json')}>
+          <Button 
+            variant="outline" 
+            className="flex flex-col items-center gap-2 h-auto py-4" 
+            onClick={() => handleExport('json')}
+            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+          >
             <FileJson size={24} />
             <span>JSON</span>
           </Button>
-          <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4" onClick={() => handleExport('csv')}>
+          <Button 
+            variant="outline" 
+            className="flex flex-col items-center gap-2 h-auto py-4" 
+            onClick={() => handleExport('csv')}
+            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+          >
             <FileDown size={24} />
             <span>CSV</span>
           </Button>
-          <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4" onClick={() => handleExport('pdf')}>
+          <Button 
+            variant="outline" 
+            className="flex flex-col items-center gap-2 h-auto py-4" 
+            onClick={() => handleExport('pdf')}
+            style={colorTheme ? { borderColor: colorTheme.border, color: colorTheme.primary } : {}}
+          >
             <FileText size={24} />
             <span>PDF</span>
           </Button>

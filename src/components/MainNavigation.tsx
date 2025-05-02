@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Memory, Calculator } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -31,7 +31,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
     {
       id: "memory",
       label: "Memory Calculator",
-      icon: <Memory className="h-5 w-5" />,
+      icon: <BarChart className="h-5 w-5" />,
     },
   ];
 

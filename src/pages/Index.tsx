@@ -1,17 +1,20 @@
 
 import { useState, useEffect } from 'react';
-import { useMemo /* already importing useState, useEffect */ } from "react";
+import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, X, CircleCheck, Calculator, ChartBar } from 'lucide-react';
+import { Info, CircleCheck, Calculator, ChartBar } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import TokenizationChart from '@/components/TokenizationChart';
 import ModelComparisonChart from '@/components/ModelComparisonChart';
-import ProcessFlow from '@/components/ProcessFlow';
+import ProcessFlowEnhanced from '@/components/ProcessFlowEnhanced';
+import EnergyConsumptionTab from '@/components/EnergyConsumptionTab';
+import PromptOptimizer from '@/components/PromptOptimizer';
 import { modelPricing, estimateTokens, calculateCost, getModelCategories } from '@/lib/modelData';
+import { getModelTheme } from '@/lib/modelThemes';
 
 const Index = () => {
   const { toast } = useToast();
@@ -24,22 +27,22 @@ const Index = () => {
   const [userInputs, setUserInputs] = useState<{ text: string; tokens: number; chars: number; inputCost: number; outputCost: number }[]>([]);
   const [activeTab, setActiveTab] = useState('calculate');
   const modelCategories = getModelCategories();
+  const modelTheme = getModelTheme(selectedModel);
 
-  
-const placeholders = [
-  "Paste your AI prompt or message here to see how many tokens it eats.",
-  "What's your LLM thinking today? Type or paste it here to find out the token cost. 💬",
-  "Drop in your prompt, code snippet, or user input. We’ll tokenize the truth.",
-  "Writing your next email, ad copy, or blog intro? Let’s see what it’ll cost to run it through AI.",
-  "Start typing your prompt...",
-  "Feed the model. Enter human language sequence for token analysis. 🤖",
-  "Paste a message, question, or story—then see how AI breaks it into tokens."
-];
+  const placeholders = [
+    "Paste your AI prompt or message here to see how many tokens it eats.",
+    "What's your LLM thinking today? Type or paste it here to find out the token cost. 💬",
+    "Drop in your prompt, code snippet, or user input. We'll tokenize the truth.",
+    "Writing your next email, ad copy, or blog intro? Let's see what it'll cost to run it through AI.",
+    "Start typing your prompt...",
+    "Feed the model. Enter human language sequence for token analysis. 🤖",
+    "Paste a message, question, or story—then see how AI breaks it into tokens."
+  ];
 
   const randomPlaceholder = useMemo(
-  () => placeholders[Math.floor(Math.random() * placeholders.length)],
-  []                     // ← empty dependency array → runs only on first render
-);
+    () => placeholders[Math.floor(Math.random() * placeholders.length)],
+    []
+  );
   
   // Calculate tokens and cost based on input text and selected model
   const calculateTokens = () => {
@@ -132,15 +135,19 @@ const placeholders = [
   }, [text, selectedModel]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-purple-100 py-8 px-4">
-      <Card className="max-w-4xl mx-auto shadow-lg border-purple-200 overflow-hidden">
-        <div className="bg-purple-800 text-white p-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold flex items-center">
+    <div className="min-h-screen py-8 px-4" style={{
+      background: `linear-gradient(to bottom, ${modelTheme.accent}, ${modelTheme.accent})`
+    }}>
+      <Card className="max-w-4xl mx-auto shadow-lg overflow-hidden border"
+            style={{ borderColor: modelTheme.border }}>
+        <div className="text-white p-4 flex justify-between items-center text-center"
+             style={{ backgroundColor: modelTheme.primary }}>
+          <div className="mx-auto">
+            <h1 className="text-xl font-bold flex items-center justify-center">
               <Calculator className="h-5 w-5 mr-2" /> 
               Advanced AI Token Calculator
             </h1>
-            <p className="text-purple-200 text-sm">Estimate tokens & costs for modern AI models</p>
+            <p className="text-sm opacity-90">Estimate tokens & costs for modern AI models</p>
           </div>
         </div>
 
@@ -148,19 +155,26 @@ const placeholders = [
           <div className="grid md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
               <Textarea
-  id="inputText"
-  placeholder={randomPlaceholder}
-  value={text}
-  onChange={(e) => setText(e.target.value)}
-  className="min-h-[150px] border-purple-300 focus:border-purple-500 resize-y"
-/>
+                id="inputText"
+                placeholder={randomPlaceholder}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                className="min-h-[150px] resize-y focus:ring-2"
+                style={{ 
+                  borderColor: modelTheme.border,
+                  backgroundColor: 'white'
+                }}
+              />
+              {text && <PromptOptimizer text={text} tokens={tokens} />}
             </div>
             
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select AI Model</label>
-                <Select value={selectedModel} onValueChange={setSelectedModel}>
-                  <SelectTrigger className="w-full border-purple-300">
+                <Select value={selectedModel} onValueChange={(value) => {
+                  setSelectedModel(value);
+                }}>
+                  <SelectTrigger className="w-full" style={{ borderColor: modelTheme.border }}>
                     <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -177,64 +191,90 @@ const placeholders = [
               </div>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button onClick={generateExample} variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">
+                <Button onClick={generateExample} variant="outline" 
+                  style={{ borderColor: modelTheme.border, color: modelTheme.primary }}
+                  className="border hover:bg-opacity-10"
+                >
                   Example
                 </Button>
-                <Button onClick={clearText} variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">
+                <Button onClick={clearText} variant="outline"
+                  style={{ borderColor: modelTheme.border, color: modelTheme.primary }}
+                  className="border hover:bg-opacity-10"
+                >
                   Clear
                 </Button>
-                <Button onClick={calculateTokens} className="bg-purple-700 hover:bg-purple-800 col-span-2">
+                <Button onClick={calculateTokens} className="col-span-2" 
+                  style={{ backgroundColor: modelTheme.primary }}
+                >
                   Calculate Tokens
                 </Button>
               </div>
               
-              <div className="bg-purple-50 p-4 rounded-md space-y-2">
-                <h3 className="font-medium text-purple-800">Results</h3>
+              <div className="p-4 rounded-md space-y-2"
+                   style={{ backgroundColor: modelTheme.accent }}>
+                <h3 className="font-medium" style={{ color: modelTheme.primary }}>Results</h3>
                 <div className="flex justify-between items-center">
                   <span className="font-medium">Tokens:</span>
-                  <span className="text-purple-800 font-bold">{tokens}</span>
+                  <span className="font-bold" style={{ color: modelTheme.primary }}>{tokens}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-medium">Characters:</span>
-                  <span className="text-purple-800 font-bold">{characters}</span>
+                  <span className="font-bold" style={{ color: modelTheme.primary }}>{characters}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-medium">Input Cost:</span>
-                  <span className="text-purple-800 font-bold">${inputCost.toFixed(6)}</span>
+                  <span className="font-bold" style={{ color: modelTheme.primary }}>${inputCost.toFixed(6)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-medium">Output Cost:</span>
-                  <span className="text-purple-800 font-bold">${outputCost.toFixed(6)}</span>
+                  <span className="font-bold" style={{ color: modelTheme.primary }}>${outputCost.toFixed(6)}</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            <Button onClick={() => setActiveTab('calculate')} variant="ghost" size="sm" className={activeTab === 'calculate' ? 'bg-purple-100' : ''}>
+            <Button onClick={() => setActiveTab('calculate')} variant="ghost" size="sm" 
+                    className={activeTab === 'calculate' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'calculate' ? `${modelTheme.accent}` : '' }}>
               Calculation
             </Button>
-            <Button onClick={() => setActiveTab('process')} variant="ghost" size="sm" className={activeTab === 'process' ? 'bg-purple-100' : ''}>
+            <Button onClick={() => setActiveTab('process')} variant="ghost" size="sm" 
+                    className={activeTab === 'process' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'process' ? `${modelTheme.accent}` : '' }}>
               Process
             </Button>
-            <Button onClick={() => setActiveTab('compare')} variant="ghost" size="sm" className={activeTab === 'compare' ? 'bg-purple-100' : ''}>
+            <Button onClick={() => setActiveTab('compare')} variant="ghost" size="sm" 
+                    className={activeTab === 'compare' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'compare' ? `${modelTheme.accent}` : '' }}>
               Compare
             </Button>
-            <Button onClick={generateRecommendation} variant="ghost" size="sm" className={activeTab === 'recommendation' ? 'bg-purple-100' : ''}>
+            <Button onClick={generateRecommendation} variant="ghost" size="sm" 
+                    className={activeTab === 'recommendation' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'recommendation' ? `${modelTheme.accent}` : '' }}>
               Recommendations
             </Button>
-            <Button onClick={() => setActiveTab('analysis')} variant="ghost" size="sm" className={activeTab === 'analysis' ? 'bg-purple-100' : ''}>
+            <Button onClick={() => setActiveTab('analysis')} variant="ghost" size="sm" 
+                    className={activeTab === 'analysis' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'analysis' ? `${modelTheme.accent}` : '' }}>
               <ChartBar className="h-4 w-4 mr-1" /> Analysis
             </Button>
-            <Button onClick={() => setActiveTab('model-compare')} variant="ghost" size="sm" className={activeTab === 'model-compare' ? 'bg-purple-100' : ''}>
+            <Button onClick={() => setActiveTab('model-compare')} variant="ghost" size="sm" 
+                    className={activeTab === 'model-compare' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'model-compare' ? `${modelTheme.accent}` : '' }}>
               Model Comparison
+            </Button>
+            <Button onClick={() => setActiveTab('energy')} variant="ghost" size="sm" 
+                    className={activeTab === 'energy' ? 'bg-opacity-10' : ''}
+                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'energy' ? `${modelTheme.accent}` : '' }}>
+              Energy Usage
             </Button>
           </div>
 
           <div className="mt-4">
             {activeTab === 'calculate' && (
-              <Card className="p-4 bg-purple-50">
-                <h3 className="font-medium text-purple-800 mb-2">How We Calculate Tokens</h3>
+              <Card className="p-4" style={{ backgroundColor: modelTheme.accent }}>
+                <h3 className="font-medium mb-2 text-center" style={{ color: modelTheme.primary }}>How We Calculate Tokens</h3>
                 <p className="text-sm text-gray-700">
                   Token estimation is based on a sophisticated algorithm that considers:
                 </p>
@@ -253,16 +293,16 @@ const placeholders = [
             )}
             
             {activeTab === 'process' && (
-              <ProcessFlow tokens={tokens} text={text} />
+              <ProcessFlowEnhanced tokens={tokens} text={text} />
             )}
             
             {activeTab === 'compare' && (
-              <Card className="p-4 bg-purple-50">
-                <h3 className="font-medium text-purple-800 mb-2">Compare Recent Inputs</h3>
+              <Card className="p-4" style={{ backgroundColor: modelTheme.accent }}>
+                <h3 className="font-medium mb-2 text-center" style={{ color: modelTheme.primary }}>Compare Recent Inputs</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-purple-200">
+                      <tr className="border-b" style={{ borderColor: modelTheme.border }}>
                         <th className="text-left py-2">Input</th>
                         <th className="text-right py-2">Tokens</th>
                         <th className="text-right py-2">Chars</th>
@@ -272,7 +312,7 @@ const placeholders = [
                     </thead>
                     <tbody>
                       {userInputs.map((input, index) => (
-                        <tr key={index} className="border-b border-purple-100">
+                        <tr key={index} className="border-b" style={{ borderColor: `${modelTheme.border}50` }}>
                           <td className="truncate max-w-[120px] py-2">
                             {input.text.substring(0, 20)}...
                           </td>
@@ -296,16 +336,16 @@ const placeholders = [
             )}
             
             {activeTab === 'recommendation' && (
-              <Card className="p-4 bg-purple-50">
-                <h3 className="font-medium text-purple-800 mb-2">Model Recommendations</h3>
+              <Card className="p-4" style={{ backgroundColor: modelTheme.accent }}>
+                <h3 className="font-medium mb-2 text-center" style={{ color: modelTheme.primary }}>Model Recommendations</h3>
                 {tokens > 0 ? (
                   <div className="space-y-4">
-                    <div className="bg-white rounded-md p-3 border border-purple-100">
-                      <h4 className="text-sm font-medium text-purple-700 mb-2">Based on your input ({tokens} tokens):</h4>
+                    <div className="bg-white rounded-md p-3 border" style={{ borderColor: modelTheme.border }}>
+                      <h4 className="text-sm font-medium mb-2" style={{ color: modelTheme.primary }}>Based on your input ({tokens} tokens):</h4>
                       <div className="max-h-60 overflow-y-auto pr-2">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-purple-100">
+                            <tr className="border-b" style={{ borderColor: `${modelTheme.border}50` }}>
                               <th className="text-left py-1">Model</th>
                               <th className="text-right py-1">Input Cost</th>
                               <th className="text-right py-1">Output Cost</th>
@@ -321,12 +361,24 @@ const placeholders = [
                                 const isCurrentModel = model === selectedModel;
                                 
                                 return (
-                                  <tr key={model} className={`border-b border-purple-50 ${isCurrentModel ? 'bg-purple-50' : ''}`}>
+                                  <tr key={model} className={`border-b ${isCurrentModel ? 'bg-opacity-20' : ''}`} 
+                                      style={{ 
+                                        borderColor: `${modelTheme.border}50`,
+                                        backgroundColor: isCurrentModel ? modelTheme.accent : ''
+                                      }}>
                                     <td className="py-1">{model}</td>
                                     <td className="text-right py-1">${modelInputCost.toFixed(6)}</td>
                                     <td className="text-right py-1">${modelOutputCost.toFixed(6)}</td>
                                     <td className="text-right">
-                                      {isCurrentModel && <span className="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">Current</span>}
+                                      {isCurrentModel && (
+                                        <span className="text-xs px-2 py-0.5 rounded-full" 
+                                              style={{ 
+                                                backgroundColor: modelTheme.primary, 
+                                                color: modelTheme.accent 
+                                              }}>
+                                          Current
+                                        </span>
+                                      )}
                                     </td>
                                   </tr>
                                 );
@@ -336,12 +388,12 @@ const placeholders = [
                       </div>
                     </div>
                     
-                    <div className="bg-white rounded-md p-3 border border-purple-100">
-                      <h4 className="text-sm font-medium text-purple-700 mb-2">Recommendations:</h4>
+                    <div className="bg-white rounded-md p-3 border" style={{ borderColor: modelTheme.border }}>
+                      <h4 className="text-sm font-medium mb-2" style={{ color: modelTheme.primary }}>Recommendations:</h4>
                       
                       <div className="space-y-3">
                         <div className="flex items-start gap-2">
-                          <CircleCheck className="text-green-600 h-4 w-4 mt-0.5" />
+                          <CircleCheck className="h-4 w-4 mt-0.5 text-green-600" />
                           <div>
                             <p className="text-sm font-medium">Best value for quality:</p>
                             <p className="text-xs text-gray-600">
@@ -397,10 +449,13 @@ const placeholders = [
             {activeTab === 'model-compare' && (
               <ModelComparisonChart modelPricing={modelPricing} />
             )}
+
+            {activeTab === 'energy' && (
+              <EnergyConsumptionTab tokens={tokens} selectedModel={selectedModel} />
+            )}
           </div>
         </div>
       </Card>   
-
     </div>
   );
 };

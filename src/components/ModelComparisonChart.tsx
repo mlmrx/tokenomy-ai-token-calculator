@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import Chart from 'chart.js/auto';
 import { getModelCategories } from "@/lib/modelData";
+import { getCompanyFromModel, modelThemes } from "@/lib/modelThemes";
 
 interface ModelComparisonChartProps {
   modelPricing: Record<string, { input: number; output: number }>;
@@ -35,14 +36,17 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
     
     // Sort models by input price
     filteredModels.sort((a, b) => modelPricing[a].input - modelPricing[b].input);
+
+    // Get the theme for the selected category
+    const theme = modelCategory !== "all" ? modelThemes[modelCategory] || modelThemes.default : modelThemes.default;
     
     // Prepare the datasets
     const datasets = [
       {
         label: 'Input Price (per 1K tokens)',
         data: filteredModels.map(model => modelPricing[model].input),
-        backgroundColor: 'rgba(142, 68, 173, 0.5)',
-        borderColor: 'rgba(142, 68, 173, 1)',
+        backgroundColor: theme.chart.input,
+        borderColor: theme.chart.inputBorder,
         borderWidth: 1
       }
     ];
@@ -51,8 +55,8 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
       datasets.push({
         label: 'Output Price (per 1K tokens)',
         data: filteredModels.map(model => modelPricing[model].output),
-        backgroundColor: 'rgba(155, 89, 182, 0.5)',
-        borderColor: 'rgba(155, 89, 182, 1)',
+        backgroundColor: theme.chart.output,
+        borderColor: theme.chart.outputBorder,
         borderWidth: 1
       });
     }
@@ -108,12 +112,19 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
     };
   }, [modelPricing, showOutput, modelCategory, categories]);
 
+  // Get theme color for UI elements
+  const theme = modelCategory !== "all" ? modelThemes[modelCategory] || modelThemes.default : modelThemes.default;
+
   return (
-    <Card className="p-2">
-      <div className="flex justify-between mb-2">
+    <Card className="p-4">
+      <div className="flex justify-between mb-4">
         <div>
           <select 
-            className="border border-purple-300 rounded px-2 py-1 text-sm"
+            className="border rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2"
+            style={{ 
+              borderColor: theme.border,
+              color: theme.primary
+            }}
             value={modelCategory}
             onChange={(e) => setModelCategory(e.target.value)}
           >
@@ -131,8 +142,11 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
               checked={showOutput}
               onChange={() => setShowOutput(!showOutput)}
             />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-            <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Show Output Prices</span>
+            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-opacity-50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"
+              style={{ backgroundColor: showOutput ? theme.primary : 'rgba(0,0,0,0.1)', 
+                       borderColor: theme.border }}></div>
+            <span className="ms-3 text-sm font-medium" 
+                  style={{ color: theme.primary }}>Show Output Prices</span>
           </label>
         </div>
       </div>

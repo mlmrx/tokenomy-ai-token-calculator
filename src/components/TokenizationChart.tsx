@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import Chart from 'chart.js/auto';
+import { analysisChartColors } from "@/lib/modelThemes";
 
 interface TokenizationChartProps {
   userInputs: Array<{
@@ -36,33 +37,31 @@ const TokenizationChart = ({ userInputs }: TokenizationChartProps) => {
           {
             label: 'Tokens',
             data: userInputs.map(input => input.tokens),
-            backgroundColor: 'rgba(142, 68, 173, 0.5)',
-            borderColor: 'rgba(142, 68, 173, 1)',
+            backgroundColor: analysisChartColors.tokens.bg,
+            borderColor: analysisChartColors.tokens.border,
             borderWidth: 1
           },
           {
             label: 'Characters',
             data: userInputs.map(input => input.chars),
-            backgroundColor: 'rgba(155, 89, 182, 0.5)',
-            borderColor: 'rgba(155, 89, 182, 1)',
+            backgroundColor: analysisChartColors.chars.bg,
+            borderColor: analysisChartColors.chars.border,
             borderWidth: 1
           },
           {
             label: 'Input Cost ($)',
             data: userInputs.map(input => input.inputCost),
-            backgroundColor: 'rgba(165, 105, 189, 0.5)', 
-            borderColor: 'rgba(165, 105, 189, 1)',
+            backgroundColor: analysisChartColors.inputCost.bg,
+            borderColor: analysisChartColors.inputCost.border,
             borderWidth: 1,
-            // Use a secondary y-axis for cost since it's on a different scale
             yAxisID: 'y1',
           },
           {
             label: 'Output Cost ($)',
             data: userInputs.map(input => input.outputCost),
-            backgroundColor: 'rgba(133, 193, 233, 0.5)', 
-            borderColor: 'rgba(133, 193, 233, 1)',
+            backgroundColor: analysisChartColors.outputCost.bg,
+            borderColor: analysisChartColors.outputCost.border,
             borderWidth: 1,
-            // Use a secondary y-axis for cost since it's on a different scale
             yAxisID: 'y1',
           }
         ]
@@ -128,9 +127,9 @@ const TokenizationChart = ({ userInputs }: TokenizationChartProps) => {
   }, [userInputs]);
 
   return (
-    <Card className="p-2">
+    <Card className="p-4">
       {userInputs.length > 0 ? (
-        <div style={{ height: '200px' }}>
+        <div style={{ height: '250px' }}>
           <canvas ref={chartRef} />
         </div>
       ) : (

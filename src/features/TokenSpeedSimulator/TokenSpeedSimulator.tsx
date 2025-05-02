@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Play, Pause, RefreshCw, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -44,6 +45,7 @@ const TokenSpeedSimulator: React.FC = () => {
   // Input validation state
   const [speedError, setSpeedError] = useState<string | null>(null);
   const [lengthError, setLengthError] = useState<string | null>(null);
+  const [chartType, setChartType] = useState("time");
   
   // Get URL parameters and localStorage values
   const queryParams = parseQueryParams();
@@ -267,7 +269,7 @@ const TokenSpeedSimulator: React.FC = () => {
       
       <div className="border rounded-md p-4 bg-muted/20">
         <h2 className="text-lg font-medium mb-2">Output</h2>
-        <ScrollArea ref={outputRef} className="h-64 w-full p-3 bg-card rounded-md font-mono text-sm">
+        <ScrollArea className="h-64 w-full p-3 bg-card rounded-md font-mono text-sm">
           {tokens.length === 0 && !isRunning ? (
             <div className="text-muted-foreground text-center py-6">
               Press start to begin token generation

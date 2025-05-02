@@ -23,6 +23,18 @@ const Index = () => {
   const [userInputs, setUserInputs] = useState<{ text: string; tokens: number; chars: number; inputCost: number; outputCost: number }[]>([]);
   const [activeTab, setActiveTab] = useState('calculate');
   const modelCategories = getModelCategories();
+
+  
+const placeholders = [
+  "Paste your AI prompt or message here to see how many tokens it eats.",
+  "What's your LLM thinking today? Type or paste it here to find out the token cost. 💬",
+  "Drop in your prompt, code snippet, or user input. We’ll tokenize the truth.",
+  "Writing your next email, ad copy, or blog intro? Let’s see what it’ll cost to run it through AI.",
+  "Start typing your prompt...",
+  "Feed the model. Enter human language sequence for token analysis. 🤖",
+  "Paste a message, question, or story—then see how AI breaks it into tokens."
+];
+
   
   // Calculate tokens and cost based on input text and selected model
   const calculateTokens = () => {
@@ -130,12 +142,13 @@ const Index = () => {
         <div className="p-4 md:p-6 space-y-4">
           <div className="grid md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <Textarea 
-                placeholder="Enter your text here to calculate tokens..." 
-                value={text} 
-                onChange={(e) => setText(e.target.value)}
-                className="min-h-[150px] border-purple-300 focus:border-purple-500 resize-y"
-              />
+              <Textarea
+  id="inputText"
+  placeholder={randomPlaceholder}
+  value={text}
+  onChange={(e) => setText(e.target.value)}
+  className="min-h-[150px] border-purple-300 focus:border-purple-500 resize-y"
+/>
             </div>
             
             <div className="space-y-4">

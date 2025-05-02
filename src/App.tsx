@@ -11,10 +11,10 @@ const queryClient = new QueryClient();
 
 // Set favicon
 const updateFavicon = () => {
-  const link = document.querySelector("link[rel='icon']") as HTMLLinkElement || document.createElement('link');
-  link.type = 'image/svg+xml';
-  link.rel = 'icon';
-  link.href = '/favicon.svg';
+  const link = document.querySelector("link[rel='icon']") || document.createElement('link');
+  link.setAttribute('type', 'image/svg+xml');
+  link.setAttribute('rel', 'icon');
+  link.setAttribute('href', '/favicon.svg');
   document.head.appendChild(link);
   
   // Also set document title

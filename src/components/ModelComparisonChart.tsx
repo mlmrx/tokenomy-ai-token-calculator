@@ -6,11 +6,10 @@ import { getModelCategories, estimateTokens, calculateCost } from "@/lib/modelDa
 import { getCompanyFromModel, modelThemes } from "@/lib/modelThemes";
 
 interface ModelComparisonChartProps {
-  text: string;
   selectedModel: string;
 }
 
-const ModelComparisonChart = ({ text, selectedModel }: ModelComparisonChartProps) => {
+const ModelComparisonChart = ({ selectedModel }: ModelComparisonChartProps) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
   const [showOutput, setShowOutput] = useState<boolean>(true);
@@ -25,11 +24,11 @@ const ModelComparisonChart = ({ text, selectedModel }: ModelComparisonChartProps
   Object.keys(categories).forEach(category => {
     categories[category].forEach((model: string) => {
       try {
-        const tokens = estimateTokens("Sample text for pricing", model);
+        const tokens = estimateTokens("Sample text for pricing");
         const costs = calculateCost(tokens, model);
         modelPricing[model] = {
-          input: costs.inputPer1k || 0,
-          output: costs.outputPer1k || 0
+          input: costs.input || 0,
+          output: costs.output || 0
         };
       } catch (error) {
         console.error(`Error calculating pricing for ${model}:`, error);

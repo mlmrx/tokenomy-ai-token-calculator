@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
@@ -41,16 +40,15 @@ interface SpeechRecognition extends EventTarget {
   interimResults: boolean;
   lang: string;
   maxAlternatives: number;
-  onaudioend: (ev: Event) => any;
-  onaudiostart: (ev: Event) => any;
-  onend: (ev: Event) => any;
-  onerror: (ev: SpeechRecognitionErrorEvent) => any;
-  onnomatch: (ev: SpeechRecognitionEvent) => any;
-  onresult: (ev: SpeechRecognitionEvent) => any;
-  onsoundend: (ev: Event) => any;
-  onsoundstart: (ev: Event) => any;
-  onspeechend: (ev: Event) => any;
-  onspeechstart: (ev: Event) => any;
+  onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onaudiostart: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+  onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+  onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null;
   start(): void;
   stop(): void;
   abort(): void;
@@ -222,7 +220,7 @@ const Index = () => {
     // Simulate analysis time
     setTimeout(() => {
       try {
-        const tokens = estimateTokens(text, selectedModel);
+        const tokens = estimateTokens(text);
         const costs = calculateCost(tokens, selectedModel);
         const tokenInfo = getTokenizationInfo(selectedModel);
         
@@ -233,13 +231,13 @@ const Index = () => {
           tokens,
           costs,
           chars: text.length,
-          charsPerToken: text.length / tokens.total,
+          charsPerToken: text.length / tokens,
           timestamp: new Date().toISOString()
         });
         
         toast({
           title: "Analysis Complete",
-          description: `${tokens.total} tokens analyzed for ${selectedModel}`,
+          description: `${tokens} tokens analyzed for ${selectedModel}`,
         });
       } catch (error) {
         toast({
@@ -485,7 +483,7 @@ const Index = () => {
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Total Tokens</div>
-                          <div className="text-2xl font-bold">{analyzeResult.tokens.total.toLocaleString()}</div>
+                          <div className="text-2xl font-bold">{analyzeResult.tokens.toLocaleString()}</div>
                         </div>
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Characters</div>
@@ -510,12 +508,12 @@ const Index = () => {
                           <TabsTrigger value="energy">Energy Usage</TabsTrigger>
                         </TabsList>
                         <TabsContent value="model-comparison" className="pt-4">
-                          <ModelComparisonChart text={text} selectedModel={selectedModel} />
+                          <ModelComparisonChart selectedModel={selectedModel} />
                         </TabsContent>
                         <TabsContent value="tokenization" className="pt-4">
                           <TokenizationChart userInputs={[{
                             text: text,
-                            tokens: analyzeResult.tokens.total,
+                            tokens: analyzeResult.tokens,
                             chars: analyzeResult.chars,
                             inputCost: analyzeResult.costs.input,
                             outputCost: analyzeResult.costs.output
@@ -528,14 +526,14 @@ const Index = () => {
                           <ProcessFlowEnhanced text={text} tokens={analyzeResult.tokens} />
                         </TabsContent>
                         <TabsContent value="energy" className="pt-4">
-                          <EnergyConsumptionTab tokensCount={analyzeResult.tokens.total} modelName={selectedModel} />
+                          <EnergyConsumptionTab tokens={analyzeResult.tokens} model={selectedModel} />
                         </TabsContent>
                       </Tabs>
                       
                       {/* Suggested Prompt Optimization */}
                       <div className="border rounded-lg p-4">
                         <h3 className="text-lg font-semibold mb-2">Suggested Optimization</h3>
-                        <PromptOptimizer text={text} tokens={analyzeResult.tokens.total} />
+                        <PromptOptimizer text={text} tokens={analyzeResult.tokens} />
                       </div>
                       
                       <ExportData data={analyzeResult} />

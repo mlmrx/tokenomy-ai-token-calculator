@@ -1,7 +1,4 @@
 
-// These pricing data are based on publicly available information as of May 2023
-// Prices are in USD per 1K tokens
-
 export const modelPricing: Record<string, { input: number; output: number }> = {
   // OpenAI
   'gpt-4o': { input: 0.01, output: 0.03 },

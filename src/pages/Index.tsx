@@ -382,7 +382,7 @@ const Index = () => {
       <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto py-4 px-4 md:px-6">
           <div className="flex justify-center items-center mb-4">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-start">
               <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 TOKENOMY
               </h1>
@@ -824,8 +824,6 @@ const Index = () => {
 
         {activeTab === "speed" && (
           <div className="speed-bg-gradient p-6 rounded-lg text-white mb-6">
-            <h2 className="text-2xl font-bold mb-2">Speed Simulator</h2>
-            <p className="mb-6 opacity-90">Simulate token generation speed and visualize output in real-time</p>
             <div className="bg-white/10 p-6 rounded-lg">
               <TokenSpeedSimulator />
             </div>
@@ -834,8 +832,6 @@ const Index = () => {
         
         {activeTab === "memory" && (
           <div className="memory-bg-gradient p-6 rounded-lg text-white mb-6">
-            <h2 className="text-2xl font-bold mb-2">Memory Calculator</h2>
-            <p className="mb-6 opacity-90">Calculate memory requirements for large language models</p>
             <div className="bg-white/10 p-6 rounded-lg">
               <MemoryCalculator />
             </div>

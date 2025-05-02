@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { modelPricing, firstTokenLatency, tokensPerSecond, getModelCategories, calculateCost, calculateTotalTime, getFeaturedModels } from "@/lib/modelData";
 import { getModelTheme } from "@/lib/modelThemes";
 import { Timer, FileText, MessageSquare, User, Zap, Clock, Info, BarChart2, LineChart as LineChartIcon, Settings, PieChart } from 'lucide-react';
@@ -736,19 +736,28 @@ const EnhancedSpeedSimulator = () => {
                               stroke="none"
                               fill={entry.color}
                             >
-                              <Label
-                                content={({ viewBox }) => {
-                                  const { x, y } = viewBox as { x: number, y: number };
-                                  return (
-                                    <g>
-                                      <circle cx={x} cy={y} r={6} fill={entry.color} />
-                                      <text x={x} y={y - 10} textAnchor="middle" fill={entry.color} fontSize={12}>
-                                        {entry.model}
-                                      </text>
-                                    </g>
-                                  );
-                                }}
-                              />
+                              {/* Fix: Use a LabelList component instead of Label with content function */}
+                              <g>
+                                {entry && (
+                                  <g>
+                                    <circle 
+                                      cx={entry.tps} 
+                                      cy={(entry.outputCost / (tokensToGenerate / 1000)) * 1000} 
+                                      r={6} 
+                                      fill={entry.color} 
+                                    />
+                                    <text 
+                                      x={entry.tps} 
+                                      y={(entry.outputCost / (tokensToGenerate / 1000)) * 1000 - 10} 
+                                      textAnchor="middle" 
+                                      fill={entry.color} 
+                                      fontSize={12}
+                                    >
+                                      {entry.model}
+                                    </text>
+                                  </g>
+                                )}
+                              </g>
                             </Line>
                           ))}
                         </LineChart>

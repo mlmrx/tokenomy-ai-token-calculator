@@ -445,6 +445,7 @@ const Index = () => {
                     variant="outline"
                     size="sm"
                     className="flex items-center gap-1 border-purple-400 hover:bg-purple-100"
+                    onClick={() => setShowNewsletterPopup(true)}
                   >
                     <Mail size={14} className="text-purple-600" />
                     <span className="text-xs">Subscribe</span>
@@ -826,16 +827,16 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          <div className="speed-bg-gradient p-6 rounded-lg text-white mb-6">
-            <div className="bg-white/10 p-6 rounded-lg">
+          <div className="speed-bg-gradient p-6 rounded-lg mb-6">
+            <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <TokenSpeedSimulator />
             </div>
           </div>
         )}
         
         {activeTab === "memory" && (
-          <div className="memory-bg-gradient p-6 rounded-lg text-white mb-6">
-            <div className="bg-white/10 p-6 rounded-lg">
+          <div className="memory-bg-gradient p-6 rounded-lg mb-6">
+            <div className="bg-gradient-to-br from-amber-800/60 to-orange-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <MemoryCalculator />
             </div>
           </div>

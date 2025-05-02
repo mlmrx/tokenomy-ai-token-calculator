@@ -108,11 +108,9 @@ export function TokenSpeedSimulator() {
       localStorage.setItem('tokenSimulator.speed', speedValue.toString());
       localStorage.setItem('tokenSimulator.length', lengthValue.toString());
       
-      // Update simulator parameters
+      // Update simulator parameters and start simulation
       simulator.updateSpeed(speedValue);
       simulator.updateLength(lengthValue);
-      
-      // Start the simulation
       simulator.start();
     }
   };
@@ -208,7 +206,7 @@ export function TokenSpeedSimulator() {
         <div className="flex flex-wrap gap-2 justify-center mt-4">
           {!simulator.isRunning ? (
             <Button 
-              onClick={() => startSimulation()} 
+              onClick={startSimulation} 
               disabled={simulator.tokens.length > 0 && simulator.tokens.length >= parseInt(inputLength)}
               className="bg-green-500 hover:bg-green-600 transition-colors"
             >
@@ -307,7 +305,6 @@ export function TokenSpeedSimulator() {
         >
           {simulator.tokens.length === 0 ? (
             <div className="flex items-center justify-center h-full text-white/50">
-              {/* Remove isLoading check since it doesn't exist in our simulator */}
               <p>No tokens generated yet</p>
             </div>
           ) : (

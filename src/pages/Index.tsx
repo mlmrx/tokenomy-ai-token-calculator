@@ -16,33 +16,13 @@ import {
   Sparkles,
   BarChart4,
   LineChart,
-  LayoutDashboard
+  LayoutDashboard,
+  Linkedin,
+  Github,
+  Share2,
+  Mail
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import ModelComparisonChart from '@/components/ModelComparisonChart';
-import ProcessFlow from '@/components/ProcessFlow';
-import TokenizationChart from '@/components/TokenizationChart';
-import EnergyConsumptionTab from '@/components/EnergyConsumptionTab';
-import ProcessFlowEnhanced from '@/components/ProcessFlowEnhanced';
-import PromptOptimizer from '@/components/PromptOptimizer';
-import { modelPricing, estimateTokens, calculateCost, getModelCategories, getTokenizationInfo } from '@/lib/modelData';
-import { getModelTheme, getCompanyFromModel } from '@/lib/modelThemes';
-import MainNavigation from '@/components/MainNavigation';
-import LearnMoreSidebar from '@/components/LearnMoreSidebar';
-import { TokenSpeedSimulator } from '@/features/TokenSpeedSimulator';
-import MemoryCalculator from '@/components/MemoryCalculator';
-import LoginDialog from '@/components/LoginDialog';
-import NewsletterForm from '@/components/NewsletterForm';
-import LanguageSelector from '@/components/LanguageSelector';
-import ShareOptions from '@/components/ShareOptions';
-import ExportData from '@/components/ExportData';
-import Footer from '@/components/Footer';
-import NewsletterPopup from '@/components/NewsletterPopup';
-import ShareWidget from '@/components/ShareWidget';
-import ModelRecommendation from '@/components/ModelRecommendation';
-import InputComparisonChart from '@/components/InputComparisonChart';
-import VisualizationTab from '@/components/VisualizationTab';
-import TokenizationInfo from '@/components/TokenizationInfo';
 
 // Create a TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
@@ -382,6 +362,65 @@ const Index = () => {
             </div>
             
             <div className="absolute right-6 top-4 md:top-6 flex items-center gap-2">
+              <div className="flex items-center gap-2 mr-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ml4u" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-1.5 bg-[#0A66C2] text-white rounded-md hover:bg-opacity-80 transition-colors">
+                      <Linkedin size={16} />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>Follow on LinkedIn</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a href="https://twitter.com/Mahesh_Lambe?ref_src=twsrc%5Etfw" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-1.5 bg-black text-white rounded-md hover:bg-opacity-80 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>Follow on X</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a href="https://github.com/mlmrx" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-1.5 bg-[#24292e] text-white rounded-md hover:bg-opacity-80 transition-colors">
+                      <Github size={16} />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>Follow on GitHub</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a href="https://www.tokenomy.ai" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+                      <Share2 size={16} />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>Share Tokenomy</TooltipContent>
+                </Tooltip>
+                
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1 border-purple-400 hover:bg-purple-100"
+                >
+                  <Mail size={14} className="text-purple-600" />
+                  <span className="text-xs">Subscribe</span>
+                </Button>
+              </div>
+              
               {!isLoggedIn ? (
                 <Button 
                   onClick={() => setLoginDialogOpen(true)} 
@@ -428,9 +467,17 @@ const Index = () => {
                             value={text}
                             onChange={e => setText(e.target.value)}
                             placeholder="Enter your text here to analyze tokens and costs..."
-                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y pr-10"
+                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
                           />
-                          <div className="absolute top-2 right-2 flex gap-2">
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileUpload}
+                            accept=".txt"
+                            className="hidden"
+                          />
+                          {/* Controls moved to bottom-right */}
+                          <div className="absolute bottom-3 right-3 flex gap-2 bg-white/70 backdrop-blur-sm p-1 rounded-md">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -480,13 +527,6 @@ const Index = () => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                            <input
-                              type="file"
-                              ref={fileInputRef}
-                              onChange={handleFileUpload}
-                              accept=".txt"
-                              className="hidden"
-                            />
                           </div>
                         </div>
                         
@@ -571,7 +611,7 @@ const Index = () => {
                   <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-center">
                     <div className="w-full sm:w-auto relative">
                       <select
-                        className="w-full sm:w-auto min-w-[250px] p-2 pl-3 pr-10 border rounded-full bg-background text-foreground appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary focus:outline-none transition-all shadow-sm hover:shadow"
+                        className="w-full sm:w-auto min-w-[250px] p-2 pl-3 pr-10 border rounded-full bg-background text-foreground appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer border-2"
                         value={selectedModel}
                         onChange={(e) => {
                           setSelectedModel(e.target.value);

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Calculator, 
   Zap, 
-  Cpu, // Replaced Memory with Cpu which is available in lucide-react
+  Cpu, // Using Cpu icon instead of Memory which is not available
   Languages, 
   Share2, 
   FileText, 
@@ -24,16 +24,16 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
   return (
     <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 py-4 gap-4">
       <Tabs value={activeTab} onValueChange={onTabChange} className="w-full md:w-auto">
-        <TabsList className="grid grid-cols-3 w-full md:w-auto">
-          <TabsTrigger value="calculator" className="flex items-center gap-2 px-4 py-2">
+        <TabsList className="grid grid-cols-3 w-full md:w-auto bg-background border border-input">
+          <TabsTrigger value="calculator" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Calculator className="h-4 w-4" />
             <span className="hidden md:inline">Token Calculator</span>
           </TabsTrigger>
-          <TabsTrigger value="speed" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="speed" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Zap className="h-4 w-4" />
             <span className="hidden md:inline">Speed Simulator</span>
           </TabsTrigger>
-          <TabsTrigger value="memory" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="memory" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             <Cpu className="h-4 w-4" /> 
             <span className="hidden md:inline">Memory Calculator</span>
           </TabsTrigger>
@@ -44,7 +44,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={() => window.location.href = "#language-selector"}>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={() => window.location.href = "#language-selector"}>
                 <Languages className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
@@ -55,7 +55,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
           
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={() => window.location.href = "#share"}>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={() => window.location.href = "#share"}>
                 <Share2 className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
@@ -66,7 +66,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
           
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={() => window.location.href = "#export"}>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={() => window.location.href = "#export"}>
                 <FileText className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
@@ -77,7 +77,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
           
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={() => window.location.href = "#newsletter"}>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={() => window.location.href = "#newsletter"}>
                 <Mail className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
@@ -88,7 +88,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
           
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={onToggleSidebar}>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={onToggleSidebar}>
                 <HelpCircle className="h-5 w-5" />
               </Button>
             </TooltipTrigger>

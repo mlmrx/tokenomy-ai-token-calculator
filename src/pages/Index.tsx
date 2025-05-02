@@ -280,21 +280,21 @@ const Index = () => {
         <div className="container mx-auto py-4 px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center mb-4">
             <div className="flex flex-col items-center md:items-start mb-4 md:mb-0">
-              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 animate-pulse">
+              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 TOKENOMY
               </h1>
-              <p className="text-sm text-muted-foreground">Smart AI Token Management & Optimization</p>
+              <p className="text-sm text-foreground">Smart AI Token Management & Optimization</p>
             </div>
             
             <div className="flex items-center gap-2">
               {!isLoggedIn ? (
-                <Button onClick={() => setLoginDialogOpen(true)} className="hover-scale">
+                <Button onClick={() => setLoginDialogOpen(true)} className="hover-scale text-white bg-primary hover:bg-primary/90">
                   Log In / Sign Up
                 </Button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="hidden sm:inline">Welcome, {userName}</span>
-                  <Button variant="outline" onClick={() => setIsLoggedIn(false)}>Logout</Button>
+                  <span className="hidden sm:inline text-foreground">Welcome, {userName}</span>
+                  <Button variant="outline" onClick={() => setIsLoggedIn(false)} className="border-input text-foreground">Logout</Button>
                 </div>
               )}
             </div>
@@ -313,12 +313,10 @@ const Index = () => {
           <>
             <div className="mb-6">
               <Card className="w-full shadow-lg">
-                <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" style={{
-                  color: "white"
-                }}>
+                <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg">
                   <div className="flex flex-col items-center">
-                    <h2 className="text-xl md:text-2xl font-bold mb-2">Token Calculator</h2>
-                    <p className="text-sm md:text-base text-center opacity-90 mb-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">Token Calculator</h2>
+                    <p className="text-sm md:text-base text-center text-white opacity-90 mb-6">
                       Calculate tokens, costs, and analyze your content across different AI models
                     </p>
                     
@@ -340,7 +338,7 @@ const Index = () => {
                                   className="rounded-full bg-white/10 hover:bg-white/20 h-8 w-8"
                                   onClick={() => fileInputRef.current?.click()}
                                 >
-                                  <FileText size={16} />
+                                  <FileText size={16} className="text-white" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -356,7 +354,7 @@ const Index = () => {
                                   className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-white/10 hover:bg-white/20'} h-8 w-8`}
                                   onClick={startRecording}
                                 >
-                                  <Mic size={16} />
+                                  <Mic size={16} className="text-white" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -372,7 +370,7 @@ const Index = () => {
                                   className="rounded-full bg-white/10 hover:bg-white/20 h-8 w-8"
                                   onClick={clearText}
                                 >
-                                  <XIcon size={16} />
+                                  <XIcon size={16} className="text-white" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -463,7 +461,7 @@ const Index = () => {
                   <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-center">
                     <div className="w-full sm:w-auto">
                       <select
-                        className="w-full sm:w-auto min-w-[200px] p-2 border rounded bg-background"
+                        className="w-full sm:w-auto min-w-[200px] p-2 border rounded bg-background text-foreground"
                         value={selectedModel}
                         onChange={(e) => setSelectedModel(e.target.value)}
                       >
@@ -480,7 +478,7 @@ const Index = () => {
                     <Button
                       onClick={handleAnalyze}
                       disabled={analyzing || !text.trim()}
-                      className="w-full sm:w-auto"
+                      className="w-full sm:w-auto text-white"
                       style={{
                         backgroundColor: modelTheme.primary,
                         color: "white"
@@ -495,29 +493,29 @@ const Index = () => {
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Total Tokens</div>
-                          <div className="text-2xl font-bold">{analyzeResult.tokens.toLocaleString()}</div>
+                          <div className="text-2xl font-bold text-foreground">{analyzeResult.tokens.toLocaleString()}</div>
                         </div>
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Characters</div>
-                          <div className="text-2xl font-bold">{analyzeResult.chars.toLocaleString()}</div>
+                          <div className="text-2xl font-bold text-foreground">{analyzeResult.chars.toLocaleString()}</div>
                         </div>
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Chars/Token</div>
-                          <div className="text-2xl font-bold">{analyzeResult.charsPerToken.toFixed(1)}</div>
+                          <div className="text-2xl font-bold text-foreground">{analyzeResult.charsPerToken.toFixed(1)}</div>
                         </div>
                         <div className="bg-muted rounded-lg p-4 text-center">
                           <div className="text-sm text-muted-foreground">Estimated Cost</div>
-                          <div className="text-2xl font-bold">${analyzeResult.costs.total.toFixed(6)}</div>
+                          <div className="text-2xl font-bold text-foreground">${analyzeResult.costs.total.toFixed(6)}</div>
                         </div>
                       </div>
                       
                       <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
-                        <TabsList className="w-full justify-start overflow-x-auto">
-                          <TabsTrigger value="model-comparison">Model Comparison</TabsTrigger>
-                          <TabsTrigger value="tokenization">Tokenization</TabsTrigger>
-                          <TabsTrigger value="process">Process Flow</TabsTrigger>
-                          <TabsTrigger value="process-enhanced">Enhanced Flow</TabsTrigger>
-                          <TabsTrigger value="energy">Energy Usage</TabsTrigger>
+                        <TabsList className="w-full justify-start overflow-x-auto text-foreground bg-background border">
+                          <TabsTrigger value="model-comparison" className="text-foreground data-[state=active]:bg-primary/20">Model Comparison</TabsTrigger>
+                          <TabsTrigger value="tokenization" className="text-foreground data-[state=active]:bg-primary/20">Tokenization</TabsTrigger>
+                          <TabsTrigger value="process" className="text-foreground data-[state=active]:bg-primary/20">Process Flow</TabsTrigger>
+                          <TabsTrigger value="process-enhanced" className="text-foreground data-[state=active]:bg-primary/20">Enhanced Flow</TabsTrigger>
+                          <TabsTrigger value="energy" className="text-foreground data-[state=active]:bg-primary/20">Energy Usage</TabsTrigger>
                         </TabsList>
                         <TabsContent value="model-comparison" className="pt-4">
                           <ModelComparisonChart selectedModel={selectedModel} />
@@ -542,9 +540,8 @@ const Index = () => {
                         </TabsContent>
                       </Tabs>
                       
-                      {/* Suggested Prompt Optimization */}
                       <div className="border rounded-lg p-4">
-                        <h3 className="text-lg font-semibold mb-2">Suggested Optimization</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-foreground">Suggested Optimization</h3>
                         <PromptOptimizer text={text} tokens={analyzeResult.tokens} />
                       </div>
                       

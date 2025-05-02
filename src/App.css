@@ -82,14 +82,17 @@
 /* Token gradient backgrounds */
 .token-bg-gradient {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
 }
 
 .speed-bg-gradient {
   background: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+  color: white;
 }
 
 .memory-bg-gradient {
   background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  color: white;
 }
 
 .hover-scale {
@@ -107,4 +110,43 @@
 @keyframes sectionAppear {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ensure text visibility */
+body {
+  color: var(--foreground);
+}
+
+.text-foreground {
+  color: hsl(var(--foreground));
+}
+
+.bg-background {
+  background-color: hsl(var(--background));
+}
+
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+/* Ensure button visibility */
+button, 
+.button {
+  color: inherit;
+}
+
+button.text-white,
+.button.text-white {
+  color: white;
+}
+
+/* Tooltip visibility */
+.tooltip {
+  background-color: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  border: 1px solid hsl(var(--border));
 }

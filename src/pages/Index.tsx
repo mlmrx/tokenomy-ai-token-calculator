@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useMemo /* already importing useState, useEffect */ } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";

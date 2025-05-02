@@ -24,6 +24,34 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
+// Import model-related utilities
+import { getCompanyFromModel, getModelTheme } from "@/lib/modelThemes";
+import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo } from "@/lib/modelUtils";
+
+// Import components
+import MainNavigation from "@/components/MainNavigation";
+import TokenizationInfo from "@/components/TokenizationInfo";
+import ModelRecommendation from "@/components/ModelRecommendation";
+import TokenSpeedSimulator from "@/features/TokenSpeedSimulator";
+import MemoryCalculator from "@/components/MemoryCalculator";
+import PromptOptimizer from "@/components/PromptOptimizer";
+import ExportData from "@/components/ExportData";
+import ModelComparisonChart from "@/components/ModelComparisonChart";
+import TokenizationChart from "@/components/TokenizationChart";
+import InputComparisonChart from "@/components/InputComparisonChart";
+import VisualizationTab from "@/components/VisualizationTab";
+import ProcessFlowEnhanced from "@/components/ProcessFlowEnhanced";
+import EnergyConsumptionTab from "@/components/EnergyConsumptionTab";
+
+// Import utility components
+import LoginDialog from "@/components/LoginDialog";
+import LearnMoreSidebar from "@/components/LearnMoreSidebar";
+import NewsletterForm from "@/components/NewsletterForm";
+import LanguageSelector from "@/components/LanguageSelector";
+import ShareWidget from "@/components/ShareWidget";
+import NewsletterPopup from "@/components/NewsletterPopup";
+import Footer from "@/components/Footer";
+
 // Create a TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;

@@ -25,10 +25,11 @@ const ModelComparisonChart = ({ selectedModel }: ModelComparisonChartProps) => {
     categories[category].forEach((model: string) => {
       try {
         const tokens = estimateTokens("Sample text for pricing");
-        const costs = calculateCost(tokens, model);
+        const inputCost = calculateCost(tokens, model);
+        const outputCost = calculateCost(tokens, model, true);
         modelPricing[model] = {
-          input: costs.input || 0,
-          output: costs.output || 0
+          input: inputCost,
+          output: outputCost
         };
       } catch (error) {
         console.error(`Error calculating pricing for ${model}:`, error);
@@ -116,7 +117,9 @@ const ModelComparisonChart = ({ selectedModel }: ModelComparisonChartProps) => {
                 if (label) {
                   label += ': ';
                 }
-                label += '$' + context.parsed.x.toFixed(6);
+                if (typeof context.parsed.x === 'number') {
+                  label += '$' + context.parsed.x.toFixed(6);
+                }
                 return label;
               }
             }

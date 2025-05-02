@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
@@ -175,20 +176,21 @@ const Index = () => {
     recognition.lang = 'en-US';
     recognition.interimResults = false;
     
-    recognition.onstart = () => {
+    // Use event listeners instead of direct property assignments
+    recognition.addEventListener('start', () => {
       setIsRecording(true);
       toast({
         title: "Recording Started",
         description: "Speak now. Recording will automatically stop after you pause.",
       });
-    };
+    });
     
-    recognition.onresult = (event) => {
+    recognition.addEventListener('result', (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setText(prev => prev + " " + transcript);
-    };
+    });
     
-    recognition.onerror = (event) => {
+    recognition.addEventListener('error', (event) => {
       console.error('Speech recognition error', event);
       setIsRecording(false);
       toast({
@@ -196,11 +198,11 @@ const Index = () => {
         description: "An error occurred while recording speech.",
         variant: "destructive",
       });
-    };
+    });
     
-    recognition.onend = () => {
+    recognition.addEventListener('end', () => {
       setIsRecording(false);
-    };
+    });
     
     recognition.start();
   };
@@ -221,7 +223,8 @@ const Index = () => {
     setTimeout(() => {
       try {
         const tokens = estimateTokens(text);
-        const costs = calculateCost(tokens, selectedModel);
+        const inputCost = calculateCost(tokens, selectedModel);
+        const outputCost = calculateCost(tokens, selectedModel, true);
         const tokenInfo = getTokenizationInfo(selectedModel);
         
         setTokenizationScheme(tokenInfo);
@@ -229,7 +232,11 @@ const Index = () => {
           text,
           model: selectedModel,
           tokens,
-          costs,
+          costs: {
+            input: inputCost,
+            output: outputCost,
+            total: inputCost + outputCost // Ensure total is calculated
+          },
           chars: text.length,
           charsPerToken: text.length / tokens,
           timestamp: new Date().toISOString()
@@ -526,7 +533,7 @@ const Index = () => {
                           <ProcessFlowEnhanced text={text} tokens={analyzeResult.tokens} />
                         </TabsContent>
                         <TabsContent value="energy" className="pt-4">
-                          <EnergyConsumptionTab tokens={analyzeResult.tokens} model={selectedModel} />
+                          <EnergyConsumptionTab tokens={analyzeResult.tokens} selectedModel={selectedModel} />
                         </TabsContent>
                       </Tabs>
                       

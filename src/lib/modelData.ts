@@ -92,7 +92,10 @@ export const estimateTokens = (text: string): number => {
 
 // Calculate cost based on token count and model
 export const calculateCost = (tokenCount: number, model: string, isOutput: boolean = false): number => {
-  if (!modelPricing[model]) return 0;
+  if (!modelPricing[model]) {
+    console.error(`Model pricing not found for ${model}`);
+    return 0;
+  }
   
   const rate = isOutput ? modelPricing[model].output : modelPricing[model].input;
   return (tokenCount * rate) / 1000;

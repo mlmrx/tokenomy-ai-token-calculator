@@ -2,20 +2,41 @@
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import Chart from 'chart.js/auto';
-import { getModelCategories } from "@/lib/modelData";
+import { getModelCategories, estimateTokens, calculateCost } from "@/lib/modelData";
 import { getCompanyFromModel, modelThemes } from "@/lib/modelThemes";
 
 interface ModelComparisonChartProps {
-  modelPricing: Record<string, { input: number; output: number }>;
+  text: string;
+  selectedModel: string;
 }
 
-const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
+const ModelComparisonChart = ({ text, selectedModel }: ModelComparisonChartProps) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
   const [showOutput, setShowOutput] = useState<boolean>(true);
   const [modelCategory, setModelCategory] = useState<string>("all");
   
   const categories = getModelCategories();
+  
+  // Calculate model pricing data
+  const modelPricing: Record<string, { input: number; output: number }> = {};
+  
+  // Prepare pricing data for all models
+  Object.keys(categories).forEach(category => {
+    categories[category].forEach((model: string) => {
+      try {
+        const tokens = estimateTokens("Sample text for pricing", model);
+        const costs = calculateCost(tokens, model);
+        modelPricing[model] = {
+          input: costs.inputPer1k || 0,
+          output: costs.outputPer1k || 0
+        };
+      } catch (error) {
+        console.error(`Error calculating pricing for ${model}:`, error);
+        modelPricing[model] = { input: 0, output: 0 };
+      }
+    });
+  });
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -45,8 +66,8 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
       {
         label: 'Input Price (per 1K tokens)',
         data: filteredModels.map(model => modelPricing[model].input),
-        backgroundColor: theme.chart.input,
-        borderColor: theme.chart.inputBorder,
+        backgroundColor: theme.chart?.input || 'rgba(75, 192, 192, 0.2)',
+        borderColor: theme.chart?.inputBorder || 'rgba(75, 192, 192, 1)',
         borderWidth: 1
       }
     ];
@@ -55,8 +76,8 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
       datasets.push({
         label: 'Output Price (per 1K tokens)',
         data: filteredModels.map(model => modelPricing[model].output),
-        backgroundColor: theme.chart.output,
-        borderColor: theme.chart.outputBorder,
+        backgroundColor: theme.chart?.output || 'rgba(153, 102, 255, 0.2)',
+        borderColor: theme.chart?.outputBorder || 'rgba(153, 102, 255, 1)',
         borderWidth: 1
       });
     }
@@ -122,8 +143,8 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
           <select 
             className="border rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2"
             style={{ 
-              borderColor: theme.border,
-              color: theme.primary
+              borderColor: theme.border || '#ccc',
+              color: theme.primary || '#333'
             }}
             value={modelCategory}
             onChange={(e) => setModelCategory(e.target.value)}
@@ -143,10 +164,10 @@ const ModelComparisonChart = ({ modelPricing }: ModelComparisonChartProps) => {
               onChange={() => setShowOutput(!showOutput)}
             />
             <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-opacity-50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"
-              style={{ backgroundColor: showOutput ? theme.primary : 'rgba(0,0,0,0.1)', 
-                       borderColor: theme.border }}></div>
+              style={{ backgroundColor: showOutput ? theme.primary || '#333' : 'rgba(0,0,0,0.1)', 
+                       borderColor: theme.border || '#ccc' }}></div>
             <span className="ms-3 text-sm font-medium" 
-                  style={{ color: theme.primary }}>Show Output Prices</span>
+                  style={{ color: theme.primary || '#333' }}>Show Output Prices</span>
           </label>
         </div>
       </div>

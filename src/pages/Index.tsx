@@ -51,7 +51,6 @@ interface SpeechRecognition extends EventTarget {
   onsoundstart: (ev: Event) => any;
   onspeechend: (ev: Event) => any;
   onspeechstart: (ev: Event) => any;
-  onstartObject: (ev: Event) => any;
   start(): void;
   stop(): void;
   abort(): void;
@@ -458,9 +457,9 @@ const Index = () => {
                         value={selectedModel}
                         onChange={(e) => setSelectedModel(e.target.value)}
                       >
-                        {categoryOptions.map(category => (
-                          <optgroup key={category.name} label={category.name}>
-                            {category.models.map(model => (
+                        {Object.keys(categoryOptions).map(category => (
+                          <optgroup key={category} label={category}>
+                            {categoryOptions[category].map((model: string) => (
                               <option key={model} value={model}>{model}</option>
                             ))}
                           </optgroup>

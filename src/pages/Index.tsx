@@ -43,6 +43,7 @@ import InputComparisonChart from "@/components/InputComparisonChart";
 import VisualizationTab from "@/components/VisualizationTab";
 import ProcessFlowEnhanced from "@/components/ProcessFlowEnhanced";
 import EnergyConsumptionTab from "@/components/EnergyConsumptionTab";
+import AINewsMarquee from "@/components/AINewsMarquee";
 
 // Import utility components
 import LoginDialog from "@/components/LoginDialog";
@@ -379,6 +380,9 @@ const Index = () => {
         open={showNewsletterPopup} 
         onOpenChange={setShowNewsletterPopup} 
       />
+      
+      {/* Add the AINewsMarquee component at the very top */}
+      <AINewsMarquee />
       
       <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto py-4 px-4 md:px-6">

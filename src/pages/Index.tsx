@@ -32,7 +32,7 @@ import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo 
 import MainNavigation from "@/components/MainNavigation";
 import TokenizationInfo from "@/components/TokenizationInfo";
 import ModelRecommendation from "@/components/ModelRecommendation";
-import TokenSpeedSimulator from "@/features/TokenSpeedSimulator";
+import { TokenSpeedSimulator } from "@/features/TokenSpeedSimulator";
 import MemoryCalculator from "@/components/MemoryCalculator";
 import PromptOptimizer from "@/components/PromptOptimizer";
 import ExportData from "@/components/ExportData";

@@ -63,7 +63,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           </button>
         ))}
       </div>
-      <style jsx="true">{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes pulse-subtle {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.8; }
@@ -71,7 +72,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         .animate-pulse-subtle {
           animation: pulse-subtle 2s infinite ease-in-out;
         }
-      `}</style>
+        `
+      }} />
     </nav>
   );
 };

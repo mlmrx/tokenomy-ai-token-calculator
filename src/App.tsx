@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 // Set favicon
 const updateFavicon = () => {
-  const link = document.querySelector("link[rel='icon']") || document.createElement('link');
+  const link = document.querySelector("link[rel='icon']") as HTMLLinkElement || document.createElement('link');
   link.type = 'image/svg+xml';
   link.rel = 'icon';
   link.href = '/favicon.svg';

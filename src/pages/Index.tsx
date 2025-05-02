@@ -16,8 +16,8 @@ import {
   ListChecks,
   Zap
 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ModelComparisonChart } from '@/components/ModelComparisonChart';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ModelComparisonChart from '@/components/ModelComparisonChart';
 import ProcessFlow from '@/components/ProcessFlow';
 import TokenizationChart from '@/components/TokenizationChart';
 import EnergyConsumptionTab from '@/components/EnergyConsumptionTab';
@@ -51,7 +51,7 @@ interface SpeechRecognition extends EventTarget {
   onsoundstart: (ev: Event) => any;
   onspeechend: (ev: Event) => any;
   onspeechstart: (ev: Event) => any;
-  onstatechange: (ev: Event) => any;
+  onstartObject: (ev: Event) => any;
   start(): void;
   stop(): void;
   abort(): void;
@@ -213,7 +213,7 @@ const Index = () => {
       toast({
         title: "Empty Text",
         description: "Please enter some text to analyze.",
-        variant: "warning"
+        variant: "destructive"
       });
       return;
     }
@@ -514,7 +514,13 @@ const Index = () => {
                           <ModelComparisonChart text={text} selectedModel={selectedModel} />
                         </TabsContent>
                         <TabsContent value="tokenization" className="pt-4">
-                          <TokenizationChart text={text} tokenInfo={tokenizationScheme} />
+                          <TokenizationChart userInputs={[{
+                            text: text,
+                            tokens: analyzeResult.tokens.total,
+                            chars: analyzeResult.chars,
+                            inputCost: analyzeResult.costs.input,
+                            outputCost: analyzeResult.costs.output
+                          }]} />
                         </TabsContent>
                         <TabsContent value="process" className="pt-4">
                           <ProcessFlow text={text} tokens={analyzeResult.tokens} />
@@ -523,14 +529,14 @@ const Index = () => {
                           <ProcessFlowEnhanced text={text} tokens={analyzeResult.tokens} />
                         </TabsContent>
                         <TabsContent value="energy" className="pt-4">
-                          <EnergyConsumptionTab tokens={analyzeResult.tokens.total} model={selectedModel} />
+                          <EnergyConsumptionTab tokensCount={analyzeResult.tokens.total} modelName={selectedModel} />
                         </TabsContent>
                       </Tabs>
                       
                       {/* Suggested Prompt Optimization */}
                       <div className="border rounded-lg p-4">
                         <h3 className="text-lg font-semibold mb-2">Suggested Optimization</h3>
-                        <PromptOptimizer text={text} />
+                        <PromptOptimizer text={text} tokens={analyzeResult.tokens.total} />
                       </div>
                       
                       <ExportData data={analyzeResult} />

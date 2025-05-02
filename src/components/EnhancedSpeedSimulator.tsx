@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,10 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { Cell } from "recharts"; // Added missing import
 import { modelPricing, firstTokenLatency, tokensPerSecond, getModelCategories, calculateCost, calculateTotalTime, getFeaturedModels } from "@/lib/modelData";
 import { getModelTheme } from "@/lib/modelThemes";
-import { Timer, FileText, MessageSquare, User, Zap, Clock, Info, BarChart2, LineChart as LineChartIcon, Settings, PieChart } from 'lucide-react';
+import { Timer, FileText, MessageSquare, User, Zap, Clock, Info, BarChart2, LineChart as LineChartIcon, Settings, PieChart, X } from 'lucide-react';
 
 interface TokenGenData {
   time: number | string;
@@ -515,7 +518,7 @@ const EnhancedSpeedSimulator = () => {
             onValueChange={setActiveTab}
             className="mt-6"
           >
-            <TabsList className="grid w-full grid-cols-3 mb-4">
+            <TabsList className="grid w-full grid-cols-4 mb-4">
               <TabsTrigger value="visualization" className="flex items-center gap-2">
                 <LineChartIcon className="h-4 w-4" /> 
                 Time Comparison
@@ -527,6 +530,10 @@ const EnhancedSpeedSimulator = () => {
               <TabsTrigger value="cost" className="flex items-center gap-2">
                 <PieChart className="h-4 w-4" /> 
                 Cost Analysis
+              </TabsTrigger>
+              <TabsTrigger value="learn" className="flex items-center gap-2">
+                <Info className="h-4 w-4" /> 
+                Learn
               </TabsTrigger>
             </TabsList>
             
@@ -721,41 +728,35 @@ const EnhancedSpeedSimulator = () => {
                             labelFormatter={(label) => `Model: ${label}`}
                           />
                           <Legend />
-                          {comparisonData.map((entry, index) => (
+                          {comparisonData.map((entry) => (
                             <Line
-                              key={`dot-${index}`}
-                              data={[entry].map(item => ({
-                                model: item.model,
-                                speed: item.tps,
-                                cost: (item.outputCost / (tokensToGenerate / 1000)) * 1000
-                              }))}
+                              key={entry.model}
+                              data={[{
+                                model: entry.model,
+                                speed: entry.tps,
+                                cost: (entry.outputCost / (tokensToGenerate / 1000)) * 1000
+                              }]}
                               type="monotone"
                               dataKey="cost"
                               name={entry.model}
-                              stroke="none"
-                              fill={entry.color}
+                              stroke={entry.color}
                             >
-                              {/* Fix: Use a LabelList component instead of Label with content function */}
                               <g>
-                                {entry && (
-                                  <g>
-                                    <circle 
-                                      cx={entry.tps} 
-                                      cy={(entry.outputCost / (tokensToGenerate / 1000)) * 1000} 
-                                      r={6} 
-                                      fill={entry.color} 
-                                    />
-                                    <text 
-                                      x={entry.tps} 
-                                      y={(entry.outputCost / (tokensToGenerate / 1000)) * 1000 - 10} 
-                                      textAnchor="middle" 
-                                      fill={entry.color} 
-                                      fontSize={12}
-                                    >
-                                      {entry.model}
-                                    </text>
-                                  </g>
-                                )}
+                                <circle 
+                                  cx={0} 
+                                  cy={0} 
+                                  r={6} 
+                                  fill={entry.color}
+                                />
+                                <text 
+                                  x={5} 
+                                  y={-10} 
+                                  textAnchor="middle" 
+                                  fill={entry.color} 
+                                  fontSize={12}
+                                >
+                                  {entry.model}
+                                </text>
                               </g>
                             </Line>
                           ))}
@@ -771,6 +772,159 @@ const EnhancedSpeedSimulator = () => {
                           Ideal models would appear in the bottom-right (fast & cheap).
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="learn" className="p-1">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <h3 className="text-lg font-medium mb-4 text-purple-700">Understanding Token Generation Speed</h3>
+                
+                <Accordion type="single" collapsible className="space-y-2">
+                  <AccordionItem value="what-is-token-speed" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      What is token generation speed in LLMs?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm">
+                      <p>Token generation speed refers to how quickly a Large Language Model (LLM) can produce output tokens in response to an input prompt. It's typically measured in tokens per second and is a crucial factor in determining the real-time performance and responsiveness of an LLM in various applications.</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="why-important" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      Why is simulating token generation speed important?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>Simulating token generation speed is important for several reasons:</p>
+                      <ol className="list-decimal pl-5 space-y-1">
+                        <li>It helps developers and users understand the expected performance of an LLM in real-world scenarios.</li>
+                        <li>It allows for comparison between different models or configurations.</li>
+                        <li>It aids in capacity planning and resource allocation for LLM-based applications.</li>
+                        <li>It helps in estimating response times for user interactions, which is crucial for designing responsive AI systems.</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="factors" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      What factors affect token generation speed?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>Several factors can affect token generation speed:</p>
+                      <ol className="list-decimal pl-5 space-y-1">
+                        <li>Model size and complexity</li>
+                        <li>Hardware specifications (e.g., GPU type and count)</li>
+                        <li>Input prompt length and complexity</li>
+                        <li>Output length</li>
+                        <li>Batch size in processing</li>
+                        <li>Model quantization and optimization techniques</li>
+                        <li>Network latency (for cloud-based models)</li>
+                        <li>Temperature and other sampling parameters</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="how-simulator-works" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      How does this Token Speed Simulator work?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm">
+                      <p>This Token Speed Simulator allows you to select different models or create a custom model with specific parameters. It then simulates the generation of tokens at the specified rate, providing a visual representation of how an LLM might produce output in real-time. The simulation accounts for first token latency (the initial delay before generation begins) and continuous token generation speed. This helps in understanding the practical implications of different generation speeds on user experience and application responsiveness.</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="parameters" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      What is the significance of the simulator parameters?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>In the simulator:</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li><strong>Models</strong>: Different models have varying token generation speeds and first token latencies.</li>
+                        <li><strong>Output Tokens</strong>: The total number of tokens to be generated, simulating the desired output length.</li>
+                        <li><strong>Custom Model</strong>: Allows you to define your own model with specific token generation speed and latency.</li>
+                      </ul>
+                      <p>Adjusting these parameters allows you to explore different scenarios, such as fast generation of short responses versus slower generation of longer outputs.</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="quality-relation" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      How does token generation speed relate to model quality?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm">
+                      <p>It's important to note that token generation speed is not directly indicative of a model's intelligence or output quality. A faster model isn't necessarily better or more accurate. Speed is just one aspect of performance, alongside factors like relevance, coherence, and factual accuracy of the generated content. The ideal speed often depends on the specific use case and user expectations.</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="constant-speed" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      Do real LLMs maintain constant token generation speed?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm">
+                      <p>In practice, LLMs may not maintain a perfectly constant token generation speed. The speed can vary based on factors like the complexity of the current context, the specific tokens being generated, and system load. This simulator provides a simplified representation to help understand the concept of generation speed.</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="user-experience" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      How does token generation speed impact user experience?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>Token generation speed significantly impacts user experience:</p>
+                      <ol className="list-decimal pl-5 space-y-1">
+                        <li>Fast speeds can provide near-instantaneous responses, enhancing interactivity.</li>
+                        <li>Slower speeds might be noticeable in chat-like interfaces, potentially affecting user engagement.</li>
+                        <li>For long-form content generation, users might prefer seeing gradual output rather than waiting for the entire response.</li>
+                        <li>In some cases, a balance between speed and quality is necessary to meet user expectations.</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="optimization" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      How can developers optimize token generation speed?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>Developers can optimize token generation speed through various methods:</p>
+                      <ol className="list-decimal pl-5 space-y-1">
+                        <li>Using more powerful hardware or distributed computing.</li>
+                        <li>Implementing model quantization or distillation techniques.</li>
+                        <li>Optimizing prompt engineering to reduce input length.</li>
+                        <li>Employing caching strategies for common queries.</li>
+                        <li>Using smaller, task-specific models when full capabilities aren't needed.</li>
+                        <li>Implementing streaming responses to improve perceived responsiveness.</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="real-world" className="border rounded-md overflow-hidden">
+                    <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 text-left font-medium">
+                      What are some real-world implications of token generation speeds?
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-3 pt-0 text-sm space-y-2">
+                      <p>Different token generation speeds can have various implications:</p>
+                      <ol className="list-decimal pl-5 space-y-1">
+                        <li><strong>Customer Service</strong>: Faster speeds enable more responsive chatbots.</li>
+                        <li><strong>Content Creation</strong>: Moderate speeds might be preferred for thoughtful, high-quality content generation.</li>
+                        <li><strong>Real-time Translation</strong>: Requires high speeds to keep up with spoken language.</li>
+                        <li><strong>Code Generation</strong>: Developers might prefer seeing code generated gradually for better understanding.</li>
+                        <li><strong>Data Analysis</strong>: Speed might be crucial when processing large datasets in real-time.</li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+                
+                <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                  <div className="flex items-start gap-2">
+                    <Info className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium text-purple-800">Pro Tip</p>
+                      <p className="mt-1 text-purple-700">
+                        When designing AI systems, consider streaming tokens as they're generated rather than waiting for the complete response. This approach can significantly improve perceived responsiveness even with slower models.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -845,4 +999,47 @@ const EnhancedSpeedSimulator = () => {
               Reading Equivalent
             </CardTitle>
           </CardHeader>
-          <Card
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {selectedModels.length > 0
+                ? ((selectedModels.reduce(
+                    (sum, model) => sum + tokensPerSecond[model],
+                    0
+                  ) / selectedModels.length) * 60 * 0.75).toFixed(0)
+                : "0"}
+              <span className="text-sm font-normal text-muted-foreground ml-1">WPM</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Words per minute equivalent
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <User className="h-4 w-4 text-amber-500" />
+              Avg. Response Time
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {selectedModels.length > 0
+                ? (selectedModels.reduce(
+                    (sum, model) => sum + calculateTotalTime(tokensToGenerate, model),
+                    0
+                  ) / selectedModels.length).toFixed(1)
+                : "0"}
+              <span className="text-sm font-normal text-muted-foreground ml-1">seconds</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              For {tokensToGenerate.toLocaleString()} tokens
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default EnhancedSpeedSimulator;

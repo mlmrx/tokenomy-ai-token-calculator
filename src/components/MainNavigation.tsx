@@ -1,6 +1,5 @@
 
-import React from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState, useEffect } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { 
@@ -13,71 +12,149 @@ import {
   Mail, 
   HelpCircle,
   Menu,
+  Sun,
+  Moon,
+  Laptop,
 } from "lucide-react";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { 
+  NavigationMenu, 
+  NavigationMenuContent, 
+  NavigationMenuItem, 
+  NavigationMenuLink, 
+  NavigationMenuList, 
+  NavigationMenuTrigger 
+} from "@/components/ui/navigation-menu";
 
 interface MainNavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   onToggleSidebar: () => void;
+  theme?: "light" | "dark" | "system";
+  onThemeChange?: (theme: "light" | "dark" | "system") => void;
 }
 
-const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigationProps) => {
+const MainNavigation = ({ 
+  activeTab, 
+  onTabChange, 
+  onToggleSidebar,
+  theme = "system",
+  onThemeChange = () => {},
+}: MainNavigationProps) => {
+  const [mounted, setMounted] = useState(false);
+
+  // Make sure theme switching only happens client-side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const themeIcons = {
+    light: <Sun className="h-4 w-4" />,
+    dark: <Moon className="h-4 w-4" />,
+    system: <Laptop className="h-4 w-4" />
+  };
+
   return (
     <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 py-4 gap-4">
-      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full md:w-auto">
-        <TabsList className="grid grid-cols-3 w-full md:w-auto bg-background border border-input shadow-sm">
-          <TabsTrigger 
-            value="calculator" 
-            className="flex items-center gap-2 px-4 py-2 text-foreground transition-all"
+      <div className="w-full md:w-auto flex justify-center">
+        <div className="flex bg-background/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm">
+          <Button 
+            variant={activeTab === "calculator" ? "default" : "ghost"}
+            onClick={() => onTabChange("calculator")} 
+            className={`flex items-center gap-2 px-6 py-2 rounded-none transition-all ${activeTab === "calculator" ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
           >
             <Calculator className="h-4 w-4" />
-            <span className="hidden md:inline">Token Calculator</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="speed" 
-            className="flex items-center gap-2 px-4 py-2 text-foreground transition-all"
+            <span className="hidden md:inline">Calculator</span>
+          </Button>
+          <Button 
+            variant={activeTab === "speed" ? "default" : "ghost"}
+            onClick={() => onTabChange("speed")} 
+            className={`flex items-center gap-2 px-6 py-2 rounded-none transition-all ${activeTab === "speed" ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
           >
             <Zap className="h-4 w-4" />
-            <span className="hidden md:inline">Speed Simulator</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="memory" 
-            className="flex items-center gap-2 px-4 py-2 text-foreground transition-all"
+            <span className="hidden md:inline">Speed</span>
+          </Button>
+          <Button 
+            variant={activeTab === "memory" ? "default" : "ghost"}
+            onClick={() => onTabChange("memory")} 
+            className={`flex items-center gap-2 px-6 py-2 rounded-none transition-all ${activeTab === "memory" ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
           >
             <Cpu className="h-4 w-4" /> 
-            <span className="hidden md:inline">Memory Calculator</span>
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+            <span className="hidden md:inline">Memory</span>
+          </Button>
+        </div>
+      </div>
       
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-2">
         <TooltipProvider>
+          {/* Language Selector */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent rounded-full" 
+                onClick={() => window.location.hash = "#language-selector"}>
+                <Languages className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Change Language</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {/* Theme Selector */}
+          {mounted && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-foreground hover:bg-accent rounded-full"
+                  onClick={() => {
+                    const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
+                    onThemeChange(nextTheme);
+                  }}
+                >
+                  {themeIcons[theme]}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Switch Theme ({theme})</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+
+          {/* Share Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent rounded-full"
+                onClick={() => window.location.hash = "#share"}>
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Share App</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {/* Help Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent rounded-full" onClick={onToggleSidebar}>
+                <HelpCircle className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Help</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {/* Menu Button */}
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent hover:bg-accent">
+                <NavigationMenuTrigger className="bg-transparent hover:bg-accent rounded-full">
                   <Menu className="h-5 w-5 text-foreground" />
-                  <span className="sr-only md:not-sr-only md:ml-2">Menu</span>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background border shadow-lg">
                   <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <a 
-                          href="#language-selector"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Languages className="h-5 w-5" />
-                            <div className="text-sm font-medium">Change Language</div>
-                          </div>
-                          <p className="line-clamp-2 text-xs text-muted-foreground">
-                            Translate the app to your preferred language
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
                     <li>
                       <NavigationMenuLink asChild>
                         <a 
@@ -131,19 +208,6 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent" onClick={onToggleSidebar}>
-                <HelpCircle className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="bg-popover border border-border shadow-lg">
-              <p>Learn more about {activeTab === "calculator" ? "token calculation" : 
-                              activeTab === "speed" ? "speed simulation" : 
-                              "memory calculation"}</p>
-            </TooltipContent>
-          </Tooltip>
         </TooltipProvider>
       </div>
     </div>

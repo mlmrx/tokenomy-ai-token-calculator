@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ import {
   ListChecks,
   Zap,
   Sparkles,
+  BarChart4,
+  LineChart,
   LayoutDashboard
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -36,6 +39,11 @@ import ShareOptions from '@/components/ShareOptions';
 import ExportData from '@/components/ExportData';
 import Footer from '@/components/Footer';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import ShareWidget from '@/components/ShareWidget';
+import ModelRecommendation from '@/components/ModelRecommendation';
+import InputComparisonChart from '@/components/InputComparisonChart';
+import VisualizationTab from '@/components/VisualizationTab';
+import TokenizationInfo from '@/components/TokenizationInfo';
 
 // Create a TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
@@ -129,12 +137,20 @@ const Index = () => {
   const [userName, setUserName] = useState("");
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
   const [randomExamples, setRandomExamples] = useState<typeof examplesData>([]);
+  const [recentAnalyses, setRecentAnalyses] = useState<any[]>([]);
+  const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const company = getCompanyFromModel(selectedModel);
   const modelTheme = getModelTheme(selectedModel);
   const categoryOptions = getModelCategories();
 
+  // Handle theme changes
+  const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
+    setTheme(newTheme);
+    // In a real app, this would also update the document or localStorage
+  };
+  
   // Placeholder for user login
   const handleLoginSuccess = (name: string, provider: string) => {
     setIsLoggedIn(true);
@@ -300,8 +316,8 @@ const Index = () => {
         const outputCost = calculateCost(tokens, selectedModel, true);
         const tokenInfo = getTokenizationInfo(selectedModel);
         
-        setTokenizationScheme(tokenInfo);
-        setAnalyzeResult({
+        const newAnalysis = {
+          id: Date.now().toString(),
           text: contentToAnalyze || "",
           model: selectedModel,
           tokens,
@@ -313,7 +329,13 @@ const Index = () => {
           chars: contentToAnalyze?.length || 0,
           charsPerToken: contentToAnalyze?.length ? contentToAnalyze.length / tokens : 0,
           timestamp: new Date().toISOString()
-        });
+        };
+        
+        setTokenizationScheme(tokenInfo);
+        setAnalyzeResult(newAnalysis);
+        
+        // Add to recent analyses
+        setRecentAnalyses(prev => [newAnalysis, ...prev.slice(0, 4)]);
         
         toast({
           title: "Analysis Complete",
@@ -352,8 +374,8 @@ const Index = () => {
       
       <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto py-4 px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-center items-center mb-4">
-            <div className="flex flex-col items-center mb-4 md:mb-0">
+          <div className="flex justify-center items-center mb-4">
+            <div className="flex flex-col items-center">
               <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 TOKENOMY
               </h1>
@@ -364,7 +386,7 @@ const Index = () => {
               {!isLoggedIn ? (
                 <Button 
                   onClick={() => setLoginDialogOpen(true)} 
-                  className="hover-scale text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-md"
+                  className="hover-scale text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
                 >
                   Log In / Sign Up
                 </Button>
@@ -381,6 +403,8 @@ const Index = () => {
             activeTab={activeTab}
             onTabChange={handleTabChange}
             onToggleSidebar={() => setSidebarOpen(true)}
+            theme={theme}
+            onThemeChange={handleThemeChange}
           />
         </div>
       </header>
@@ -393,102 +417,109 @@ const Index = () => {
                 <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" 
                   style={{background: `linear-gradient(135deg, ${modelTheme.primary}aa 0%, ${modelTheme.secondary}dd 100%)`}}>
                   <div className="flex flex-col items-center">
-                    <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">Token Calculator</h2>
+                    <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">AI Token Analysis</h2>
                     <p className="text-sm md:text-base text-center text-white opacity-90 mb-6">
                       Calculate tokens, costs, and analyze your content across different AI models
                     </p>
                     
-                    <div className="w-full max-w-4xl mb-4">
-                      <div className="relative mb-4">
-                        <Textarea
-                          value={text}
-                          onChange={e => setText(e.target.value)}
-                          placeholder="Enter your text here to analyze tokens and costs..."
-                          className="min-h-[180px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
-                        />
-                        <div className="absolute top-2 right-2 flex gap-2">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
-                                  onClick={() => fileInputRef.current?.click()}
-                                >
-                                  <FileText size={16} className="text-foreground" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-popover border border-border shadow-lg">
-                                <p>Upload Text File (.txt format)</p>
-                              </TooltipContent>
-                            </Tooltip>
-
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-black/10 hover:bg-black/20'} h-8 w-8`}
-                                  onClick={startRecording}
-                                >
-                                  <Mic size={16} className="text-foreground" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-popover border border-border shadow-lg">
-                                <p>Start voice dictation (click again to stop)</p>
-                              </TooltipContent>
-                            </Tooltip>
-
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
-                                  onClick={clearText}
-                                >
-                                  <XIcon size={16} className="text-foreground" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-popover border border-border shadow-lg">
-                                <p>Clear all text</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileUpload}
-                            accept=".txt"
-                            className="hidden"
+                    <div className="w-full max-w-5xl flex flex-col md:flex-row gap-6">
+                      <div className="w-full md:w-2/3">
+                        <div className="relative">
+                          <Textarea
+                            value={text}
+                            onChange={e => setText(e.target.value)}
+                            placeholder="Enter your text here to analyze tokens and costs..."
+                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
                           />
+                          <div className="absolute top-2 right-2 flex gap-2">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
+                                    onClick={() => fileInputRef.current?.click()}
+                                  >
+                                    <FileText size={16} className="text-foreground" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-popover border border-border shadow-lg">
+                                  <p>Upload Text File (.txt format)</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-black/10 hover:bg-black/20'} h-8 w-8`}
+                                    onClick={startRecording}
+                                  >
+                                    <Mic size={16} className="text-foreground" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-popover border border-border shadow-lg">
+                                  <p>Start voice dictation (click again to stop)</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
+                                    onClick={clearText}
+                                  >
+                                    <XIcon size={16} className="text-foreground" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-popover border border-border shadow-lg">
+                                  <p>Clear all text</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <input
+                              type="file"
+                              ref={fileInputRef}
+                              onChange={handleFileUpload}
+                              accept=".txt"
+                              className="hidden"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-3 justify-center mt-3">
+                          {randomExamples.map((example, i) => (
+                            <Button 
+                              key={i} 
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setExampleText(example.text)}
+                              className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
+                            >
+                              <span>{example.icon}</span> {example.title}
+                            </Button>
+                          ))}
+                          <Button 
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
+                              setRandomExamples(shuffled.slice(0, 3));
+                            }}
+                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
+                          >
+                            <Sparkles className="h-4 w-4" /> New Examples
+                          </Button>
                         </div>
                       </div>
                       
-                      <div className="flex flex-wrap gap-3 justify-center mb-4">
-                        {randomExamples.map((example, i) => (
-                          <Button 
-                            key={i} 
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setExampleText(example.text)}
-                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
-                          >
-                            <span>{example.icon}</span> {example.title}
-                          </Button>
-                        ))}
-                        <Button 
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
-                            setRandomExamples(shuffled.slice(0, 3));
-                          }}
-                          className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
-                        >
-                          <Sparkles className="h-4 w-4" /> New Examples
-                        </Button>
+                      <div className="w-full md:w-1/3 bg-white/10 rounded-lg p-4">
+                        <h3 className="font-medium text-white mb-3">Prompt Optimization</h3>
+                        <PromptOptimizer text={text || ""} tokens={analyzeResult?.tokens || 0} />
                       </div>
                     </div>
                   </div>
@@ -597,58 +628,79 @@ const Index = () => {
                       </div>
                     </div>
                     
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                      <TokenizationInfo model={selectedModel} tokens={analyzeResult?.tokens || 0} />
+                      <ModelRecommendation text={text} tokens={analyzeResult?.tokens || 0} onSelectModel={setSelectedModel} />
+                    </div>
+                    
                     <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
                       <TabsList className="w-full justify-start overflow-x-auto bg-background border" 
                         style={{borderColor: `${modelTheme.border}`}}>
                         <TabsTrigger 
                           value="model-comparison" 
-                          className="text-foreground"
+                          className="text-foreground flex items-center gap-2"
                           style={{
                             '--active-bg': `${modelTheme.primary}20`,
                             '--active-color': modelTheme.primary
                           } as React.CSSProperties}
                         >
-                          Model Comparison
+                          <LayoutDashboard className="h-4 w-4" />
+                          <span>Model Comparison</span>
                         </TabsTrigger>
                         <TabsTrigger 
                           value="tokenization" 
-                          className="text-foreground"
+                          className="text-foreground flex items-center gap-2"
                           style={{
                             '--active-bg': `${modelTheme.primary}20`,
                             '--active-color': modelTheme.primary
                           } as React.CSSProperties}
                         >
-                          Tokenization
+                          <FileText className="h-4 w-4" />
+                          <span>Tokenization</span>
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="recent-inputs" 
+                          className="text-foreground flex items-center gap-2"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          <BarChart4 className="h-4 w-4" />
+                          <span>Recent Inputs</span>
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="visualization" 
+                          className="text-foreground flex items-center gap-2"
+                          style={{
+                            '--active-bg': `${modelTheme.primary}20`,
+                            '--active-color': modelTheme.primary
+                          } as React.CSSProperties}
+                        >
+                          <LineChart className="h-4 w-4" />
+                          <span>Visualization</span>
                         </TabsTrigger>
                         <TabsTrigger 
                           value="process" 
-                          className="text-foreground"
+                          className="text-foreground flex items-center gap-2"
                           style={{
                             '--active-bg': `${modelTheme.primary}20`,
                             '--active-color': modelTheme.primary
                           } as React.CSSProperties}
                         >
-                          Process Flow
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="process-enhanced" 
-                          className="text-foreground"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          Enhanced Flow
+                          <Zap className="h-4 w-4" />
+                          <span>Process Flow</span>
                         </TabsTrigger>
                         <TabsTrigger 
                           value="energy" 
-                          className="text-foreground"
+                          className="text-foreground flex items-center gap-2"
                           style={{
                             '--active-bg': `${modelTheme.primary}20`,
                             '--active-color': modelTheme.primary
                           } as React.CSSProperties}
                         >
-                          Energy Usage
+                          <AlertCircle className="h-4 w-4" />
+                          <span>Energy Usage</span>
                         </TabsTrigger>
                       </TabsList>
                       <TabsContent value="model-comparison" className="pt-4">
@@ -663,10 +715,18 @@ const Index = () => {
                           outputCost: analyzeResult?.costs.output || 0
                         }]} />
                       </TabsContent>
-                      <TabsContent value="process" className="pt-4">
-                        <ProcessFlow text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                      <TabsContent value="recent-inputs" className="pt-4">
+                        <InputComparisonChart recentInputs={recentAnalyses} />
                       </TabsContent>
-                      <TabsContent value="process-enhanced" className="pt-4">
+                      <TabsContent value="visualization" className="pt-4">
+                        <VisualizationTab 
+                          text={text || ""}
+                          tokens={analyzeResult?.tokens || 0}
+                          costs={analyzeResult?.costs || { input: 0, output: 0, total: 0 }}
+                          model={selectedModel}
+                        />
+                      </TabsContent>
+                      <TabsContent value="process" className="pt-4">
                         <ProcessFlowEnhanced text={text || ""} tokens={analyzeResult?.tokens || 0} />
                       </TabsContent>
                       <TabsContent value="energy" className="pt-4">
@@ -674,13 +734,15 @@ const Index = () => {
                       </TabsContent>
                     </Tabs>
                     
-                    <div className="border rounded-lg p-4 bg-background"
-                      style={{borderColor: modelTheme.border}}>
-                      <h3 className="text-lg font-semibold mb-2 text-foreground">Suggested Optimization</h3>
-                      <PromptOptimizer text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                    <div className="mt-8">
+                      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h3 className="text-lg font-semibold text-foreground">Export Results</h3>
+                        <ExportData 
+                          data={analyzeResult || {}} 
+                          colorTheme={modelTheme}
+                        />
+                      </div>
                     </div>
-                    
-                    <ExportData data={analyzeResult || {}} />
                   </div>
                 </div>
               </Card>
@@ -717,7 +779,7 @@ const Index = () => {
             <LanguageSelector />
           </div>
           <div id="share">
-            <ShareOptions />
+            <ShareWidget />
           </div>
           <div id="export">
             <ExportData data={analyzeResult || {}} />

@@ -1,20 +1,35 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, CircleCheck, Calculator, ChartBar } from 'lucide-react';
+import { 
+  Info, 
+  CircleCheck, 
+  Calculator, 
+  ChartBar, 
+  Upload, 
+  Mic, 
+  FileText, 
+  X as XIcon,
+  QuestionCircle,
+  AlertCircle,
+  ListChecks,
+  Zap
+} from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import TokenizationChart from '@/components/TokenizationChart';
 import ModelComparisonChart from '@/components/ModelComparisonChart';
 import ProcessFlowEnhanced from '@/components/ProcessFlowEnhanced';
 import EnergyConsumptionTab from '@/components/EnergyConsumptionTab';
 import PromptOptimizer from '@/components/PromptOptimizer';
-import { modelPricing, estimateTokens, calculateCost, getModelCategories } from '@/lib/modelData';
-import { getModelTheme } from '@/lib/modelThemes';
+import { modelPricing, estimateTokens, calculateCost, getModelCategories, getTokenizationInfo } from '@/lib/modelData';
+import { getModelTheme, getCompanyFromModel } from '@/lib/modelThemes';
 
 const Index = () => {
   const { toast } = useToast();
@@ -26,6 +41,9 @@ const Index = () => {
   const [outputCost, setOutputCost] = useState(0);
   const [userInputs, setUserInputs] = useState<{ text: string; tokens: number; chars: number; inputCost: number; outputCost: number }[]>([]);
   const [activeTab, setActiveTab] = useState('calculate');
+  const [isRecording, setIsRecording] = useState(false);
+  const [recommendationModel, setRecommendationModel] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const modelCategories = getModelCategories();
   const modelTheme = getModelTheme(selectedModel);
 
@@ -115,6 +133,155 @@ const Index = () => {
     setActiveTab('recommendation');
   };
 
+  // Handle file upload
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      setText(content);
+      toast({
+        title: "File uploaded",
+        description: `File ${file.name} has been loaded`,
+      });
+    };
+    reader.readAsText(file);
+  };
+
+  // Handle voice input
+  const handleVoiceInput = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast({
+        title: "Speech Recognition Not Supported",
+        description: "Your browser doesn't support speech recognition.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    
+    setIsRecording(true);
+    
+    recognition.start();
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setText((prev) => prev + " " + transcript);
+      setIsRecording(false);
+      toast({
+        title: "Voice input captured",
+        description: "Your speech has been converted to text",
+      });
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error', event.error);
+      setIsRecording(false);
+      toast({
+        title: "Voice input error",
+        description: `Error: ${event.error}`,
+        variant: "destructive",
+      });
+    };
+    
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+  };
+  
+  // Find best model recommendation based on all metrics
+  const getBestModelRecommendation = () => {
+    if (tokens === 0) return '';
+    
+    // Define weights for different factors
+    const weights = {
+      cost: 0.5,         // Lower cost is better
+      quality: 0.3,      // Higher quality models get higher scores
+      efficiency: 0.2    // More efficient models get higher scores
+    };
+    
+    // Define quality score (subjective) for each company
+    const qualityScores = {
+      'OpenAI': 9,
+      'Anthropic': 8.5,
+      'Meta': 7,
+      'Google': 8,
+      'Microsoft': 8,
+      'Amazon': 7.5,
+      'Mistral': 7.5,
+      'X.AI': 7,
+      'DeepSeek': 6.5,
+      'Alibaba': 7,
+      'Baidu': 6.5,
+      'default': 5
+    };
+    
+    // Define efficiency score (tokens/sec) for each company (rough approximation)
+    const efficiencyScores = {
+      'OpenAI': 9,
+      'Anthropic': 7,
+      'Meta': 6,
+      'Google': 8,
+      'Microsoft': 8,
+      'Amazon': 7,
+      'Mistral': 7.5,
+      'X.AI': 7,
+      'DeepSeek': 6,
+      'Alibaba': 6.5,
+      'Baidu': 6,
+      'default': 5
+    };
+    
+    // Calculate scores for each model
+    const modelScores = Object.keys(modelPricing).map(model => {
+      const company = getCompanyFromModel(model);
+      const inputCost = calculateCost(tokens, model, false);
+      const outputCost = calculateCost(tokens, model, true);
+      const totalCost = inputCost + outputCost;
+      
+      // Normalize cost (lower is better) - inverted and normalized to 0-10 scale
+      const maxCost = 0.1; // Set a reasonable max cost for normalization
+      const costScore = 10 * (1 - Math.min(totalCost / maxCost, 1));
+      
+      // Get quality and efficiency scores
+      const qualityScore = qualityScores[company] || qualityScores.default;
+      const efficiencyScore = efficiencyScores[company] || efficiencyScores.default;
+      
+      // Calculate weighted score
+      const weightedScore = 
+        weights.cost * costScore + 
+        weights.quality * qualityScore + 
+        weights.efficiency * efficiencyScore;
+      
+      return {
+        model,
+        company,
+        weightedScore,
+        costScore,
+        qualityScore,
+        efficiencyScore,
+        totalCost
+      };
+    });
+    
+    // Sort by weighted score (highest first)
+    modelScores.sort((a, b) => b.weightedScore - a.weightedScore);
+    
+    // Set recommendation
+    if (modelScores.length > 0) {
+      setRecommendationModel(modelScores[0].model);
+      return modelScores[0].model;
+    }
+    
+    return '';
+  };
+
   // Calculate tokens on initial load and when text changes
   useEffect(() => {
     if (text) {
@@ -126,6 +293,9 @@ const Index = () => {
       const outputCostValue = calculateCost(estimatedTokenCount, selectedModel, true);
       setInputCost(inputCostValue);
       setOutputCost(outputCostValue);
+
+      // Find best model recommendation
+      getBestModelRecommendation();
     } else {
       setCharacters(0);
       setTokens(0);
@@ -140,7 +310,7 @@ const Index = () => {
     }}>
       <Card className="max-w-4xl mx-auto shadow-lg overflow-hidden border"
             style={{ borderColor: modelTheme.border }}>
-        <div className="text-white p-4 flex justify-between items-center text-center"
+        <div className="text-white p-4 text-center"
              style={{ backgroundColor: modelTheme.primary }}>
           <div className="mx-auto">
             <h1 className="text-xl font-bold flex items-center justify-center">
@@ -149,11 +319,179 @@ const Index = () => {
             </h1>
             <p className="text-sm opacity-90">Estimate tokens & costs for modern AI models</p>
           </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="absolute right-4 top-4 text-white hover:bg-white/20">
+                      <QuestionCircle className="h-5 w-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>How to Use This Tool</DialogTitle>
+                      <DialogDescription>
+                        Follow these steps to get the most out of the Token Calculator
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center font-medium shrink-0">1</div>
+                        <div>
+                          <h3 className="font-medium mb-1">Enter your text</h3>
+                          <p className="text-sm text-gray-600">Type or paste your prompt text in the textarea. You can also upload a text file or use voice input.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center font-medium shrink-0">2</div>
+                        <div>
+                          <h3 className="font-medium mb-1">Select an AI model</h3>
+                          <p className="text-sm text-gray-600">Choose from various AI models to see how they would process your text.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center font-medium shrink-0">3</div>
+                        <div>
+                          <h3 className="font-medium mb-1">Calculate tokens</h3>
+                          <p className="text-sm text-gray-600">Click "Calculate Tokens" to estimate token count and cost for your input.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center font-medium shrink-0">4</div>
+                        <div>
+                          <h3 className="font-medium mb-1">Explore the tabs</h3>
+                          <p className="text-sm text-gray-600">Check different tabs to see token visualization, model comparisons, and recommendations.</p>
+                          <ul className="list-disc pl-5 mt-2 text-xs text-gray-600">
+                            <li><span className="font-medium">Calculation</span> - Learn how tokens are calculated</li>
+                            <li><span className="font-medium">Process</span> - Visualize the tokenization process</li>
+                            <li><span className="font-medium">Compare</span> - Compare multiple inputs</li>
+                            <li><span className="font-medium">Recommendations</span> - See model suggestions</li>
+                            <li><span className="font-medium">Analysis</span> - View token analytics</li>
+                            <li><span className="font-medium">Model Comparison</span> - Compare pricing across models</li>
+                            <li><span className="font-medium">Energy Usage</span> - Estimate environmental impact</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center font-medium shrink-0">5</div>
+                        <div>
+                          <h3 className="font-medium mb-1">Optimize your prompts</h3>
+                          <p className="text-sm text-gray-600">Use the prompt optimizer suggestions to reduce token usage and costs.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>How to use this tool</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <div className="p-4 md:p-6 space-y-4">
           <div className="grid md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
+              <div className="mb-2 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          onClick={() => fileInputRef.current?.click()}
+                          variant="outline" 
+                          size="sm"
+                          style={{ borderColor: modelTheme.border, color: modelTheme.primary }}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload File
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Upload a text file as input</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileUpload} 
+                    accept=".txt,.md,.json,.csv" 
+                    className="hidden" 
+                  />
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          onClick={handleVoiceInput} 
+                          variant="outline"
+                          size="sm"
+                          style={{ 
+                            borderColor: modelTheme.border, 
+                            color: modelTheme.primary,
+                            background: isRecording ? `${modelTheme.accent}` : ''
+                          }}
+                        >
+                          <Mic className={`h-4 w-4 mr-2 ${isRecording ? 'animate-pulse text-red-500' : ''}`} />
+                          {isRecording ? 'Recording...' : 'Voice Input'}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Use your microphone to dictate text</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          onClick={generateExample} 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8"
+                          style={{ color: modelTheme.primary }}
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Load an example text</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          onClick={clearText} 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8" 
+                          style={{ color: modelTheme.primary }}
+                        >
+                          <XIcon className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Clear the text</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+              
               <Textarea
                 id="inputText"
                 placeholder={randomPlaceholder}
@@ -190,85 +528,114 @@ const Index = () => {
                 </Select>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
-                <Button onClick={generateExample} variant="outline" 
-                  style={{ borderColor: modelTheme.border, color: modelTheme.primary }}
-                  className="border hover:bg-opacity-10"
-                >
-                  Example
-                </Button>
-                <Button onClick={clearText} variant="outline"
-                  style={{ borderColor: modelTheme.border, color: modelTheme.primary }}
-                  className="border hover:bg-opacity-10"
-                >
-                  Clear
-                </Button>
-                <Button onClick={calculateTokens} className="col-span-2" 
-                  style={{ backgroundColor: modelTheme.primary }}
-                >
-                  Calculate Tokens
-                </Button>
-              </div>
+              <Button onClick={calculateTokens} className="w-full" 
+                style={{ backgroundColor: modelTheme.primary }}
+              >
+                Calculate Tokens
+              </Button>
               
-              <div className="p-4 rounded-md space-y-2"
+              <div className="p-4 rounded-md space-y-3"
                    style={{ backgroundColor: modelTheme.accent }}>
-                <h3 className="font-medium" style={{ color: modelTheme.primary }}>Results</h3>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">Tokens:</span>
-                  <span className="font-bold" style={{ color: modelTheme.primary }}>{tokens}</span>
+                  <h3 className="font-medium text-lg" style={{ color: modelTheme.primary }}>Results</h3>
+                  {recommendationModel && recommendationModel !== selectedModel && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-xs"
+                            style={{ borderColor: modelTheme.border }}
+                            onClick={() => setSelectedModel(recommendationModel)}
+                          >
+                            <Zap className="h-3 w-3 mr-1 text-yellow-500" />
+                            Try recommended
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Switch to the recommended model: {recommendationModel}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Characters:</span>
-                  <span className="font-bold" style={{ color: modelTheme.primary }}>{characters}</span>
+                
+                <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+                  <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col">
+                    <span className="text-xs text-gray-500 mb-1">Tokens</span>
+                    <span className="text-xl font-bold" style={{ color: modelTheme.primary }}>{tokens}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col">
+                    <span className="text-xs text-gray-500 mb-1">Characters</span>
+                    <span className="text-xl font-bold" style={{ color: modelTheme.primary }}>{characters}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col">
+                    <span className="text-xs text-gray-500 mb-1">Input Cost</span>
+                    <span className="text-xl font-bold" style={{ color: modelTheme.primary }}>${inputCost.toFixed(6)}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col">
+                    <span className="text-xs text-gray-500 mb-1">Output Cost</span>
+                    <span className="text-xl font-bold" style={{ color: modelTheme.primary }}>${outputCost.toFixed(6)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Input Cost:</span>
-                  <span className="font-bold" style={{ color: modelTheme.primary }}>${inputCost.toFixed(6)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Output Cost:</span>
-                  <span className="font-bold" style={{ color: modelTheme.primary }}>${outputCost.toFixed(6)}</span>
-                </div>
+                
+                {/* Token scheme information */}
+                {tokens > 0 && (
+                  <div className="bg-white p-3 rounded-lg shadow-sm mt-2">
+                    <span className="text-xs text-gray-500 mb-1 block">Tokenization Info</span>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <span className="font-medium">Scheme:</span> {getTokenizationInfo(selectedModel).scheme}
+                      </div>
+                      <div>
+                        <span className="font-medium">Overhead:</span> {getTokenizationInfo(selectedModel).overhead} tokens
+                      </div>
+                      <div>
+                        <span className="font-medium">Company:</span> {getCompanyFromModel(selectedModel)}
+                      </div>
+                      <div>
+                        <span className="font-medium">Total:</span> {tokens + getTokenizationInfo(selectedModel).overhead} tokens
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Button onClick={() => setActiveTab('calculate')} variant="ghost" size="sm" 
-                    className={activeTab === 'calculate' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'calculate' ? `${modelTheme.accent}` : '' }}>
-              Calculation
-            </Button>
-            <Button onClick={() => setActiveTab('process')} variant="ghost" size="sm" 
-                    className={activeTab === 'process' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'process' ? `${modelTheme.accent}` : '' }}>
-              Process
-            </Button>
-            <Button onClick={() => setActiveTab('compare')} variant="ghost" size="sm" 
-                    className={activeTab === 'compare' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'compare' ? `${modelTheme.accent}` : '' }}>
-              Compare
-            </Button>
-            <Button onClick={generateRecommendation} variant="ghost" size="sm" 
-                    className={activeTab === 'recommendation' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'recommendation' ? `${modelTheme.accent}` : '' }}>
-              Recommendations
-            </Button>
-            <Button onClick={() => setActiveTab('analysis')} variant="ghost" size="sm" 
-                    className={activeTab === 'analysis' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'analysis' ? `${modelTheme.accent}` : '' }}>
-              <ChartBar className="h-4 w-4 mr-1" /> Analysis
-            </Button>
-            <Button onClick={() => setActiveTab('model-compare')} variant="ghost" size="sm" 
-                    className={activeTab === 'model-compare' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'model-compare' ? `${modelTheme.accent}` : '' }}>
-              Model Comparison
-            </Button>
-            <Button onClick={() => setActiveTab('energy')} variant="ghost" size="sm" 
-                    className={activeTab === 'energy' ? 'bg-opacity-10' : ''}
-                    style={{ color: modelTheme.primary, backgroundColor: activeTab === 'energy' ? `${modelTheme.accent}` : '' }}>
-              Energy Usage
-            </Button>
+          <div className="flex flex-wrap gap-2 mt-4 overflow-x-auto pb-2">
+            <TooltipProvider>
+              {[
+                { id: 'calculate', label: 'Calculation', icon: Calculator },
+                { id: 'process', label: 'Process', icon: ListChecks },
+                { id: 'compare', label: 'Compare', icon: Info },
+                { id: 'recommendation', label: 'Recommendations', icon: CircleCheck },
+                { id: 'analysis', label: 'Analysis', icon: ChartBar },
+                { id: 'model-compare', label: 'Model Comparison', icon: AlertCircle },
+                { id: 'energy', label: 'Energy Usage', icon: Zap }
+              ].map(tab => (
+                <Tooltip key={tab.id}>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      onClick={() => setActiveTab(tab.id)} 
+                      variant="ghost" 
+                      size="sm"
+                      className={activeTab === tab.id ? 'bg-opacity-10' : ''}
+                      style={{ 
+                        color: modelTheme.primary, 
+                        backgroundColor: activeTab === tab.id ? `${modelTheme.accent}` : '' 
+                      }}
+                    >
+                      <tab.icon className="h-4 w-4 mr-1" /> {tab.label}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View {tab.label.toLowerCase()} details</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </TooltipProvider>
           </div>
 
           <div className="mt-4">
@@ -293,7 +660,7 @@ const Index = () => {
             )}
             
             {activeTab === 'process' && (
-              <ProcessFlowEnhanced tokens={tokens} text={text} />
+              <ProcessFlowEnhanced tokens={tokens} text={text} theme={modelTheme} />
             )}
             
             {activeTab === 'compare' && (
@@ -359,12 +726,13 @@ const Index = () => {
                                 const modelInputCost = (tokens * pricing.input) / 1000;
                                 const modelOutputCost = (tokens * pricing.output) / 1000;
                                 const isCurrentModel = model === selectedModel;
+                                const isRecommendedModel = model === recommendationModel;
                                 
                                 return (
-                                  <tr key={model} className={`border-b ${isCurrentModel ? 'bg-opacity-20' : ''}`} 
+                                  <tr key={model} className={`border-b`} 
                                       style={{ 
                                         borderColor: `${modelTheme.border}50`,
-                                        backgroundColor: isCurrentModel ? modelTheme.accent : ''
+                                        backgroundColor: isCurrentModel ? modelTheme.accent : (isRecommendedModel ? 'rgba(255, 255, 200, 0.3)' : '')
                                       }}>
                                     <td className="py-1">{model}</td>
                                     <td className="text-right py-1">${modelInputCost.toFixed(6)}</td>
@@ -377,6 +745,11 @@ const Index = () => {
                                                 color: modelTheme.accent 
                                               }}>
                                           Current
+                                        </span>
+                                      )}
+                                      {isRecommendedModel && !isCurrentModel && (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500 text-white">
+                                          Recommended
                                         </span>
                                       )}
                                     </td>

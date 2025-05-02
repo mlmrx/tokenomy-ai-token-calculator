@@ -1,4 +1,5 @@
 
+
 // Define color themes for each model provider/company
 export const modelThemes = {
   'OpenAI': {
@@ -85,6 +86,54 @@ export const modelThemes = {
       outputBorder: 'rgba(96, 33, 168, 1)'
     }
   },
+  'X.AI': {
+    primary: '#000000', // X.AI black
+    secondary: '#1d9bf0', // Twitter blue
+    accent: '#f0f0f0',
+    border: '#cccccc',
+    chart: {
+      input: 'rgba(29, 155, 240, 0.6)',
+      inputBorder: 'rgba(29, 155, 240, 1)',
+      output: 'rgba(0, 0, 0, 0.6)', 
+      outputBorder: 'rgba(0, 0, 0, 1)'
+    }
+  },
+  'DeepSeek': {
+    primary: '#4a6fa5', // DeepSeek blue
+    secondary: '#384e6e',
+    accent: '#edf2f7',
+    border: '#b3c6db',
+    chart: {
+      input: 'rgba(74, 111, 165, 0.6)', 
+      inputBorder: 'rgba(74, 111, 165, 1)',
+      output: 'rgba(56, 78, 110, 0.6)',
+      outputBorder: 'rgba(56, 78, 110, 1)'
+    }
+  },
+  'Alibaba': {
+    primary: '#ff6a00', // Alibaba orange
+    secondary: '#e05d00',
+    accent: '#fff2e9',
+    border: '#ffcbb3',
+    chart: {
+      input: 'rgba(255, 106, 0, 0.6)',
+      inputBorder: 'rgba(255, 106, 0, 1)',
+      output: 'rgba(224, 93, 0, 0.6)', 
+      outputBorder: 'rgba(224, 93, 0, 1)'
+    }
+  },
+  'Baidu': {
+    primary: '#2932e1', // Baidu blue 
+    secondary: '#1f27b6',
+    accent: '#e9eafc',
+    border: '#c0c2f3',
+    chart: {
+      input: 'rgba(41, 50, 225, 0.6)',
+      inputBorder: 'rgba(41, 50, 225, 1)', 
+      output: 'rgba(31, 39, 182, 0.6)',
+      outputBorder: 'rgba(31, 39, 182, 1)'
+    }
+  },
   'default': {
     primary: '#8b5cf6', // Default purple from the original theme
     secondary: '#7c3aed',
@@ -108,6 +157,10 @@ export function getCompanyFromModel(model: string): string {
   if (model.includes('phi') || model.includes('azure')) return 'Microsoft';
   if (model.includes('titan')) return 'Amazon';
   if (model.includes('mistral')) return 'Mistral';
+  if (model.includes('grok')) return 'X.AI';
+  if (model.includes('deepseek')) return 'DeepSeek';
+  if (model.includes('qwen')) return 'Alibaba';
+  if (model.includes('ernie')) return 'Baidu';
   return 'default';
 }
 

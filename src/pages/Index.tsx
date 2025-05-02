@@ -26,7 +26,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 // Import model-related utilities
 import { getCompanyFromModel, getModelTheme } from "@/lib/modelThemes";
-import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo } from "@/lib/modelUtils";
+import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo } from "@/lib/modelData";
 
 // Import components
 import MainNavigation from "@/components/MainNavigation";
@@ -131,7 +131,7 @@ const examplesData = [
 const Index = () => {
   const { toast } = useToast();
   const [text, setText] = useState("");
-  const [selectedModel, setSelectedModel] = useState("gpt-4");
+  const [selectedModel, setSelectedModel] = useState("gpt-4o");
   const [isRecording, setIsRecording] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState<any>(null);

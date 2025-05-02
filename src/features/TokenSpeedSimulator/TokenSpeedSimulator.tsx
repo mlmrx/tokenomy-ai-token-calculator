@@ -192,7 +192,7 @@ const TokenSpeedSimulator = () => {
               <div className="flex justify-between items-center">
                 <div className="text-xl font-bold text-blue-700">
                   {timeToProcess > 0 ? 
-                    `${Math.max(0, (timeToProcess * (1 - animationProgress/100)).toFixed(1))}s remaining` : 
+                    `${Math.max(0, (timeToProcess * (1 - animationProgress/100))).toFixed(1)}s remaining` : 
                     "Ready"
                   }
                 </div>

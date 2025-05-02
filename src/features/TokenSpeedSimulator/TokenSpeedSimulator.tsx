@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -71,11 +70,6 @@ const TokenSpeedSimulator = () => {
   // Calculate the words per minute based on tokens per second (rough estimate)
   const wordsPerMinute = Math.round(tokensPerSecond * 0.75 * 60);
 
-  // Format the timeToProcess value before rendering
-  const formattedTimeToProcess = timeToProcess.toFixed(1);
-  // Use number directly for wordsPerMinute
-  const formattedUsersSupported = Math.max(1, Math.floor(tokensPerSecond / 5));
-
   return (
     <div className="space-y-6">
       <Card className="shadow-lg border-0 overflow-hidden">
@@ -140,7 +134,7 @@ const TokenSpeedSimulator = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <MetricCard
           title="Processing Time"
-          value={formattedTimeToProcess}
+          value={timeToProcess.toFixed(1)}
           unit="seconds"
           icon={Timer}
           color="bg-purple-600"
@@ -154,7 +148,7 @@ const TokenSpeedSimulator = () => {
         />
         <MetricCard
           title="Concurrent Users"
-          value={formattedUsersSupported}
+          value={Math.max(1, Math.floor(tokensPerSecond / 5))}
           unit="supported users"
           icon={User}
           color="bg-emerald-600"

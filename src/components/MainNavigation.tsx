@@ -25,15 +25,24 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
     <div className="flex flex-col md:flex-row justify-between items-center w-full px-4 py-4 gap-4">
       <Tabs value={activeTab} onValueChange={onTabChange} className="w-full md:w-auto">
         <TabsList className="grid grid-cols-3 w-full md:w-auto bg-background border border-input">
-          <TabsTrigger value="calculator" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger 
+            value="calculator" 
+            className="flex items-center gap-2 px-4 py-2 text-foreground"
+          >
             <Calculator className="h-4 w-4" />
             <span className="hidden md:inline">Token Calculator</span>
           </TabsTrigger>
-          <TabsTrigger value="speed" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger 
+            value="speed" 
+            className="flex items-center gap-2 px-4 py-2 text-foreground"
+          >
             <Zap className="h-4 w-4" />
             <span className="hidden md:inline">Speed Simulator</span>
           </TabsTrigger>
-          <TabsTrigger value="memory" className="flex items-center gap-2 px-4 py-2 text-foreground data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger 
+            value="memory" 
+            className="flex items-center gap-2 px-4 py-2 text-foreground"
+          >
             <Cpu className="h-4 w-4" /> 
             <span className="hidden md:inline">Memory Calculator</span>
           </TabsTrigger>

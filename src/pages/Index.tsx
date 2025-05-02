@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -234,7 +235,7 @@ const Index = () => {
           costs: {
             input: inputCost,
             output: outputCost,
-            total: inputCost + outputCost // Ensure total is calculated
+            total: inputCost + outputCost
           },
           chars: text.length,
           charsPerToken: text.length / tokens,
@@ -313,7 +314,8 @@ const Index = () => {
           <>
             <div className="mb-6">
               <Card className="w-full shadow-lg">
-                <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg">
+                <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" 
+                  style={{background: `linear-gradient(135deg, ${modelTheme.primary}aa 0%, ${modelTheme.secondary}dd 100%)`}}>
                   <div className="flex flex-col items-center">
                     <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">Token Calculator</h2>
                     <p className="text-sm md:text-base text-center text-white opacity-90 mb-6">
@@ -326,7 +328,7 @@ const Index = () => {
                           value={text}
                           onChange={e => setText(e.target.value)}
                           placeholder="Enter your text here to analyze tokens and costs..."
-                          className="min-h-[120px] bg-white/10 border-white/20 text-white placeholder:text-white/60 resize-y"
+                          className="min-h-[120px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
                         />
                         <div className="absolute top-2 right-2 flex gap-2">
                           <TooltipProvider>
@@ -335,10 +337,10 @@ const Index = () => {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="rounded-full bg-white/10 hover:bg-white/20 h-8 w-8"
+                                  className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
                                   onClick={() => fileInputRef.current?.click()}
                                 >
-                                  <FileText size={16} className="text-white" />
+                                  <FileText size={16} className="text-foreground" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -351,10 +353,10 @@ const Index = () => {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-white/10 hover:bg-white/20'} h-8 w-8`}
+                                  className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-black/10 hover:bg-black/20'} h-8 w-8`}
                                   onClick={startRecording}
                                 >
-                                  <Mic size={16} className="text-white" />
+                                  <Mic size={16} className="text-foreground" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -367,10 +369,10 @@ const Index = () => {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="rounded-full bg-white/10 hover:bg-white/20 h-8 w-8"
+                                  className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
                                   onClick={clearText}
                                 >
-                                  <XIcon size={16} className="text-white" />
+                                  <XIcon size={16} className="text-foreground" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -395,7 +397,7 @@ const Index = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => setExampleText(example)}
-                            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90"
                           >
                             Example {i + 1}
                           </Button>
@@ -404,7 +406,7 @@ const Index = () => {
                           variant="outline"
                           size="sm"
                           onClick={clearText}
-                          className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                          className="bg-white/80 border-white/20 text-foreground hover:bg-white/90"
                         >
                           <XIcon className="mr-1 h-4 w-4" /> Clear
                         </Button>
@@ -464,6 +466,7 @@ const Index = () => {
                         className="w-full sm:w-auto min-w-[200px] p-2 border rounded bg-background text-foreground"
                         value={selectedModel}
                         onChange={(e) => setSelectedModel(e.target.value)}
+                        style={{borderColor: modelTheme.border}}
                       >
                         {Object.keys(categoryOptions).map(category => (
                           <optgroup key={category} label={category}>
@@ -503,19 +506,66 @@ const Index = () => {
                           <div className="text-sm text-muted-foreground">Chars/Token</div>
                           <div className="text-2xl font-bold text-foreground">{analyzeResult.charsPerToken.toFixed(1)}</div>
                         </div>
-                        <div className="bg-muted rounded-lg p-4 text-center">
+                        <div className="bg-muted rounded-lg p-4 text-center" 
+                          style={{background: `rgba(${parseInt(modelTheme.primary.slice(1,3), 16)}, ${parseInt(modelTheme.primary.slice(3,5), 16)}, ${parseInt(modelTheme.primary.slice(5,7), 16)}, 0.1)`}}>
                           <div className="text-sm text-muted-foreground">Estimated Cost</div>
                           <div className="text-2xl font-bold text-foreground">${analyzeResult.costs.total.toFixed(6)}</div>
                         </div>
                       </div>
                       
                       <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
-                        <TabsList className="w-full justify-start overflow-x-auto text-foreground bg-background border">
-                          <TabsTrigger value="model-comparison" className="text-foreground data-[state=active]:bg-primary/20">Model Comparison</TabsTrigger>
-                          <TabsTrigger value="tokenization" className="text-foreground data-[state=active]:bg-primary/20">Tokenization</TabsTrigger>
-                          <TabsTrigger value="process" className="text-foreground data-[state=active]:bg-primary/20">Process Flow</TabsTrigger>
-                          <TabsTrigger value="process-enhanced" className="text-foreground data-[state=active]:bg-primary/20">Enhanced Flow</TabsTrigger>
-                          <TabsTrigger value="energy" className="text-foreground data-[state=active]:bg-primary/20">Energy Usage</TabsTrigger>
+                        <TabsList className="w-full justify-start overflow-x-auto bg-background border" 
+                          style={{borderColor: `${modelTheme.border}`}}>
+                          <TabsTrigger 
+                            value="model-comparison" 
+                            className="text-foreground"
+                            style={{
+                              '--active-bg': `${modelTheme.primary}20`,
+                              '--active-color': modelTheme.primary
+                            } as React.CSSProperties}
+                          >
+                            Model Comparison
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="tokenization" 
+                            className="text-foreground"
+                            style={{
+                              '--active-bg': `${modelTheme.primary}20`,
+                              '--active-color': modelTheme.primary
+                            } as React.CSSProperties}
+                          >
+                            Tokenization
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="process" 
+                            className="text-foreground"
+                            style={{
+                              '--active-bg': `${modelTheme.primary}20`,
+                              '--active-color': modelTheme.primary
+                            } as React.CSSProperties}
+                          >
+                            Process Flow
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="process-enhanced" 
+                            className="text-foreground"
+                            style={{
+                              '--active-bg': `${modelTheme.primary}20`,
+                              '--active-color': modelTheme.primary
+                            } as React.CSSProperties}
+                          >
+                            Enhanced Flow
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="energy" 
+                            className="text-foreground"
+                            style={{
+                              '--active-bg': `${modelTheme.primary}20`,
+                              '--active-color': modelTheme.primary
+                            } as React.CSSProperties}
+                          >
+                            Energy Usage
+                          </TabsTrigger>
                         </TabsList>
                         <TabsContent value="model-comparison" className="pt-4">
                           <ModelComparisonChart selectedModel={selectedModel} />
@@ -540,7 +590,8 @@ const Index = () => {
                         </TabsContent>
                       </Tabs>
                       
-                      <div className="border rounded-lg p-4">
+                      <div className="border rounded-lg p-4"
+                        style={{borderColor: modelTheme.border}}>
                         <h3 className="text-lg font-semibold mb-2 text-foreground">Suggested Optimization</h3>
                         <PromptOptimizer text={text} tokens={analyzeResult.tokens} />
                       </div>

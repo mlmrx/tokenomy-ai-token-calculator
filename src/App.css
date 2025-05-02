@@ -150,3 +150,37 @@ button.text-white,
   color: hsl(var(--popover-foreground));
   border: 1px solid hsl(var(--border));
 }
+
+/* Model theme specific styles */
+.tabs-content-visible {
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Custom tab styling to match theme colors */
+[data-state="active"] {
+  background-color: var(--active-bg, hsl(var(--primary)/0.1)) !important;
+  color: var(--active-color, hsl(var(--primary))) !important;
+}
+
+/* Ensure select dropdown is visible */
+select, select option {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Make sure form controls have visible text */
+.text-input, input, textarea, select {
+  color: hsl(var(--foreground));
+}
+
+/* Ensure text visibility in cards */
+.card, .dialog {
+  color: hsl(var(--foreground));
+}
+
+/* Improve contrast for muted text */
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.9;
+}

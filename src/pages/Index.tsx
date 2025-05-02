@@ -40,6 +40,11 @@ const placeholders = [
   () => placeholders[Math.floor(Math.random() * placeholders.length)],
   []                     // ← empty dependency array → runs only on first render
 );
+
+  const getRandomPlaceholder = () =>
+  placeholders[Math.floor(Math.random() * placeholders.length)];
+
+const [placeholder, setPlaceholder] = useState(getRandomPlaceholder());
   
   // Calculate tokens and cost based on input text and selected model
   const calculateTokens = () => {
@@ -90,13 +95,14 @@ const placeholders = [
   };
 
   // Clear text input
-  const clearText = () => {
-    setText('');
-    setTokens(0);
-    setCharacters(0);
-    setInputCost(0);
-    setOutputCost(0);
-  };
+const clearText = () => {
+  setText('');
+  setTokens(0);
+  setCharacters(0);
+  setInputCost(0);
+  setOutputCost(0);
+  setPlaceholder(getRandomPlaceholder());   // new line
+};
 
   // Generate model recommendations
   const generateRecommendation = () => {

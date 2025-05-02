@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
@@ -15,7 +14,7 @@ import {
   Mic, 
   FileText, 
   X as XIcon,
-  QuestionCircle,
+  HelpCircle,
   AlertCircle,
   ListChecks,
   Zap
@@ -30,6 +29,51 @@ import EnergyConsumptionTab from '@/components/EnergyConsumptionTab';
 import PromptOptimizer from '@/components/PromptOptimizer';
 import { modelPricing, estimateTokens, calculateCost, getModelCategories, getTokenizationInfo } from '@/lib/modelData';
 import { getModelTheme, getCompanyFromModel } from '@/lib/modelThemes';
+
+// Create a TypeScript interface for the Web Speech API
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  maxAlternatives: number;
+  onaudioend: (ev: Event) => any;
+  onaudiostart: (ev: Event) => any;
+  onend: (ev: Event) => any;
+  onerror: (ev: SpeechRecognitionErrorEvent) => any;
+  onnomatch: (ev: SpeechRecognitionEvent) => any;
+  onresult: (ev: SpeechRecognitionEvent) => any;
+  onsoundend: (ev: Event) => any;
+  onsoundstart: (ev: Event) => any;
+  onspeechend: (ev: Event) => any;
+  onspeechstart: (ev: Event) => any;
+  onstatechange: (ev: Event) => any;
+  start(): void;
+  stop(): void;
+  abort(): void;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error: string;
+  readonly message: string;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognition;
+  prototype: SpeechRecognition;
+}
+
+// Declare global to extend Window interface
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
 
 const Index = () => {
   const { toast } = useToast();
@@ -161,8 +205,17 @@ const Index = () => {
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognitionAPI) {
+      toast({
+        title: "Speech Recognition Error",
+        description: "Failed to initialize speech recognition.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const recognition = new SpeechRecognitionAPI();
     recognition.lang = 'en-US';
     recognition.interimResults = false;
     
@@ -325,7 +378,7 @@ const Index = () => {
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="ghost" size="sm" className="absolute right-4 top-4 text-white hover:bg-white/20">
-                      <QuestionCircle className="h-5 w-5" />
+                      <HelpCircle className="h-5 w-5" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">

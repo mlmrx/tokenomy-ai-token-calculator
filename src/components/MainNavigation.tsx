@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Calculator, 
   Zap, 
-  Memory, 
+  Cpu, // Replaced Memory with Cpu which is available in lucide-react
   Languages, 
   Share2, 
   FileText, 
@@ -34,7 +34,7 @@ const MainNavigation = ({ activeTab, onTabChange, onToggleSidebar }: MainNavigat
             <span className="hidden md:inline">Speed Simulator</span>
           </TabsTrigger>
           <TabsTrigger value="memory" className="flex items-center gap-2 px-4 py-2">
-            <Memory className="h-4 w-4" />
+            <Cpu className="h-4 w-4" /> 
             <span className="hidden md:inline">Memory Calculator</span>
           </TabsTrigger>
         </TabsList>

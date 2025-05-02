@@ -22,6 +22,13 @@ export function TokenSpeedSimulator() {
   const [errors, setErrors] = useState<{ speed?: string; length?: string }>({});
   const outputRef = useRef<HTMLDivElement>(null);
 
+  // Initialize simulator hook with default values
+  const simulator = useTokenSimulator({
+    initialSpeed: parseInt(inputSpeed) || 100,
+    initialLength: parseInt(inputLength) || 400,
+    autoStart: false,
+  });
+
   // Create shareable link with current settings
   const createShareableLink = () => {
     const baseUrl = window.location.href.split('?')[0];
@@ -53,7 +60,7 @@ export function TokenSpeedSimulator() {
     // Start automatically if auto=1
     if (autoParam === '1' && speedParam && lengthParam) {
       setTimeout(() => {
-        startSimulation(parseInt(speedParam), parseInt(lengthParam));
+        startSimulation();
       }, 500);
     }
   }, []);
@@ -80,11 +87,11 @@ export function TokenSpeedSimulator() {
   }, [simulator.tokens]);
 
   // Validate inputs and start simulation
-  const startSimulation = (speed?: number, length?: number) => {
+  const startSimulation = () => {
     const newErrors: { speed?: string; length?: string } = {};
     
-    const speedValue = speed || parseInt(inputSpeed);
-    const lengthValue = length || parseInt(inputLength);
+    const speedValue = parseInt(inputSpeed);
+    const lengthValue = parseInt(inputLength);
     
     if (isNaN(speedValue) || speedValue < 1 || speedValue > 10000) {
       newErrors.speed = 'Speed must be between 1 and 10,000';
@@ -101,12 +108,14 @@ export function TokenSpeedSimulator() {
       localStorage.setItem('tokenSimulator.speed', speedValue.toString());
       localStorage.setItem('tokenSimulator.length', lengthValue.toString());
       
-      simulator.start(speedValue, lengthValue);
+      // Update simulator parameters
+      simulator.updateSpeed(speedValue);
+      simulator.updateLength(lengthValue);
+      
+      // Start the simulation
+      simulator.start();
     }
   };
-
-  // Initialize simulator hook
-  const simulator = useTokenSimulator();
   
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-4">
@@ -298,14 +307,8 @@ export function TokenSpeedSimulator() {
         >
           {simulator.tokens.length === 0 ? (
             <div className="flex items-center justify-center h-full text-white/50">
-              {simulator.isLoading ? (
-                <div className="flex flex-col items-center gap-2">
-                  <div className="h-2 w-2 bg-white rounded-full animate-pulse"></div>
-                  <p>Initializing...</p>
-                </div>
-              ) : (
-                <p>No tokens generated yet</p>
-              )}
+              {/* Remove isLoading check since it doesn't exist in our simulator */}
+              <p>No tokens generated yet</p>
             </div>
           ) : (
             <div className="space-y-1">

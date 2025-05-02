@@ -27,7 +27,7 @@ import { modelPricing, estimateTokens, calculateCost, getModelCategories, getTok
 import { getModelTheme, getCompanyFromModel } from '@/lib/modelThemes';
 import MainNavigation from '@/components/MainNavigation';
 import LearnMoreSidebar from '@/components/LearnMoreSidebar';
-import SpeedSimulator from '@/components/SpeedSimulator';
+import { TokenSpeedSimulator } from '@/features/TokenSpeedSimulator';
 import MemoryCalculator from '@/components/MemoryCalculator';
 import LoginDialog from '@/components/LoginDialog';
 import NewsletterForm from '@/components/NewsletterForm';
@@ -553,14 +553,14 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          <SpeedSimulator />
+          <TokenSpeedSimulator />
         )}
         
         {activeTab === "memory" && (
           <MemoryCalculator />
         )}
         
-        {/* Utility modals/components - these are hidden until triggered */}
+        {/* Hidden utility components */}
         <div className="hidden">
           <NewsletterForm />
           <LanguageSelector />

@@ -4,7 +4,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, Languages, Share2, FileText, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface MainNavigationProps {
   activeTab: string;

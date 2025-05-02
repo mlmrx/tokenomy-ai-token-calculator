@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,6 @@ import TokenizationInfo from "@/components/TokenizationInfo";
 import ModelRecommendation from "@/components/ModelRecommendation";
 import { TokenSpeedSimulator } from "@/features/TokenSpeedSimulator";
 import MemoryCalculator from "@/components/MemoryCalculator";
-import PromptOptimizer from "@/components/PromptOptimizer";
 import ExportData from "@/components/ExportData";
 import ModelComparisonChart from "@/components/ModelComparisonChart";
 import TokenizationChart from "@/components/TokenizationChart";
@@ -496,104 +494,98 @@ const Index = () => {
                       Calculate tokens, costs, and analyze your content across different AI models
                     </p>
                     
-                    <div className="w-full max-w-5xl flex flex-col md:flex-row gap-6">
-                      <div className="w-full md:w-2/3">
-                        <div className="relative">
-                          <Textarea
-                            value={text}
-                            onChange={e => setText(e.target.value)}
-                            placeholder="Enter your text here to analyze tokens and costs..."
-                            className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y"
-                          />
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileUpload}
-                            accept=".txt"
-                            className="hidden"
-                          />
-                          {/* Updated control buttons with transparent background */}
-                          <div className="absolute bottom-3 right-3 flex gap-2 bg-white/30 backdrop-blur-sm p-1 rounded-md">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
-                                    onClick={() => fileInputRef.current?.click()}
-                                  >
-                                    <FileText size={16} className="text-foreground" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-popover border border-border shadow-lg">
-                                  <p>Upload Text File (.txt format)</p>
-                                </TooltipContent>
-                              </Tooltip>
+                    <div className="w-full max-w-5xl">
+                      <div className="relative">
+                        <Textarea
+                          value={text}
+                          onChange={e => setText(e.target.value)}
+                          placeholder="Enter your text here to analyze tokens and costs..."
+                          className="min-h-[240px] bg-white/90 border-white/20 text-foreground placeholder:text-muted-foreground resize-y w-full"
+                        />
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileUpload}
+                          accept=".txt"
+                          className="hidden"
+                        />
+                        {/* Updated control buttons with transparent background */}
+                        <div className="absolute bottom-3 right-3 flex gap-2 bg-white/30 backdrop-blur-sm p-1 rounded-md">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
+                                  onClick={() => fileInputRef.current?.click()}
+                                >
+                                  <FileText size={16} className="text-foreground" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Upload Text File (.txt format)</p>
+                              </TooltipContent>
+                            </Tooltip>
 
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600 active:bg-red-700' : 'bg-transparent hover:bg-white/30 active:bg-white/50'} h-8 w-8 transition-colors`}
-                                    onClick={startRecording}
-                                  >
-                                    <Mic size={16} className={isRecording ? "text-white" : "text-foreground"} />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-popover border border-border shadow-lg">
-                                  <p>Start voice dictation (click again to stop)</p>
-                                </TooltipContent>
-                              </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600 active:bg-red-700' : 'bg-transparent hover:bg-white/30 active:bg-white/50'} h-8 w-8 transition-colors`}
+                                  onClick={startRecording}
+                                >
+                                  <Mic size={16} className={isRecording ? "text-white" : "text-foreground"} />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Start voice dictation (click again to stop)</p>
+                              </TooltipContent>
+                            </Tooltip>
 
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
-                                    onClick={clearText}
-                                  >
-                                    <XIcon size={16} className="text-foreground" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-popover border border-border shadow-lg">
-                                  <p>Clear all text</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-3 justify-center mt-3">
-                          {randomExamples.map((example, i) => (
-                            <Button 
-                              key={i} 
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setExampleText(example.text)}
-                              className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
-                            >
-                              <span>{example.icon}</span> {example.title}
-                            </Button>
-                          ))}
-                          <Button 
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
-                              setRandomExamples(shuffled.slice(0, 3));
-                            }}
-                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
-                          >
-                            <Sparkles className="h-4 w-4" /> New Examples
-                          </Button>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
+                                  onClick={clearText}
+                                >
+                                  <XIcon size={16} className="text-foreground" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-popover border border-border shadow-lg">
+                                <p>Clear all text</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </div>
                       
-                      <div className="w-full md:w-1/3 rounded-lg">
-                        <PromptOptimizer text={text || ""} tokens={analyzeResult?.tokens || 0} />
+                      <div className="flex flex-wrap gap-3 justify-center mt-3">
+                        {randomExamples.map((example, i) => (
+                          <Button 
+                            key={i} 
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setExampleText(example.text)}
+                            className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
+                          >
+                            <span>{example.icon}</span> {example.title}
+                          </Button>
+                        ))}
+                        <Button 
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const shuffled = [...examplesData].sort(() => 0.5 - Math.random());
+                            setRandomExamples(shuffled.slice(0, 3));
+                          }}
+                          className="bg-white/80 border-white/20 text-foreground hover:bg-white/90 flex items-center gap-2"
+                        >
+                          <Sparkles className="h-4 w-4" /> New Examples
+                        </Button>
                       </div>
                     </div>
                   </div>

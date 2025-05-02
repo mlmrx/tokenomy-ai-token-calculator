@@ -18,7 +18,7 @@ const updateFavicon = () => {
   document.head.appendChild(link);
   
   // Also set document title
-  document.title = "AI Token Calculator";
+  document.title = "TOKENOMY - AI Token Management";
 };
 
 // Call the function once

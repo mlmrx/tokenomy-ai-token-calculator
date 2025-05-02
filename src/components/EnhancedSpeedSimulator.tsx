@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -846,64 +845,4 @@ const EnhancedSpeedSimulator = () => {
               Reading Equivalent
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {selectedModels.length > 0
-                ? ((selectedModels.reduce(
-                    (sum, model) => sum + tokensPerSecond[model],
-                    0
-                  ) / selectedModels.length) * 60 * 0.75).toFixed(0)
-                : "0"}
-              <span className="text-sm font-normal text-muted-foreground ml-1">WPM</span>
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Words per minute equivalent
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <User className="h-4 w-4 text-amber-500" />
-              Avg. Response Time
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {selectedModels.length > 0
-                ? (selectedModels.reduce(
-                    (sum, model) => sum + calculateTotalTime(tokensToGenerate, model),
-                    0
-                  ) / selectedModels.length).toFixed(1)
-                : "0"}
-              <span className="text-sm font-normal text-muted-foreground ml-1">seconds</span>
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              For {tokensToGenerate.toLocaleString()} tokens
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-// Lucide icons not directly imported
-const X = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-);
-
-export default EnhancedSpeedSimulator;
+          <Card

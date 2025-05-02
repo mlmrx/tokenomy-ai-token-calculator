@@ -57,6 +57,118 @@ export const modelPricing: Record<string, { input: number; output: number; token
   "ernie-lite": { input: 0.0001, output: 0.0003, tokenScheme: "ERNIE", overhead: 2 }
 };
 
+// First token latency in milliseconds (approximate values)
+export const firstTokenLatency: Record<string, number> = {
+  // OpenAI
+  "gpt-4o-2": 250,
+  "gpt-4o": 350,
+  "gpt-4o-mini": 200,
+  "gpt-4-turbo": 380,
+  "gpt-4": 750,
+  "gpt-3.5-turbo": 230,
+  
+  // Anthropic
+  "claude-3-opus": 600,
+  "claude-3-sonnet": 300,
+  "claude-3-haiku": 200,
+  "claude-3-5-sonnet": 220,
+  
+  // Meta
+  "llama-3-70b": 550,
+  "llama-3-8b": 220,
+  
+  // Google
+  "gemini-1.5-pro": 350,
+  "gemini-1.5-flash": 180,
+  "gemini-ultra-2": 450,
+  
+  // Microsoft
+  "azure-gpt-4o": 380,
+  "phi-3-mini": 150,
+  "phi-3-medium": 180,
+  
+  // Amazon
+  "titan-text-express": 280,
+  "titan-text-lite": 200,
+  
+  // Mistral
+  "mistral-large": 400,
+  "mistral-medium": 300,
+  "mistral-small": 180,
+  
+  // X.AI
+  "grok-1": 300,
+  "grok-1-mini": 180,
+  
+  // DeepSeek
+  "deepseek-coder": 280,
+  "deepseek-llm": 320,
+  
+  // Alibaba
+  "qwen-max": 500,
+  "qwen-plus": 280,
+  
+  // Baidu
+  "ernie-bot": 400,
+  "ernie-lite": 250
+};
+
+// Tokens per second (approximate values)
+export const tokensPerSecond: Record<string, number> = {
+  // OpenAI
+  "gpt-4o-2": 120,
+  "gpt-4o": 90,
+  "gpt-4o-mini": 60,
+  "gpt-4-turbo": 27,
+  "gpt-4": 15,
+  "gpt-3.5-turbo": 40,
+  
+  // Anthropic
+  "claude-3-opus": 20,
+  "claude-3-sonnet": 32,
+  "claude-3-haiku": 45,
+  "claude-3-5-sonnet": 50,
+  
+  // Meta
+  "llama-3-70b": 28,
+  "llama-3-8b": 42,
+  
+  // Google
+  "gemini-1.5-pro": 30,
+  "gemini-1.5-flash": 60,
+  "gemini-ultra-2": 25,
+  
+  // Microsoft
+  "azure-gpt-4o": 85,
+  "phi-3-mini": 70,
+  "phi-3-medium": 50,
+  
+  // Amazon
+  "titan-text-express": 30,
+  "titan-text-lite": 40,
+  
+  // Mistral
+  "mistral-large": 40,
+  "mistral-medium": 50,
+  "mistral-small": 60,
+  
+  // X.AI
+  "grok-1": 33,
+  "grok-1-mini": 45,
+  
+  // DeepSeek
+  "deepseek-coder": 38,
+  "deepseek-llm": 30,
+  
+  // Alibaba
+  "qwen-max": 22,
+  "qwen-plus": 40,
+  
+  // Baidu
+  "ernie-bot": 28,
+  "ernie-lite": 40
+};
+
 // Better token estimator function
 export const estimateTokens = (text: string): number => {
   if (!text) return 0;
@@ -106,11 +218,11 @@ export const calculateCost = (tokenCount: number, model: string, isOutput: boole
 export const getModelCategories = (): Record<string, string[]> => {
   return {
     'OpenAI': ['gpt-4o-2', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
-    'Anthropic': ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
+    'Anthropic': ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku', 'claude-3-5-sonnet'],
     'Meta': ['llama-3-70b', 'llama-3-8b'],
     'Google': ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-ultra-2'],
     'Microsoft': ['azure-gpt-4o', 'azure-embedding-ada', 'phi-3-mini', 'phi-3-medium'],
-    'Amazon': ['titan-text-express', 'titan-text-lite', 'titan-embedding', 'claude-3-5-sonnet'],
+    'Amazon': ['titan-text-express', 'titan-text-lite', 'titan-embedding'],
     'Mistral': ['mistral-large', 'mistral-medium', 'mistral-small'],
     'X.AI': ['grok-1', 'grok-1-mini'],
     'DeepSeek': ['deepseek-coder', 'deepseek-llm'],
@@ -129,4 +241,35 @@ export const getTokenizationInfo = (model: string): {
     scheme: modelInfo?.tokenScheme || 'Unknown',
     overhead: modelInfo?.overhead || 0
   };
+};
+
+// Enhanced functions for speed simulator
+export const calculateTotalTime = (outputTokens: number, model: string): number => {
+  const firstToken = firstTokenLatency[model] / 1000; // convert to seconds
+  const tps = tokensPerSecond[model] || 30; // default to 30 if not found
+  const remainingTime = outputTokens / tps;
+  return firstToken + remainingTime;
+};
+
+export const calculateTokensAtTime = (time: number, model: string, maxTokens: number): number => {
+  const firstTokenDelay = firstTokenLatency[model] / 1000; // convert to seconds
+  const tps = tokensPerSecond[model] || 30;
+  
+  if (time <= firstTokenDelay) {
+    return 0;
+  } else {
+    const tokensGenerated = Math.floor((time - firstTokenDelay) * tps);
+    return Math.min(tokensGenerated, maxTokens);
+  }
+};
+
+// Function to get list of popular or featured models
+export const getFeaturedModels = (): string[] => {
+  return [
+    "gpt-4o",
+    "claude-3-opus",
+    "gemini-ultra-2",
+    "llama-3-70b",
+    "mistral-large"
+  ];
 };

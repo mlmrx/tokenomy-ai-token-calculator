@@ -99,32 +99,32 @@ declare global {
 const examplesData = [
   {
     title: "Marketing Email",
-    text: "Write a detailed marketing email for a new AI-powered project management tool targeting startup founders.",
+    text: "Write a detailed marketing email for a new AI-powered project management tool targeting startup founders.\n\nInclude the following sections:\n- Attention-grabbing headline\n- Problem statement that resonates with the target audience\n- Introduction to your solution with key features\n- Benefits and ROI for startups\n- Social proof or testimonials from early adopters\n- Clear call to action with special offer",
     icon: "📧"
   },
   {
     title: "Educational Content",
-    text: "Explain quantum computing concepts to a high school student.",
+    text: "Explain quantum computing concepts to a high school student.\n\nCover these key areas:\n- The basic principles of quantum mechanics relevant to computing\n- How quantum bits (qubits) differ from classical bits\n- Real-world applications of quantum computing\n- Current limitations and challenges in the field\n- Future prospects of quantum computing technology",
     icon: "🎓"
   },
   {
     title: "Financial Analysis",
-    text: "Analyze the performance of the S&P 500 over the last decade and predict future trends.",
+    text: "Analyze the performance of the S&P 500 over the last decade and predict future trends.\n\nYour analysis should include:\n- Historical performance data with key milestones\n- Impact of major economic events\n- Sector-by-sector breakdown of performance\n- Identification of market patterns and cycles\n- Risk assessment for various investment strategies\n- Short and long-term predictions with supporting rationale",
     icon: "📈"
   },
   {
     title: "Lesson Plan",
-    text: "Create a comprehensive lesson plan about climate change for 8th grade students.",
+    text: "Create a comprehensive lesson plan about climate change for 8th grade students.\n\nInclude these components:\n- Learning objectives aligned with science standards\n- Engaging warm-up activity (5-10 minutes)\n- Main presentation with key concepts and interactive elements\n- Student-centered activity or experiment\n- Discussion questions for critical thinking\n- Assessment strategy\n- Homework assignment\n- Resources for both teachers and students",
     icon: "📚"
   },
   {
     title: "Product Description",
-    text: "Write a compelling product description for a new smart home security system with AI features.",
+    text: "Write a compelling product description for a new smart home security system with AI features.\n\nYour description should cover:\n- Headline that highlights the unique value proposition\n- Overview of the complete system components\n- Technical specifications and compatibility information\n- Key AI capabilities and how they enhance security\n- User experience and ease of installation\n- Privacy and data security measures\n- Pricing options and warranty information\n- Customer support details",
     icon: "🏠"
   },
   {
     title: "Creative Story",
-    text: "Write a short sci-fi story about a world where AI has become indistinguishable from humans.",
+    text: "Write a short sci-fi story about a world where AI has become indistinguishable from humans.\n\nInclude these elements in your narrative:\n- A compelling protagonist with a clear motivation\n- Setting in a believable but futuristic world\n- Conflict centered around AI-human relationships\n- Ethical dilemmas related to consciousness and rights\n- Unexpected plot twist that challenges assumptions\n- Resolution that leaves readers thinking\n- Dialogue that reveals character and advances the plot",
     icon: "✨"
   }
 ];
@@ -508,15 +508,15 @@ const Index = () => {
                             accept=".txt"
                             className="hidden"
                           />
-                          {/* Controls moved to bottom-right */}
-                          <div className="absolute bottom-3 right-3 flex gap-2 bg-white/70 backdrop-blur-sm p-1 rounded-md">
+                          {/* Updated control buttons with transparent background */}
+                          <div className="absolute bottom-3 right-3 flex gap-2 bg-white/30 backdrop-blur-sm p-1 rounded-md">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
+                                    className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
                                     onClick={() => fileInputRef.current?.click()}
                                   >
                                     <FileText size={16} className="text-foreground" />
@@ -532,10 +532,10 @@ const Index = () => {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-black/10 hover:bg-black/20'} h-8 w-8`}
+                                    className={`rounded-full ${isRecording ? 'bg-red-500 hover:bg-red-600 active:bg-red-700' : 'bg-transparent hover:bg-white/30 active:bg-white/50'} h-8 w-8 transition-colors`}
                                     onClick={startRecording}
                                   >
-                                    <Mic size={16} className="text-foreground" />
+                                    <Mic size={16} className={isRecording ? "text-white" : "text-foreground"} />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent className="bg-popover border border-border shadow-lg">
@@ -548,7 +548,7 @@ const Index = () => {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="rounded-full bg-black/10 hover:bg-black/20 h-8 w-8"
+                                    className="rounded-full bg-transparent hover:bg-white/30 active:bg-white/50 h-8 w-8 transition-colors"
                                     onClick={clearText}
                                   >
                                     <XIcon size={16} className="text-foreground" />

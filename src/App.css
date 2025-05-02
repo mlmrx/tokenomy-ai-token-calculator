@@ -1,4 +1,3 @@
-
 /* Base styles */
 #root {
   max-width: 1280px;
@@ -96,6 +95,35 @@
 .memory-bg-gradient {
   background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   color: white;
+}
+
+/* Control buttons styling */
+.control-button {
+  background-color: transparent;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.control-button:active {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(0.95);
+}
+
+.control-button.recording {
+  background-color: rgb(239, 68, 68);
+}
+
+.control-button.recording:hover {
+  background-color: rgb(220, 38, 38);
+}
+
+/* Enhanced button states for transparent buttons */
+button.bg-transparent:active {
+  transform: scale(0.95);
 }
 
 .hover-scale {
@@ -215,7 +243,7 @@ select, select option {
   background-color: var(--accent, rgba(0, 0, 0, 0.05));
 }
 
-/* Improved input field styling */
+/* Enhanced input field styling */
 input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--ring, rgba(139, 92, 246, 0.3));
   outline-offset: 2px;
@@ -285,6 +313,47 @@ label {
 
 .export-button:hover {
   transform: translateY(-1px);
+}
+
+/* Speed Simulator specific enhancements */
+.speed-simulator-container {
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.speed-simulator-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.speed-slider {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.speed-slider .thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.speed-progress {
+  height: 8px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.7));
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.speed-progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+  transition: width 0.5s ease;
 }
 
 /* Mobile optimization */

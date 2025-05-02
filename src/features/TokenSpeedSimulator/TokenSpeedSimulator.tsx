@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -7,7 +8,7 @@ import { Timer, FileText, MessageSquare, User, LucideIcon, Zap } from 'lucide-re
 
 interface MetricCardProps {
   title: string;
-  value: number;
+  value: number | string; // Update the type to accept string or number
   unit: string;
   icon: LucideIcon;
   color?: string;
@@ -134,21 +135,21 @@ const TokenSpeedSimulator = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <MetricCard
           title="Processing Time"
-          value={timeToProcess.toFixed(1) as any}
+          value={timeToProcess.toFixed(1)}
           unit="seconds"
           icon={Timer}
           color="bg-purple-600"
         />
         <MetricCard
           title="Reading Speed"
-          value={wordsPerMinute as any}
+          value={wordsPerMinute}
           unit="words per minute"
           icon={FileText}
           color="bg-blue-600"
         />
         <MetricCard
           title="Concurrent Users"
-          value={Math.max(1, Math.floor(tokensPerSecond / 5)) as any}
+          value={Math.max(1, Math.floor(tokensPerSecond / 5))}
           unit="supported users"
           icon={User}
           color="bg-emerald-600"

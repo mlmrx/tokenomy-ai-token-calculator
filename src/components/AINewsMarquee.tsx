@@ -45,7 +45,7 @@ const AINewsMarquee = () => {
           <span className="text-xs font-medium">AI NEWS</span>
         </div>
         <div className="overflow-hidden whitespace-nowrap flex-1">
-          <div className="animate-marquee inline-block">
+          <div className="animate-marquee-slow inline-block">
             {news.map((item, index) => (
               <a 
                 key={index} 

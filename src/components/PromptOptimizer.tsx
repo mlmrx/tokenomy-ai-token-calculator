@@ -1,3 +1,4 @@
+
 import React, { useMemo } from "react";
 import { Info } from "lucide-react";
 
@@ -13,73 +14,87 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
     
     // Only analyze if we have text
     if (text.length > 0) {
-      // Excessive politeness
+      // Check for unclear instructions
+      if (text.split(' ').length < 15 && !text.includes('?') && !text.includes(':')) {
+        result.push("Add more specific instructions");
+      }
+      
+      // Check for excessive politeness
       if (
         text.toLowerCase().includes("please") && 
         (text.toLowerCase().includes("thank you") || text.toLowerCase().includes("thanks"))
       ) {
-        result.push("Remove unnecessary politeness phrases");
+        result.push("Remove unnecessary politeness");
       }
       
-      // Redundant context
-      if (
-        text.toLowerCase().includes("as an ai") || 
-        text.toLowerCase().includes("as a language model") || 
-        text.toLowerCase().includes("as an assistant")
-      ) {
-        result.push("Remove statements telling the AI what it is");
+      // Check for context redundancy
+      const contextPhrases = ["as an ai", "as a language model", "as an assistant", "you are an ai"];
+      if (contextPhrases.some(phrase => text.toLowerCase().includes(phrase))) {
+        result.push("Remove redundant AI context");
       }
       
-      // Wordy introductions
-      if (
-        text.toLowerCase().includes("i want you to") || 
-        text.toLowerCase().includes("i would like you to") ||
-        text.toLowerCase().includes("i need you to")
-      ) {
-        result.push("Use direct instructions instead of 'I want you to...'");
+      // Check for structure issues
+      if (text.length > 200 && !text.includes('\n') && !text.includes('.')) {
+        result.push("Add structure with paragraphs");
       }
       
-      // Long text blocks
-      if (text.length > 500 && !text.includes('\n')) {
-        result.push("Break long text into paragraphs");
-      }
-      
-      // Ambiguous pronoun references
-      const pronouns = ['it', 'they', 'them', 'this', 'that', 'these', 'those'];
-      let pronounCount = 0;
-      pronouns.forEach(pronoun => {
-        const regex = new RegExp(`\\b${pronoun}\\b`, 'gi');
+      // Check for specificity issues
+      const vagueWords = ["good", "nice", "better", "improve", "enhance", "thing", "stuff", "etc"];
+      let vagueWordCount = 0;
+      vagueWords.forEach(word => {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
         const matches = text.match(regex);
-        if (matches) pronounCount += matches.length;
+        if (matches) vagueWordCount += matches.length;
       });
       
-      if (pronounCount > 3 && text.length > 200) {
-        result.push("Replace ambiguous pronouns with specific nouns");
+      if (vagueWordCount > 2 && text.length > 100) {
+        result.push("Replace vague terms with specifics");
+      }
+      
+      // Check for complex prompt issues
+      if (text.length > 500) {
+        // Check if it has multiple unrelated questions
+        const questions = text.match(/\?/g);
+        if (questions && questions.length > 2) {
+          result.push("Split into separate prompts");
+        }
+        
+        // Check for logical organization
+        if (!text.toLowerCase().includes("first") && 
+            !text.toLowerCase().includes("then") && 
+            !text.includes("1.") && 
+            !text.includes("•")) {
+          result.push("Use numbered lists or bullet points");
+        }
       }
     }
     
     // Only show relevant suggestions based on content length
     if (result.length === 0) {
-      if (text.length < 10) {
+      if (text.length === 0) {
+        result.push("Enter text for optimization tips");
+      } else if (text.length < 10) {
         result.push("Add more detailed content");
       } else if (tokens > 1000) {
         result.push("Consider breaking into smaller prompts");
-      } else if (tokens > 500) {
-        result.push("Use bullet points for complex requests");
+      } else if (text.length > 50 && !text.includes('\n') && text.length < 200) {
+        result.push("Use clear, direct instructions");
       }
     }
     
     return result;
   }, [text, tokens]);
   
-  // Create an optimized version of the prompt (simplified example)
+  // Create an optimized version of the prompt
   const optimizedPrompt = useMemo(() => {
-    if (!text) return "";
+    if (!text || text.length < 20) return "";
     
     let optimized = text;
     
     // Remove redundant phrases
     optimized = optimized.replace(/as an ai language model,?/gi, '');
+    optimized = optimized.replace(/as an ai,?/gi, '');
+    optimized = optimized.replace(/you are an ai,?/gi, '');
     optimized = optimized.replace(/i want you to |i would like you to |i need you to /gi, '');
     
     // Simplify excessive politeness
@@ -115,17 +130,17 @@ const PromptOptimizer = ({ text, tokens }: PromptOptimizerProps) => {
         </ul>
       )}
       
-      {estimatedSavings > 0 && text && (
+      {estimatedSavings > 5 && text && (
         <div className="text-[10px] mt-1 text-blue-600 font-medium">
           Potential savings: ~{estimatedSavings}%
         </div>
       )}
       
-      {text && text !== optimizedPrompt && text.length > 100 && (
+      {text && text !== optimizedPrompt && text.length > 100 && optimizedPrompt && (
         <div className="mt-1.5">
           <div className="text-[10px] font-medium text-blue-800">Optimized Sample:</div>
-          <div className="text-[10px] bg-white border border-blue-100 rounded p-1 mt-0.5 whitespace-pre-wrap max-h-24 overflow-y-auto">
-            {optimizedPrompt.length > 150 ? optimizedPrompt.substring(0, 150) + "..." : optimizedPrompt}
+          <div className="text-[10px] bg-white border border-blue-100 rounded p-1 mt-0.5 whitespace-pre-wrap max-h-20 overflow-y-auto">
+            {optimizedPrompt.length > 120 ? optimizedPrompt.substring(0, 120) + "..." : optimizedPrompt}
           </div>
         </div>
       )}

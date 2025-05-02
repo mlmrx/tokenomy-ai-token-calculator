@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -96,7 +95,7 @@ const TokenSpeedSimulator = () => {
                   defaultValue={[tokensPerSecond]}
                   max={100}
                   step={1}
-                  onValueChange={(value) => setTokensPerSecond(value[0])}
+                  onValueChange={(value) => setTokensPerSecond(Number(value[0]))}
                   className="[&>span]:bg-purple-500"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
@@ -118,7 +117,7 @@ const TokenSpeedSimulator = () => {
                   defaultValue={[textLength]}
                   max={5000}
                   step={100}
-                  onValueChange={(value) => setTextLength(value[0])}
+                  onValueChange={(value) => setTextLength(Number(value[0]))}
                   className="[&>span]:bg-blue-500"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">

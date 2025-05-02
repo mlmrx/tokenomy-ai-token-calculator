@@ -117,9 +117,17 @@
   padding-right: 100%; /* Make sure the animation continues long enough */
 }
 
+/* Slower marquee animation */
+.animate-marquee-slow {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 60s linear infinite; /* Reduced speed - 60s instead of 30s */
+  padding-right: 100%; /* Make sure the animation continues long enough */
+}
+
 /* Make the animation play only when user hovers over the container */
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee, .animate-marquee-slow {
     animation-play-state: paused;
   }
 }

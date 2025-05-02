@@ -383,9 +383,7 @@ const Index = () => {
         </div>
       </Card>
       
-      <div className="mt-4 text-center text-xs text-gray-500">
-        Built with ♥ as a better version of tiktokenizer.vercel.app | Updated with latest model pricing as of May 2023
-      </div>
+
     </div>
   );
 };

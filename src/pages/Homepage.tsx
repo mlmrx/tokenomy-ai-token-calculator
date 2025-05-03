@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
+import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 const Homepage = () => {
   return (
@@ -43,6 +45,9 @@ const Homepage = () => {
                 </Link>
               </Button>
             </div>
+
+            {/* Token Stats Carousel */}
+            <TokenStatsCarousel />
 
             {/* Satya Nadella Quote Section */}
             <div className="w-full max-w-3xl mx-auto mt-8 mb-4 rounded-2xl overflow-hidden shadow-xl">

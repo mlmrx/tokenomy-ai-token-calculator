@@ -1,0 +1,126 @@
+
+import React from 'react';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+
+type CompanyStatType = {
+  name: string;
+  ceo: string;
+  position: string;
+  tokens: string;
+  imageUrl: string;
+  logoUrl?: string;
+  color: string;
+};
+
+const companyStats: CompanyStatType[] = [
+  {
+    name: "Microsoft",
+    ceo: "Satya Nadella",
+    position: "CEO",
+    tokens: "50 trillion tokens/month",
+    imageUrl: "/lovable-uploads/783e465a-6206-4dbc-b0df-0747d4d09494.png",
+    color: "from-blue-900 to-blue-700"
+  },
+  {
+    name: "OpenAI",
+    ceo: "Sam Altman",
+    position: "CEO",
+    tokens: "20+ trillion tokens/month",
+    imageUrl: "https://images.unsplash.com/photo-1642132652089-320681afc21a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    color: "from-purple-900 to-purple-700"
+  },
+  {
+    name: "Google",
+    ceo: "Sundar Pichai",
+    position: "CEO",
+    tokens: "35 trillion tokens/month",
+    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    color: "from-green-900 to-teal-700"
+  },
+  {
+    name: "Meta",
+    ceo: "Mark Zuckerberg",
+    position: "CEO",
+    tokens: "30 trillion tokens/month",
+    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    color: "from-indigo-900 to-indigo-700"
+  },
+  {
+    name: "Anthropic",
+    ceo: "Dario Amodei",
+    position: "CEO",
+    tokens: "15 trillion tokens/month",
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    color: "from-amber-900 to-amber-700"
+  }
+];
+
+const TokenStatsCarousel = () => {
+  return (
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">Industry Token Usage</h2>
+        <p className="text-muted-foreground">Leading companies and their token processing statistics</p>
+      </div>
+      
+      <div className="relative px-12">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {companyStats.map((company, index) => (
+              <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                <div className="h-full">
+                  <Card className="h-full border-2 hover:border-purple-300 dark:hover:border-purple-700 transition-all">
+                    <CardContent className="p-0 h-full">
+                      <div className="flex flex-col h-full">
+                        <div className={`bg-gradient-to-br ${company.color} text-white p-6 rounded-t-lg`}>
+                          <h3 className="text-2xl font-bold">{company.name}</h3>
+                          <div className="mt-2 flex items-center">
+                            <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm">
+                              {company.tokens}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-6 flex flex-col flex-grow">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+                              <img 
+                                src={company.imageUrl} 
+                                alt={company.ceo} 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="font-semibold">{company.ceo}</p>
+                              <p className="text-sm text-muted-foreground">{company.position}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-0" />
+          <CarouselNext className="right-0" />
+        </Carousel>
+      </div>
+    </div>
+  );
+};
+
+export default TokenStatsCarousel;

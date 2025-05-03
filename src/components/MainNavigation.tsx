@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { BarChart4, LineChart, Calculator, BarChart, Home } from "lucide-react";
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 interface MainNavigationProps {
   activeTab: string;
@@ -17,8 +18,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   theme,
   onThemeChange,
 }) => {
-  const location = useLocation();
-
   const menuItems = [
     {
       id: "home",
@@ -50,9 +49,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
     },
   ];
 
-  // Only show subtabs for calculator when it's active
-  const showCalculatorSubtabs = activeTab === 'calculator' && location.pathname === '/';
-
   return (
     <nav className="flex flex-col items-center w-full mb-8">
       <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20 mb-6">
@@ -75,29 +71,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           </button>
         ))}
       </div>
-      
-      {/* Only show calculator subtabs when calculator is active */}
-      {showCalculatorSubtabs && (
-        <div className="w-full max-w-4xl mb-4">
-          <div className="flex flex-wrap justify-center gap-2">
-            <Link 
-              to="/?tab=calculator&subtab=model-comparison" 
-              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=model-comparison') ? 'bg-primary/10 font-medium' : ''}`}>
-              Model Comparison
-            </Link>
-            <Link 
-              to="/?tab=calculator&subtab=visualization" 
-              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=visualization') ? 'bg-primary/10 font-medium' : ''}`}>
-              Visualizations
-            </Link>
-            <Link 
-              to="/?tab=calculator&subtab=tokenization" 
-              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=tokenization') ? 'bg-primary/10 font-medium' : ''}`}>
-              Tokenization
-            </Link>
-          </div>
-        </div>
-      )}
       
       <style dangerouslySetInnerHTML={{
         __html: `

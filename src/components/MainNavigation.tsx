@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Home, Calculator, LineChart, BarChart } from "lucide-react";
-import { useLocation } from 'react-router-dom';
+import { BarChart4, LineChart, Calculator, BarChart } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -19,13 +18,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   onThemeChange,
 }) => {
   const menuItems = [
-    {
-      id: "home",
-      label: "Home",
-      icon: <Home className="h-5 w-5" />,
-      gradientFrom: "from-green-600",
-      gradientTo: "to-teal-500",
-    },
     {
       id: "calculator",
       label: "Token Calculator",
@@ -50,8 +42,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   ];
 
   return (
-    <nav className="flex flex-col items-center w-full mb-8">
-      <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20 mb-6">
+    <nav className="flex justify-center w-full">
+      <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20">
         {menuItems.map((item) => (
           <button
             key={item.id}
@@ -71,7 +63,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           </button>
         ))}
       </div>
-      
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes pulse-subtle {
@@ -80,20 +71,6 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         }
         .animate-pulse-subtle {
           animation: pulse-subtle 2s infinite ease-in-out;
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
         }
         `
       }} />

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -35,8 +34,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
-                <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Dashboard</Link>
-                <Link to="/landing" className="px-4 py-2 hover:bg-accent rounded-md">Landing</Link>
+                <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
                 <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
                 <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
@@ -55,10 +53,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-6 text-sm ml-6">
             <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Home size={16} />
-              Dashboard
-            </Link>
-            <Link to="/landing" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Landing
+              Home
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Features

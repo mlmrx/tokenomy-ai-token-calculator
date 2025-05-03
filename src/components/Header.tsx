@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,10 +6,11 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import NewsletterPopup from "@/components/NewsletterPopup";
 
 const Header = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -55,16 +57,20 @@ const Header = () => {
               <Home size={16} />
               Home
             </Link>
-            <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Lightbulb size={16} />
               Features
             </Link>
-            <Link to="/pricing" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link to="/pricing" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <CreditCard size={16} />
               Pricing
             </Link>
-            <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Users size={16} />
               About
             </Link>
-            <Link to="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link to="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <PhoneCall size={16} />
               Contact
             </Link>
           </nav>
@@ -168,6 +174,11 @@ const Header = () => {
         open={loginDialogOpen}
         onOpenChange={setLoginDialogOpen}
         onLoginSuccess={handleLoginSuccess}
+      />
+      
+      <NewsletterPopup 
+        open={showNewsletterPopup}
+        onOpenChange={setShowNewsletterPopup}
       />
     </header>
   );

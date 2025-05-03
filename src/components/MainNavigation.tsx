@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart, Leaf } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -38,6 +38,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <BarChart className="h-5 w-5" />,
       gradientFrom: "from-amber-500",
       gradientTo: "to-orange-600",
+    },
+    {
+      id: "energy",
+      label: "Energy Estimator",
+      icon: <Leaf className="h-5 w-5" />,
+      gradientFrom: "from-green-500",
+      gradientTo: "to-emerald-600",
     },
   ];
 

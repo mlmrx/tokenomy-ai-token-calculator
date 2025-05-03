@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
 
 const Homepage = () => {
   return (
@@ -43,6 +43,39 @@ const Homepage = () => {
                   Learn More
                 </Link>
               </Button>
+            </div>
+
+            {/* Satya Nadella Quote Section */}
+            <div className="w-full max-w-3xl mx-auto mt-8 mb-4 rounded-2xl overflow-hidden shadow-xl">
+              <div className="bg-[url('/lovable-uploads/783e465a-6206-4dbc-b0df-0747d4d09494.png')] bg-cover bg-center p-8 md:p-12 text-white relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-indigo-900/60 backdrop-blur-sm"></div>
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                  <div className="space-y-4">
+                    <p className="text-blue-300 font-semibold">@satyanadella</p>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
+                      "we processed <span className="text-yellow-300">50 TRILLION</span> tokens last month."
+                    </h2>
+                    <p className="text-lg font-medium">— Satya Nadella</p>
+                    <p className="text-blue-200 text-sm">Microsoft CEO on the scale of AI language processing</p>
+                  </div>
+                  <div className="hidden md:flex md:flex-1 justify-end">
+                    <div className="p-3 bg-blue-500/20 backdrop-blur-md rounded-full">
+                      <Calculator className="h-16 w-16 text-blue-200" />
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 relative z-10">
+                  <Button 
+                    variant="outline" 
+                    className="bg-white/10 text-white border-white/20 backdrop-blur-sm hover:bg-white/20"
+                    asChild
+                  >
+                    <Link to="/tools">
+                      Optimize your tokens <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
 
             {/* Animated Dashboard Preview */}
@@ -129,6 +162,24 @@ const Homepage = () => {
                   </p>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/tools">Try Memory Calculator</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* New Energy Usage Estimator Card */}
+            <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Energy Usage Estimator</h3>
+                  <p className="text-muted-foreground">
+                    Calculate the environmental impact and energy consumption of your AI token usage
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/tools">Try Energy Estimator</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -331,17 +382,13 @@ const Homepage = () => {
                 <code className="text-gray-50"> analyzer.calculate(text);</code><br/><br/>
                 
                 <code className="text-gray-50">  console.log(</code>
-                <code className="text-green-400">`Token count: $</code>
-                <code className="text-gray-50">{"{"}</code>
-                <code className="text-gray-50">result.tokens</code>
-                <code className="text-gray-50">{"}"}</code>
+                <code className="text-green-400">`Token count: </code>
+                <code className="text-gray-50">${"${"}result.tokens}</code>
                 <code className="text-green-400">`</code>
                 <code className="text-gray-50">);</code><br/>
                 <code className="text-gray-50">  console.log(</code>
-                <code className="text-green-400">`Estimated cost: $</code>
-                <code className="text-gray-50">{"{"}</code>
-                <code className="text-gray-50">result.cost.toFixed(6)</code>
-                <code className="text-gray-50">{"}"}</code>
+                <code className="text-green-400">`Estimated cost: </code>
+                <code className="text-gray-50">${"${"}result.cost.toFixed(6)}</code>
                 <code className="text-green-400">`</code>
                 <code className="text-gray-50">);</code><br/>
                 <code className="text-gray-50">  </code><br/>

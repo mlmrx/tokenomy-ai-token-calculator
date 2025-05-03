@@ -12,8 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
 
-// Mock auth providers
+// Auth providers
 const authProviders = [
   { id: "google", name: "Google", icon: "https://cdn-icons-png.flaticon.com/128/2702/2702602.png" },
   { id: "github", name: "GitHub", icon: "https://cdn-icons-png.flaticon.com/128/2111/2111432.png" },
@@ -28,34 +30,35 @@ interface LoginDialogProps {
 
 const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) => {
   const { toast } = useToast();
+  const { signIn, signUp, signInWithProvider } = useAuth();
   const [activeTab, setActiveTab] = useState("login");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const handleProviderAuth = (providerId: string) => {
+  const handleProviderAuth = async (providerId: string) => {
     setLoading(true);
     
-    // Simulate authentication delay
-    setTimeout(() => {
-      onLoginSuccess(`User via ${authProviders.find(p => p.id === providerId)?.name}`, 
-                    authProviders.find(p => p.id === providerId)?.name || "");
-      setLoading(false);
-      onOpenChange(false);
-      
+    try {
+      await signInWithProvider(providerId as "google" | "github" | "twitter");
+      // Note: Success will be handled by the auth state listener in AuthContext
+    } catch (error) {
+      console.error("Error with provider auth:", error);
       toast({
-        title: "Authentication Successful",
-        description: `You've been signed in via ${authProviders.find(p => p.id === providerId)?.name}.`,
+        title: "Authentication Error",
+        description: "There was a problem signing in with this provider.",
+        variant: "destructive",
       });
-    }, 1500);
+      setLoading(false);
+    }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Validate
+    // Validate inputs
     if (!email.includes('@') || password.length < 6) {
       toast({
         title: "Invalid Input",
@@ -66,20 +69,55 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
       return;
     }
     
-    // Simulate authentication delay
-    setTimeout(() => {
-      const displayName = activeTab === "signup" ? name : email.split('@')[0];
-      onLoginSuccess(displayName, "Email");
-      setLoading(false);
-      onOpenChange(false);
-      
+    try {
+      if (activeTab === "login") {
+        const { error } = await signIn(email, password);
+        
+        if (error) {
+          toast({
+            title: "Login Failed",
+            description: error.message || "Check your credentials and try again.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // If successful, AuthContext listener will update state and show success toast
+        onOpenChange(false);
+        const displayName = email.split('@')[0];
+        onLoginSuccess(displayName, "Email");
+      } else {
+        // Sign up
+        const { error } = await signUp(email, password, name);
+        
+        if (error) {
+          toast({
+            title: "Registration Failed",
+            description: error.message || "Please check your information and try again.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // If email confirmation is enabled in Supabase, show different message
+        toast({
+          title: "Registration Successful",
+          description: "Your account has been created. Please check your email for confirmation.",
+        });
+        onOpenChange(false);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
       toast({
-        title: activeTab === "signup" ? "Account Created" : "Welcome Back",
-        description: activeTab === "signup" 
-          ? "Your account has been created and you're now logged in." 
-          : "You've been successfully logged in.",
+        title: "Authentication Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
       });
-    }, 1500);
+      setLoading(false);
+    }
   };
 
   return (
@@ -109,6 +147,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   type="email"
+                  disabled={loading}
                 />
               </div>
               <div className="space-y-2">
@@ -120,10 +159,16 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging In..." : "Log In"}
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                    Logging In...
+                  </>
+                ) : "Log In"}
               </Button>
             </form>
           </TabsContent>
@@ -137,6 +182,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
               <div className="space-y-2">
@@ -148,6 +194,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   type="email"
+                  disabled={loading}
                 />
               </div>
               <div className="space-y-2">
@@ -159,10 +206,16 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating Account..." : "Create Account"}
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                    Creating Account...
+                  </>
+                ) : "Create Account"}
               </Button>
             </form>
           </TabsContent>
@@ -188,11 +241,15 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }: LoginDialogProps) =
               onClick={() => handleProviderAuth(provider.id)}
               disabled={loading}
             >
-              <img 
-                src={provider.icon} 
-                alt={`${provider.name} icon`}
-                className="w-5 h-5"
-              />
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <img 
+                  src={provider.icon} 
+                  alt={`${provider.name} icon`}
+                  className="w-5 h-5"
+                />
+              )}
               {provider.name}
             </Button>
           ))}

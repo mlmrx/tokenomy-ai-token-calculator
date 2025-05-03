@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { BarChart4, LineChart, Calculator, BarChart } from "lucide-react";
+import { Link, useLocation } from 'react-router-dom';
 
 interface MainNavigationProps {
   activeTab: string;
@@ -17,6 +18,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   theme,
   onThemeChange,
 }) => {
+  const location = useLocation();
+
   const menuItems = [
     {
       id: "calculator",
@@ -42,8 +45,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   ];
 
   return (
-    <nav className="flex justify-center w-full">
-      <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20">
+    <nav className="flex flex-col items-center w-full mb-8">
+      <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20 mb-6">
         {menuItems.map((item) => (
           <button
             key={item.id}
@@ -63,6 +66,38 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
           </button>
         ))}
       </div>
+      
+      {/* Add feature links navigation */}
+      <div className="w-full max-w-4xl mb-4">
+        <div className="flex flex-wrap justify-center gap-2">
+          <Link 
+            to="/features" 
+            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.pathname === '/features' ? 'bg-primary/10 font-medium' : ''}`}>
+            Features
+          </Link>
+          <Link 
+            to="/pricing" 
+            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.pathname === '/pricing' ? 'bg-primary/10 font-medium' : ''}`}>
+            Pricing
+          </Link>
+          <Link 
+            to="/?tab=calculator&subtab=model-comparison" 
+            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'calculator' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
+            Model Comparison
+          </Link>
+          <Link 
+            to="/?tab=calculator&subtab=visualization" 
+            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'calculator' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
+            Visualizations
+          </Link>
+          <Link 
+            to="/?tab=memory" 
+            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'memory' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
+            Memory Calculator
+          </Link>
+        </div>
+      </div>
+      
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes pulse-subtle {
@@ -71,6 +106,20 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         }
         .animate-pulse-subtle {
           animation: pulse-subtle 2s infinite ease-in-out;
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
         }
         `
       }} />

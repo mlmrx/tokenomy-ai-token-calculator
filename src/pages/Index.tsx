@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useLocation, useNavigate } from "react-router-dom";
 import { 
   Mic, 
   FileText, 
@@ -144,10 +144,42 @@ const Index = () => {
   const [recentAnalyses, setRecentAnalyses] = useState<any[]>([]);
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const company = getCompanyFromModel(selectedModel);
   const modelTheme = getModelTheme(selectedModel);
   const categoryOptions = getModelCategories();
+
+  // Parse URL parameters on mount and when URL changes
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    const subtabParam = params.get('subtab');
+    
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+    
+    if (subtabParam) {
+      setActiveCalcTab(subtabParam);
+    }
+  }, [location]);
+
+  // Update URL when tabs change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('tab', activeTab);
+    
+    if (activeTab === 'calculator') {
+      params.set('subtab', activeCalcTab);
+    } else {
+      params.delete('subtab');
+    }
+    
+    const newUrl = `/?${params.toString()}`;
+    navigate(newUrl, { replace: true });
+  }, [activeTab, activeCalcTab, navigate]);
 
   // Handle theme changes
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
@@ -210,36 +242,6 @@ const Index = () => {
       charsPerToken: 0,
       timestamp: new Date().toISOString()
     });
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Simple check for text file types
-    if (file.type !== 'text/plain') {
-      toast({
-        title: "Invalid File Type",
-        description: "Please upload a text file (.txt)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target?.result as string;
-      setText(content);
-      
-      toast({
-        title: "File Uploaded",
-        description: `Loaded ${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
-      });
-      
-      // Auto-analyze when file is uploaded
-      handleAnalyze(content);
-    };
-    reader.readAsText(file);
   };
 
   // Speech recognition function
@@ -614,76 +616,51 @@ const Index = () => {
                       <ModelRecommendation text={text} tokens={analyzeResult?.tokens || 0} onSelectModel={setSelectedModel} />
                     </div>
                     
+                    {/* Tabs with improved styling */}
                     <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
-                      <TabsList className="w-full justify-start overflow-x-auto bg-background border" 
-                        style={{borderColor: `${modelTheme.border}`}}>
-                        <TabsTrigger 
-                          value="model-comparison" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <LayoutDashboard className="h-4 w-4" />
-                          <span>Model Comparison</span>
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="tokenization" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <FileText className="h-4 w-4" />
-                          <span>Tokenization</span>
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="recent-inputs" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <BarChart4 className="h-4 w-4" />
-                          <span>Recent Inputs</span>
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="visualization" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <LineChart className="h-4 w-4" />
-                          <span>Visualization</span>
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="process" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <Zap className="h-4 w-4" />
-                          <span>Process Flow</span>
-                        </TabsTrigger>
-                        <TabsTrigger 
-                          value="energy" 
-                          className="text-foreground flex items-center gap-2"
-                          style={{
-                            '--active-bg': `${modelTheme.primary}20`,
-                            '--active-color': modelTheme.primary
-                          } as React.CSSProperties}
-                        >
-                          <AlertCircle className="h-4 w-4" />
-                          <span>Energy Usage</span>
-                        </TabsTrigger>
-                      </TabsList>
+                      <div className="relative overflow-hidden border-b border-border">
+                        <TabsList className="w-full flex justify-start overflow-x-auto no-scrollbar bg-background py-2 px-1" 
+                          style={{borderColor: `${modelTheme.border}`}}>
+                          {[
+                            { id: "model-comparison", icon: <LayoutDashboard className="h-4 w-4" />, label: "Model Comparison" },
+                            { id: "tokenization", icon: <FileText className="h-4 w-4" />, label: "Tokenization" },
+                            { id: "recent-inputs", icon: <BarChart4 className="h-4 w-4" />, label: "Recent Inputs" },
+                            { id: "visualization", icon: <LineChart className="h-4 w-4" />, label: "Visualization" },
+                            { id: "process", icon: <Zap className="h-4 w-4" />, label: "Process Flow" },
+                            { id: "energy", icon: <AlertCircle className="h-4 w-4" />, label: "Energy Usage" }
+                          ].map(tab => (
+                            <TabsTrigger 
+                              key={tab.id}
+                              value={tab.id} 
+                              className={`text-foreground flex items-center gap-2 relative px-4 py-2 rounded-md transition-all duration-300 ${
+                                activeCalcTab === tab.id ? 'font-medium' : ''
+                              }`}
+                              style={{
+                                '--glow-color': `${modelTheme.primary}40`
+                              } as React.CSSProperties}
+                            >
+                              {tab.icon}
+                              <span>{tab.label}</span>
+                              {activeCalcTab === tab.id && (
+                                <span 
+                                  className="absolute bottom-0 left-1/2 w-[calc(100%-1.5rem)] h-0.5 transform -translate-x-1/2 bg-gradient-to-r animate-tab-highlight"
+                                  style={{
+                                    backgroundImage: `linear-gradient(to right, transparent, ${modelTheme.primary}, transparent)`
+                                  }}
+                                ></span>
+                              )}
+                              {activeCalcTab === tab.id && (
+                                <span 
+                                  className="absolute inset-0 rounded-md animate-subtle-glow"
+                                  style={{
+                                    '--glow-color': `${modelTheme.primary}20`
+                                  } as React.CSSProperties}
+                                ></span>
+                              )}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+                      </div>
                       <TabsContent value="model-comparison" className="pt-4">
                         <ModelComparisonChart selectedModel={selectedModel} />
                       </TabsContent>

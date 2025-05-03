@@ -1,7 +1,9 @@
 
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { BarChart4, Zap, Database, Shield, FileText, Rocket } from "lucide-react";
 import Footer from "@/components/Footer";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -9,42 +11,48 @@ const features = [
     description: "Precisely calculate tokens for any AI model. Understand and optimize your prompt usage for maximum efficiency.",
     icon: <BarChart4 className="h-12 w-12 text-blue-500" />,
     color: "bg-blue-100",
-    animation: { delay: 0.1 }
+    animation: { delay: 0.1 },
+    linkTo: "/?tab=calculator"
   },
   {
     title: "Speed Simulation",
     description: "Visualize model processing speeds. See how different AI models process your content in real-time.",
     icon: <Zap className="h-12 w-12 text-purple-500" />,
     color: "bg-purple-100",
-    animation: { delay: 0.2 }
+    animation: { delay: 0.2 },
+    linkTo: "/?tab=speed"
   },
   {
     title: "Cost Estimation",
     description: "Get accurate cost estimates for all major AI providers. Make informed decisions about your AI investments.",
     icon: <Database className="h-12 w-12 text-green-500" />,
     color: "bg-green-100",
-    animation: { delay: 0.3 }
+    animation: { delay: 0.3 },
+    linkTo: "/?tab=calculator&subtab=model-comparison"
   },
   {
     title: "Memory Calculation", 
     description: "Plan your AI system's memory requirements. Understand how tokens translate to computational resources.",
     icon: <Shield className="h-12 w-12 text-amber-500" />,
     color: "bg-amber-100",
-    animation: { delay: 0.4 }
+    animation: { delay: 0.4 },
+    linkTo: "/?tab=memory"
   },
   {
     title: "Tokenization Analysis",
     description: "See how different models tokenize your content. Understand the differences between various encoding schemes.",
     icon: <FileText className="h-12 w-12 text-rose-500" />,
     color: "bg-rose-100",
-    animation: { delay: 0.5 }
+    animation: { delay: 0.5 },
+    linkTo: "/?tab=calculator&subtab=tokenization"
   },
   {
     title: "Model Comparison",
     description: "Compare different AI models side-by-side. Find the perfect balance between performance and cost.",
     icon: <Rocket className="h-12 w-12 text-indigo-500" />,
     color: "bg-indigo-100",
-    animation: { delay: 0.6 }
+    animation: { delay: 0.6 },
+    linkTo: "/?tab=calculator&subtab=visualization"
   }
 ];
 
@@ -72,15 +80,22 @@ const Features = () => {
               className="group opacity-0 translate-y-4 animate-[fadeIn_0.5s_ease-out_forwards] hover:scale-103 transition-transform duration-200"
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
             >
-              <Card className="p-6 h-full border border-border hover:border-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl">
-                <div className="flex flex-col h-full">
-                  <div className={`p-4 rounded-lg w-fit mb-5 ${feature.color}`}>
-                    {feature.icon}
+              <Link to={feature.linkTo} className="block h-full">
+                <Card className="p-6 h-full border border-border hover:border-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl">
+                  <div className="flex flex-col h-full">
+                    <div className={`p-4 rounded-lg w-fit mb-5 ${feature.color}`}>
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                    <div className="mt-4">
+                      <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/10 p-0 flex items-center gap-2">
+                        Try Now <span className="text-lg">→</span>
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             </div>
           ))}
         </div>
@@ -102,11 +117,21 @@ const Features = () => {
                 </li>
                 ))}
               </ul>
+              <div className="mt-6">
+                <Link to="/?tab=calculator&subtab=visualization">
+                  <Button variant="outline" className="border-primary/30 bg-primary/10 hover:bg-primary/20">
+                    Try Interactive Charts
+                  </Button>
+                </Link>
+              </div>
             </div>
-            <div className="bg-card rounded-xl p-6 shadow-lg border border-border/50 h-64 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-lg font-medium mb-2">Interactive Chart Visualization</p>
-                <p className="text-sm text-muted-foreground">(Visual representation of token analytics)</p>
+            <div className="bg-card rounded-xl p-6 shadow-lg border border-border/50 overflow-hidden">
+              <div className="h-64 w-full">
+                <img 
+                  src="https://framerusercontent.com/images/MfRYOoU4j3j96zgK3WiQfAUjCc.png" 
+                  alt="Interactive visualization chart" 
+                  className="w-full h-full object-cover object-center rounded-lg"
+                />
               </div>
             </div>
           </div>

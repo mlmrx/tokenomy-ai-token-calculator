@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider"; 
 import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
+import Homepage from "./pages/Homepage";
 import Index from "./pages/Index";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
@@ -59,7 +60,8 @@ const App = () => {
                 onOpenChange={setShowNewsletterPopup}
               />
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/tools" element={<Index />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/about" element={<About />} />

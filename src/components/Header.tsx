@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -52,6 +51,10 @@ const Header = () => {
           </Link>
           
           <nav className="hidden md:flex items-center gap-6 text-sm ml-6">
+            <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Home size={16} />
+              Home
+            </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Features
             </Link>

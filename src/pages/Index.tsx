@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -785,4 +786,31 @@ const Index = () => {
                   
                   <div className="space-y-6">
                     {/* Results display */}
-                    <div className="grid
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Result cards will go here */}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </>
+        )}
+
+        {activeTab === "speed" && (
+          <div className="mt-4">
+            <TokenSpeedSimulator />
+          </div>
+        )}
+
+        {activeTab === "memory" && (
+          <div className="mt-4">
+            <MemoryCalculator />
+          </div>
+        )}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Index;

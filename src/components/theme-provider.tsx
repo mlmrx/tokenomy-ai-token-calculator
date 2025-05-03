@@ -1,5 +1,5 @@
 
-import * as React from "react";
+import React from "react";
 
 type Theme = "dark" | "light" | "system";
 
@@ -28,10 +28,17 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = React.useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    () => {
+      if (typeof window !== "undefined") {
+        return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+      }
+      return defaultTheme;
+    }
   );
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
 
@@ -49,7 +56,9 @@ export function ThemeProvider({
     () => ({
       theme,
       setTheme: (theme: Theme) => {
-        localStorage.setItem(storageKey, theme);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(storageKey, theme);
+        }
         setTheme(theme);
       },
     }),

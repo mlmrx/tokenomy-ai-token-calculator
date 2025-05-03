@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -383,12 +382,12 @@ const Homepage = () => {
                 
                 <code className="text-gray-50">  console.log(</code>
                 <code className="text-green-400">`Token count: </code>
-                <code className="text-gray-50">${"${"}result.tokens}</code>
+                <code className="text-gray-50">{"${result.tokens}"}</code>
                 <code className="text-green-400">`</code>
                 <code className="text-gray-50">);</code><br/>
                 <code className="text-gray-50">  console.log(</code>
                 <code className="text-green-400">`Estimated cost: </code>
-                <code className="text-gray-50">${"${"}result.cost.toFixed(6)}</code>
+                <code className="text-gray-50">{"${result.cost.toFixed(6)}"}</code>
                 <code className="text-green-400">`</code>
                 <code className="text-gray-50">);</code><br/>
                 <code className="text-gray-50">  </code><br/>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart, Home } from "lucide-react";
+import { Home, Calculator, LineChart, BarChart } from "lucide-react";
 import { useLocation } from 'react-router-dom';
 
 interface MainNavigationProps {

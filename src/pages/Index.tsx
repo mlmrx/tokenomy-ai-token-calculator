@@ -17,10 +17,6 @@ import {
   BarChart4,
   LineChart,
   LayoutDashboard,
-  Linkedin,
-  Github,
-  Share2,
-  Mail
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -379,108 +375,9 @@ const Index = () => {
         onOpenChange={setShowNewsletterPopup} 
       />
       
-      {/* Add the AINewsMarquee component at the very top */}
+      {/* AINewsMarquee is still needed here as it's before the main header in App.tsx */}
       <AINewsMarquee />
       
-      <header className="bg-background border-b sticky top-0 z-10 shadow-sm">
-        <div className="container mx-auto py-4 px-4 md:px-6">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex flex-col items-start">
-              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
-                TOKENOMY
-              </h1>
-              <p className="text-sm text-foreground">Smart AI Token Management & Optimization</p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 mr-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ml4u" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-1.5 bg-[#0A66C2] text-white rounded-md hover:bg-opacity-80 transition-colors">
-                        <Linkedin size={16} />
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>Follow on LinkedIn</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a href="https://twitter.com/Mahesh_Lambe?ref_src=twsrc%5Etfw" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-1.5 bg-black text-white rounded-md hover:bg-opacity-80 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>Follow on X</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a href="https://github.com/mlmrx" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-1.5 bg-[#24292e] text-white rounded-md hover:bg-opacity-80 transition-colors">
-                        <Github size={16} />
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>Follow on GitHub</TooltipContent>
-                  </Tooltip>
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a href="https://www.tokenomy.ai" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
-                        <Share2 size={16} />
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>Share Tokenomy</TooltipContent>
-                  </Tooltip>
-                  
-                  <Button 
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1 border-purple-400 hover:bg-purple-100"
-                    onClick={() => setShowNewsletterPopup(true)}
-                  >
-                    <Mail size={14} className="text-purple-600" />
-                    <span className="text-xs">Subscribe</span>
-                  </Button>
-                </TooltipProvider>
-              </div>
-              
-              {!isLoggedIn ? (
-                <Button 
-                  onClick={() => setLoginDialogOpen(true)} 
-                  className="hover-scale text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
-                >
-                  Log In / Sign Up
-                </Button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span className="hidden sm:inline text-foreground">Welcome, {userName}</span>
-                  <Button variant="outline" onClick={() => setIsLoggedIn(false)} className="border-input text-foreground">Logout</Button>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <MainNavigation 
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-            onToggleSidebar={() => setSidebarOpen(true)}
-            theme={theme}
-            onThemeChange={handleThemeChange}
-          />
-        </div>
-      </header>
-
       <main className="flex-1 container mx-auto py-6 px-4 md:px-6 section-appear">
         {activeTab === "calculator" && (
           <>

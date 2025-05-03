@@ -9,6 +9,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import NewsletterPopup from "@/components/NewsletterPopup";
+import { useState } from "react";
 
 const queryClient = new QueryClient();
 
@@ -27,25 +29,42 @@ const updateFavicon = () => {
 // Call the function once
 updateFavicon();
 
-const App = () => (
-  <ThemeProvider defaultTheme="light" storageKey="tokenomy-ui-theme">
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Header />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </AuthProvider>
-  </ThemeProvider>
-);
+const App = () => {
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
+
+  // Show newsletter popup after 15 seconds
+  useState(() => {
+    const timer = setTimeout(() => {
+      setShowNewsletterPopup(true);
+    }, 15000);
+    
+    return () => clearTimeout(timer);
+  });
+
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="tokenomy-ui-theme">
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Header />
+              <NewsletterPopup
+                open={showNewsletterPopup}
+                onOpenChange={setShowNewsletterPopup}
+              />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
 
 export default App;

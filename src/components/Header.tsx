@@ -5,13 +5,17 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
   const { user, loading } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
 
   const handleLoginSuccess = (name: string, provider: string) => {
     console.log(`User ${name} logged in via ${provider}`);
@@ -35,11 +39,14 @@ const Header = () => {
             </SheetContent>
           </Sheet>
           
-          <a href="/" className="flex items-center space-x-2">
-            <span className="font-bold text-xl">TOKENOMY</span>
+          <a href="/" className="flex flex-col items-start">
+            <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+              TOKENOMY
+            </h1>
+            <p className="text-xs md:text-sm text-foreground">Smart AI Token Management & Optimization</p>
           </a>
           
-          <nav className="hidden md:flex items-center gap-6 text-sm">
+          <nav className="hidden md:flex items-center gap-6 text-sm ml-6">
             <a href="#" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Features
             </a>
@@ -53,6 +60,69 @@ const Header = () => {
         </div>
         
         <div className="flex items-center gap-4">
+          {/* Social media links & subscription from Index.tsx */}
+          <div className="hidden sm:flex items-center gap-2 mr-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ml4u" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-1.5 bg-[#0A66C2] text-white rounded-md hover:bg-opacity-80 transition-colors">
+                    <Linkedin size={16} />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>Follow on LinkedIn</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a href="https://twitter.com/Mahesh_Lambe?ref_src=twsrc%5Etfw" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-1.5 bg-black text-white rounded-md hover:bg-opacity-80 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>Follow on X</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a href="https://github.com/mlmrx" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-1.5 bg-[#24292e] text-white rounded-md hover:bg-opacity-80 transition-colors">
+                    <Github size={16} />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>Follow on GitHub</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a href="https://www.tokenomy.ai" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+                    <Share2 size={16} />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>Share Tokenomy</TooltipContent>
+              </Tooltip>
+              
+              <Button 
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 border-purple-400 hover:bg-purple-100"
+                onClick={() => setShowNewsletterPopup(true)}
+              >
+                <Mail size={14} className="text-purple-600" />
+                <span className="text-xs">Subscribe</span>
+              </Button>
+            </TooltipProvider>
+          </div>
+
           <Button
             variant="ghost"
             size="icon"
@@ -73,7 +143,12 @@ const Header = () => {
           ) : user ? (
             <UserMenu />
           ) : (
-            <Button onClick={() => setLoginDialogOpen(true)}>Sign In</Button>
+            <Button 
+              onClick={() => setLoginDialogOpen(true)} 
+              className="hover-scale text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
+            >
+              Log In / Sign Up
+            </Button>
           )}
         </div>
       </div>

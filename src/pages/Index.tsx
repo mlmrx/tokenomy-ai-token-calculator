@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -379,6 +380,17 @@ const Index = () => {
       <AINewsMarquee />
       
       <main className="flex-1 container mx-auto py-6 px-4 md:px-6 section-appear">
+        {/* Add MainNavigation component here */}
+        <div className="mb-6 flex justify-center w-full">
+          <MainNavigation 
+            activeTab={activeTab} 
+            onTabChange={handleTabChange} 
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} 
+            theme={theme}
+            onThemeChange={handleThemeChange} 
+          />
+        </div>
+
         {activeTab === "calculator" && (
           <>
             <div className="mb-6">

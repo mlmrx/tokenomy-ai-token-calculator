@@ -8,9 +8,13 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Index from "./pages/Index";
+import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import NewsletterPopup from "@/components/NewsletterPopup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -33,13 +37,13 @@ const App = () => {
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
 
   // Show newsletter popup after 15 seconds
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setShowNewsletterPopup(true);
     }, 15000);
     
     return () => clearTimeout(timer);
-  });
+  }, []);
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="tokenomy-ui-theme">
@@ -56,6 +60,10 @@ const App = () => {
               />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

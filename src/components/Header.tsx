@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
@@ -34,28 +35,35 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
-                <p>Menu content goes here</p>
+                <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
+                <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
+                <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
+                <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
+                <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
               </div>
             </SheetContent>
           </Sheet>
           
-          <a href="/" className="flex flex-col items-start">
+          <Link to="/" className="flex flex-col items-start">
             <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
               TOKENOMY
             </h1>
             <p className="text-xs md:text-sm text-foreground">Smart AI Token Management & Optimization</p>
-          </a>
+          </Link>
           
           <nav className="hidden md:flex items-center gap-6 text-sm ml-6">
-            <a href="#" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Features
-            </a>
-            <a href="#" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            </Link>
+            <Link to="/pricing" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Pricing
-            </a>
-            <a href="#" className="transition-colors hover:text-foreground/80 text-foreground/60">
+            </Link>
+            <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
               About
-            </a>
+            </Link>
+            <Link to="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Contact
+            </Link>
           </nav>
         </div>
         

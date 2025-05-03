@@ -244,6 +244,70 @@ const Index = () => {
     });
   };
 
+  // Implement file upload handler
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    
+    if (!file) {
+      return;
+    }
+    
+    // Check file size (limit to 5MB)
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_SIZE) {
+      toast({
+        title: "File Too Large",
+        description: "Please select a file smaller than 5MB.",
+        variant: "destructive",
+      });
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+    
+    // Check file type
+    if (file.type !== 'text/plain') {
+      toast({
+        title: "Invalid File Type",
+        description: "Please select a text (.txt) file.",
+        variant: "destructive",
+      });
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      setText(content);
+      toast({
+        title: "File Loaded",
+        description: `${file.name} has been loaded successfully.`,
+      });
+    };
+    
+    reader.onerror = () => {
+      toast({
+        title: "Read Error",
+        description: "Failed to read the file.",
+        variant: "destructive",
+      });
+    };
+    
+    reader.readAsText(file);
+    
+    // Reset file input for future uploads
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   // Speech recognition function
   const startRecording = () => {
     if (!navigator.mediaDevices) {

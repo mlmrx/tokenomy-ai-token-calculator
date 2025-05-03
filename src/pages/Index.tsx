@@ -18,6 +18,12 @@ import {
   BarChart4,
   LineChart,
   LayoutDashboard,
+  Calculator,
+  ArrowRight,
+  Clock,
+  Brain,
+  Lightbulb,
+  BarChart,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -133,7 +139,7 @@ const Index = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState<any>(null);
   const [tokenizationScheme, setTokenizationScheme] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("calculator");
+  const [activeTab, setActiveTab] = useState("home");
   const [activeCalcTab, setActiveCalcTab] = useState("model-comparison");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -169,19 +175,24 @@ const Index = () => {
   // Update URL when tabs change
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set('tab', activeTab);
     
-    if (activeTab === 'calculator') {
-      params.set('subtab', activeCalcTab);
+    if (activeTab !== 'home') {
+      params.set('tab', activeTab);
+      
+      if (activeTab === 'calculator') {
+        params.set('subtab', activeCalcTab);
+      } else {
+        params.delete('subtab');
+      }
+      
+      const newUrl = `/?${params.toString()}`;
+      navigate(newUrl, { replace: true });
     } else {
-      params.delete('subtab');
+      // For home tab, just show the root URL
+      navigate('/', { replace: true });
     }
-    
-    const newUrl = `/?${params.toString()}`;
-    navigate(newUrl, { replace: true });
   }, [activeTab, activeCalcTab, navigate]);
 
-  // Handle theme changes
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
     setTheme(newTheme);
     // In a real app, this would also update the document or localStorage
@@ -457,6 +468,125 @@ const Index = () => {
           />
         </div>
 
+        {/* Home Page Content */}
+        {activeTab === "home" && (
+          <>
+            <div className="w-full max-w-6xl mx-auto mb-12 text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 animate-pulse-subtle">
+                Welcome to TOKENOMY
+              </h1>
+              <p className="text-xl max-w-3xl mx-auto mb-8 text-muted-foreground">
+                Smart AI token management and optimization tools to help you build more efficient and cost-effective AI applications.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-103 border-t-4" style={{borderTopColor: '#4f46e5'}}>
+                  <div className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-4">
+                      <Calculator className="h-6 w-6 text-indigo-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Token Calculator</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Calculate tokens, estimate costs, and optimize your prompts for various AI models.
+                    </p>
+                    <Button 
+                      onClick={() => setActiveTab('calculator')}
+                      className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      Open Calculator <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+                
+                <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-103 border-t-4" style={{borderTopColor: '#8b5cf6'}}>
+                  <div className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
+                      <Clock className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Speed Simulator</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Simulate token generation speed and compare performance across different AI models.
+                    </p>
+                    <Button 
+                      onClick={() => setActiveTab('speed')}
+                      className="w-full mt-4 bg-purple-600 hover:bg-purple-700"
+                    >
+                      Open Simulator <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+                
+                <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-103 border-t-4" style={{borderTopColor: '#d97706'}}>
+                  <div className="p-6 space-y-4">
+                    <div className="h-12 w-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4">
+                      <Brain className="h-6 w-6 text-amber-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Memory Calculator</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Optimize memory usage and calculate memory requirements for AI model inference.
+                    </p>
+                    <Button 
+                      onClick={() => setActiveTab('memory')}
+                      className="w-full mt-4 bg-amber-600 hover:bg-amber-700"
+                    >
+                      Open Memory Tools <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+              
+              {/* Features Section */}
+              <div className="mt-16 mb-10">
+                <h2 className="text-2xl font-bold mb-8">Why Choose Tokenomy?</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="bg-background/50 p-4 rounded-lg border border-border flex flex-col items-center">
+                    <div className="rounded-full bg-primary/10 p-3 mb-3">
+                      <Zap className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-medium mb-1">Optimize Costs</h3>
+                    <p className="text-sm text-center text-muted-foreground">Reduce token usage and save on API costs</p>
+                  </div>
+                  
+                  <div className="bg-background/50 p-4 rounded-lg border border-border flex flex-col items-center">
+                    <div className="rounded-full bg-primary/10 p-3 mb-3">
+                      <Lightbulb className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-medium mb-1">Smart Analytics</h3>
+                    <p className="text-sm text-center text-muted-foreground">Get insights on token usage patterns</p>
+                  </div>
+                  
+                  <div className="bg-background/50 p-4 rounded-lg border border-border flex flex-col items-center">
+                    <div className="rounded-full bg-primary/10 p-3 mb-3">
+                      <BarChart className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-medium mb-1">Visual Reports</h3>
+                    <p className="text-sm text-center text-muted-foreground">Interactive charts and data visualization</p>
+                  </div>
+                  
+                  <div className="bg-background/50 p-4 rounded-lg border border-border flex flex-col items-center">
+                    <div className="rounded-full bg-primary/10 p-3 mb-3">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-medium mb-1">AI-Powered</h3>
+                    <p className="text-sm text-center text-muted-foreground">ML-based suggestions for optimization</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-12">
+                <Button 
+                  size="lg" 
+                  onClick={() => setActiveTab('calculator')}
+                  className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white px-8 shadow-lg"
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+
         {activeTab === "calculator" && (
           <>
             <div className="mb-6">
@@ -484,7 +614,7 @@ const Index = () => {
                           accept=".txt"
                           className="hidden"
                         />
-                        {/* Updated control buttons with transparent background */}
+                        {/* Control buttons for text input */}
                         <div className="absolute bottom-3 right-3 flex gap-2 bg-white/30 backdrop-blur-sm p-1 rounded-md">
                           <TooltipProvider>
                             <Tooltip>
@@ -654,160 +784,5 @@ const Index = () => {
                   </div>
                   
                   <div className="space-y-6">
-                    {/* These results should be visible by default */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      <div className="bg-muted rounded-lg p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Total Tokens</div>
-                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.tokens.toLocaleString() || "0"}</div>
-                      </div>
-                      <div className="bg-muted rounded-lg p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Characters</div>
-                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.chars.toLocaleString() || "0"}</div>
-                      </div>
-                      <div className="bg-muted rounded-lg p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Chars/Token</div>
-                        <div className="text-2xl font-bold text-foreground">{analyzeResult?.charsPerToken.toFixed(1) || "0.0"}</div>
-                      </div>
-                      <div className="bg-muted rounded-lg p-4 text-center" 
-                        style={{background: `rgba(${parseInt(modelTheme.primary.slice(1,3), 16)}, ${parseInt(modelTheme.primary.slice(3,5), 16)}, ${parseInt(modelTheme.primary.slice(5,7), 16)}, 0.1)`}}>
-                        <div className="text-sm text-muted-foreground">Estimated Cost</div>
-                        <div className="text-2xl font-bold text-foreground">${analyzeResult?.costs.total.toFixed(6) || "0.000000"}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                      <TokenizationInfo model={selectedModel} tokens={analyzeResult?.tokens || 0} />
-                      <ModelRecommendation text={text} tokens={analyzeResult?.tokens || 0} onSelectModel={setSelectedModel} />
-                    </div>
-                    
-                    {/* Tabs with improved styling */}
-                    <Tabs defaultValue="model-comparison" value={activeCalcTab} onValueChange={setActiveCalcTab}>
-                      <div className="relative overflow-hidden border-b border-border">
-                        <TabsList className="w-full flex justify-start overflow-x-auto no-scrollbar bg-background py-2 px-1" 
-                          style={{borderColor: `${modelTheme.border}`}}>
-                          {[
-                            { id: "model-comparison", icon: <LayoutDashboard className="h-4 w-4" />, label: "Model Comparison" },
-                            { id: "tokenization", icon: <FileText className="h-4 w-4" />, label: "Tokenization" },
-                            { id: "recent-inputs", icon: <BarChart4 className="h-4 w-4" />, label: "Recent Inputs" },
-                            { id: "visualization", icon: <LineChart className="h-4 w-4" />, label: "Visualization" },
-                            { id: "process", icon: <Zap className="h-4 w-4" />, label: "Process Flow" },
-                            { id: "energy", icon: <AlertCircle className="h-4 w-4" />, label: "Energy Usage" }
-                          ].map(tab => (
-                            <TabsTrigger 
-                              key={tab.id}
-                              value={tab.id} 
-                              className={`text-foreground flex items-center gap-2 relative px-4 py-2 rounded-md transition-all duration-300 ${
-                                activeCalcTab === tab.id ? 'font-medium' : ''
-                              }`}
-                              style={{
-                                '--glow-color': `${modelTheme.primary}40`
-                              } as React.CSSProperties}
-                            >
-                              {tab.icon}
-                              <span>{tab.label}</span>
-                              {activeCalcTab === tab.id && (
-                                <span 
-                                  className="absolute bottom-0 left-1/2 w-[calc(100%-1.5rem)] h-0.5 transform -translate-x-1/2 bg-gradient-to-r animate-tab-highlight"
-                                  style={{
-                                    backgroundImage: `linear-gradient(to right, transparent, ${modelTheme.primary}, transparent)`
-                                  }}
-                                ></span>
-                              )}
-                              {activeCalcTab === tab.id && (
-                                <span 
-                                  className="absolute inset-0 rounded-md animate-subtle-glow"
-                                  style={{
-                                    '--glow-color': `${modelTheme.primary}20`
-                                  } as React.CSSProperties}
-                                ></span>
-                              )}
-                            </TabsTrigger>
-                          ))}
-                        </TabsList>
-                      </div>
-                      <TabsContent value="model-comparison" className="pt-4">
-                        <ModelComparisonChart selectedModel={selectedModel} />
-                      </TabsContent>
-                      <TabsContent value="tokenization" className="pt-4">
-                        <TokenizationChart userInputs={[{
-                          text: text || "",
-                          tokens: analyzeResult?.tokens || 0,
-                          chars: analyzeResult?.chars || 0,
-                          inputCost: analyzeResult?.costs.input || 0,
-                          outputCost: analyzeResult?.costs.output || 0
-                        }]} />
-                      </TabsContent>
-                      <TabsContent value="recent-inputs" className="pt-4">
-                        <InputComparisonChart recentInputs={recentAnalyses} />
-                      </TabsContent>
-                      <TabsContent value="visualization" className="pt-4">
-                        <VisualizationTab 
-                          text={text || ""}
-                          tokens={analyzeResult?.tokens || 0}
-                          costs={analyzeResult?.costs || { input: 0, output: 0, total: 0 }}
-                          model={selectedModel}
-                        />
-                      </TabsContent>
-                      <TabsContent value="process" className="pt-4">
-                        <ProcessFlowEnhanced text={text || ""} tokens={analyzeResult?.tokens || 0} />
-                      </TabsContent>
-                      <TabsContent value="energy" className="pt-4">
-                        <EnergyConsumptionTab tokens={analyzeResult?.tokens || 0} selectedModel={selectedModel} />
-                      </TabsContent>
-                    </Tabs>
-                    
-                    <div className="mt-8">
-                      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <h3 className="text-lg font-semibold text-foreground">Export Results</h3>
-                        <ExportData 
-                          data={analyzeResult || {}} 
-                          colorTheme={modelTheme}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </>
-        )}
-
-        {activeTab === "speed" && (
-          <div className="speed-bg-gradient p-6 rounded-lg mb-6">
-            <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
-              <TokenSpeedSimulator />
-            </div>
-          </div>
-        )}
-        
-        {activeTab === "memory" && (
-          <div className="memory-bg-gradient p-6 rounded-lg mb-6">
-            <div className="bg-gradient-to-br from-amber-800/60 to-orange-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
-              <MemoryCalculator />
-            </div>
-          </div>
-        )}
-        
-        {/* Hidden utility components for direct access via URL hash */}
-        <div className="hidden" id="utility-components">
-          <div id="newsletter">
-            <NewsletterForm />
-          </div>
-          <div id="language-selector">
-            <LanguageSelector />
-          </div>
-          <div id="share">
-            <ShareWidget />
-          </div>
-          <div id="export">
-            <ExportData data={analyzeResult || {}} />
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-    </div>
-  );
-};
-
-export default Index;
+                    {/* Results display */}
+                    <div className="grid

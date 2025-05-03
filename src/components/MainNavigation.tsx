@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart, Home } from "lucide-react";
 import { Link, useLocation } from 'react-router-dom';
 
 interface MainNavigationProps {
@@ -21,6 +20,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
   const location = useLocation();
 
   const menuItems = [
+    {
+      id: "home",
+      label: "Home",
+      icon: <Home className="h-5 w-5" />,
+      gradientFrom: "from-green-600",
+      gradientTo: "to-teal-500",
+    },
     {
       id: "calculator",
       label: "Token Calculator",
@@ -43,6 +49,9 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       gradientTo: "to-orange-600",
     },
   ];
+
+  // Only show subtabs for calculator when it's active
+  const showCalculatorSubtabs = activeTab === 'calculator' && location.pathname === '/';
 
   return (
     <nav className="flex flex-col items-center w-full mb-8">
@@ -67,36 +76,28 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
         ))}
       </div>
       
-      {/* Add feature links navigation */}
-      <div className="w-full max-w-4xl mb-4">
-        <div className="flex flex-wrap justify-center gap-2">
-          <Link 
-            to="/features" 
-            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.pathname === '/features' ? 'bg-primary/10 font-medium' : ''}`}>
-            Features
-          </Link>
-          <Link 
-            to="/pricing" 
-            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.pathname === '/pricing' ? 'bg-primary/10 font-medium' : ''}`}>
-            Pricing
-          </Link>
-          <Link 
-            to="/?tab=calculator&subtab=model-comparison" 
-            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'calculator' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
-            Model Comparison
-          </Link>
-          <Link 
-            to="/?tab=calculator&subtab=visualization" 
-            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'calculator' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
-            Visualizations
-          </Link>
-          <Link 
-            to="/?tab=memory" 
-            className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${activeTab === 'memory' && location.pathname === '/' ? 'bg-primary/10 font-medium' : ''}`}>
-            Memory Calculator
-          </Link>
+      {/* Only show calculator subtabs when calculator is active */}
+      {showCalculatorSubtabs && (
+        <div className="w-full max-w-4xl mb-4">
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link 
+              to="/?tab=calculator&subtab=model-comparison" 
+              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=model-comparison') ? 'bg-primary/10 font-medium' : ''}`}>
+              Model Comparison
+            </Link>
+            <Link 
+              to="/?tab=calculator&subtab=visualization" 
+              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=visualization') ? 'bg-primary/10 font-medium' : ''}`}>
+              Visualizations
+            </Link>
+            <Link 
+              to="/?tab=calculator&subtab=tokenization" 
+              className={`px-4 py-1.5 text-sm rounded-full transition-all hover:bg-primary/10 ${location.search.includes('subtab=tokenization') ? 'bg-primary/10 font-medium' : ''}`}>
+              Tokenization
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
       
       <style dangerouslySetInnerHTML={{
         __html: `

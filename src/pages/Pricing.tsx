@@ -1,5 +1,4 @@
 
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "lucide-react";
@@ -19,11 +18,8 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/90">
       <section className="py-24 container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+        <div 
+          className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
             Simple & Transparent Pricing
@@ -31,13 +27,10 @@ const Pricing = () => {
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
             Tokenomy is completely free to use. No hidden fees, no credit card required.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-xl mx-auto"
+        <div
+          className="max-w-xl mx-auto opacity-0 translate-y-5 animate-[fadeIn_0.6s_0.2s_ease-out_forwards]"
         >
           <Card className="overflow-hidden border-2 border-primary shadow-lg">
             <div className="bg-primary p-6 text-white text-center">
@@ -55,16 +48,14 @@ const Pricing = () => {
               
               <ul className="space-y-4 mb-8">
                 {features.map((feature, index) => (
-                  <motion.li 
+                  <li 
                     key={index} 
-                    className="flex items-start"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
+                    className="flex items-start opacity-0 -translate-x-2 animate-[fadeIn_0.3s_ease-out_forwards]"
+                    style={{ animationDelay: `${0.3 + index * 0.1}s` }}
                   >
                     <CheckIcon className="h-5 w-5 text-primary mt-0.5 mr-3 flex-shrink-0" />
                     <span>{feature}</span>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
               
@@ -73,13 +64,10 @@ const Pricing = () => {
               </Button>
             </div>
           </Card>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-20 text-center"
+        <div 
+          className="mt-20 text-center opacity-0 animate-[fadeIn_0.8s_0.5s_ease-out_forwards]"
         >
           <h3 className="text-xl md:text-2xl font-bold mb-6">
             Why is Tokenomy completely free?
@@ -88,7 +76,7 @@ const Pricing = () => {
             We believe in making AI accessible to everyone. Tokenomy is our contribution to the AI community,
             helping developers and users optimize their AI interactions without any financial barriers.
           </p>
-        </motion.div>
+        </div>
       </section>
       <Footer />
     </div>

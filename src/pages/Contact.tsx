@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,11 +85,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/90">
       <section className="py-24 container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+        <div
+          className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
             Contact Us
@@ -98,13 +94,11 @@ const Contact = () => {
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
             Have questions or feedback? We'd love to hear from you.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-10 items-start max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+          <div
+            className="opacity-0 -translate-x-5 animate-[fadeIn_0.6s_0.2s_ease-out_forwards]"
           >
             <Card className="p-8 border border-border shadow-lg">
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -167,13 +161,10 @@ const Contact = () => {
                 </Button>
               </form>
             </Card>
-          </motion.div>
+          </div>
           
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-8"
+          <div
+            className="space-y-8 opacity-0 translate-x-5 animate-[fadeIn_0.6s_0.4s_ease-out_forwards]"
           >
             <Card className="p-8 border border-border shadow-lg">
               <div className="flex items-start space-x-4">
@@ -218,7 +209,7 @@ const Contact = () => {
                 <Button size="sm" variant="outline" className="bg-background">LinkedIn</Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
       <Footer />

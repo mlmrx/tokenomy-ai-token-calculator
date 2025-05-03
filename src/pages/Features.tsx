@@ -1,5 +1,4 @@
 
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { BarChart4, Zap, Database, Shield, FileText, Rocket } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -50,34 +49,11 @@ const features = [
 ];
 
 const Features = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/90">
       <section className="py-24 container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+        <div
+          className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
             Powerful Token Management Features
@@ -85,20 +61,16 @@ const Features = () => {
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
             Tokenomy provides powerful tools to analyze, optimize, and manage your AI token usage across all major models.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+        <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
         >
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-              className="group"
+              className="group opacity-0 translate-y-4 animate-[fadeIn_0.5s_ease-out_forwards] hover:scale-103 transition-transform duration-200"
+              style={{ animationDelay: `${0.3 + index * 0.1}s` }}
             >
               <Card className="p-6 h-full border border-border hover:border-primary/20 transition-all duration-300 shadow-lg hover:shadow-xl">
                 <div className="flex flex-col h-full">
@@ -109,15 +81,12 @@ const Features = () => {
                   <p className="text-muted-foreground">{feature.description}</p>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="bg-gradient-to-r from-violet-600/20 via-blue-600/20 to-purple-600/20 rounded-2xl p-8 md:p-12 shadow-xl"
+        <div
+          className="bg-gradient-to-r from-violet-600/20 via-blue-600/20 to-purple-600/20 rounded-2xl p-8 md:p-12 shadow-xl opacity-0 scale-95 animate-[fadeIn_0.5s_0.4s_ease-out_forwards,scaleIn_0.5s_0.4s_ease-out_forwards]"
         >
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
@@ -141,7 +110,7 @@ const Features = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
       <Footer />
     </div>

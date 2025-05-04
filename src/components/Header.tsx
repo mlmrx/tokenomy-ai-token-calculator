@@ -49,7 +49,7 @@ const Header = () => {
             <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
               TOKENOMY
             </h1>
-            <p className="text-xs md:text-sm text-foreground">Smart AI Token Management & Optimization</p>
+           
           </Link>
           
           <nav className="hidden md:flex items-center gap-6 text-sm ml-6">

@@ -10,7 +10,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 // Define the structure for each company's statistics
-interface CompanyStatType {
+type CompanyStatType {
   name: string; // Company name
   ceo: string; // CEO's name
   position: string; // CEO's position title

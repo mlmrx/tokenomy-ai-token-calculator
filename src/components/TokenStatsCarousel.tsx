@@ -255,7 +255,7 @@ const CompanyStatsCarousel: React.FC = () => {
           AI Industry Leaders & Scale
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-400">
-          Flagship AI and estimated monthly token trends (2024)
+          Key players, their flagship products, and estimated monthly token processing
         </p>
       </div>
 

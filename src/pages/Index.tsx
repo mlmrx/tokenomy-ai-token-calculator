@@ -732,11 +732,11 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          <div className="speed-bg-gradient p-6 rounded-lg mb-6">
-           // <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
+          //<div className="speed-bg-gradient p-6 rounded-lg mb-6">
+            <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <TokenSpeedSimulator />
-           // </div>
-          </div>
+            </div>
+          //</div>
         )}
         
         {activeTab === "memory" && (

@@ -20,11 +20,11 @@ export interface CompanyStatType {
   flagshipAIProduct: string;
   imageUrl: string;
   logoUrl: string;
-  color: string;          // Tailwind gradient
+  color: string;          // Tailwind gradient classes
   foundedYear: number;
   headquarters: string;
-  estimatedTokens: string; // NEW
-  stats: string;           // FY-24 revenue | m-cap, etc.  (optional—unused in UI)
+  estimatedTokens: string; // NEW   (≈ tokens/month)
+  stats: string;           // FY-24 revenue | valuation (not shown but retained)
 }
 
 /* -------------------------------------------------------------------------- */
@@ -56,7 +56,8 @@ const companyStats: CompanyStatType[] = [
     flagshipAIProduct: 'AWS Bedrock / Amazon Q',
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+    logoUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
     color: 'from-[#FF9900] to-[#FFB84D]',
     foundedYear: 1994,
     headquarters: 'Seattle, Washington, USA',
@@ -67,11 +68,12 @@ const companyStats: CompanyStatType[] = [
     name: 'OpenAI',
     ceo: 'Sam Altman',
     position: 'CEO',
-    aiFocusArea: 'Pioneering large language models and generative-AI research',
+    aiFocusArea: 'Pioneering large-language models & generative-AI research',
     flagshipAIProduct: 'ChatGPT / GPT-4o',
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/OpenAI_Logo.svg',
+    logoUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/4/4c/OpenAI_Logo.svg',
     color: 'from-[#10A37F] to-[#1DBE8E]',
     foundedYear: 2015,
     headquarters: 'San Francisco, California, USA',
@@ -99,7 +101,7 @@ const companyStats: CompanyStatType[] = [
     name: 'Meta',
     ceo: 'Mark Zuckerberg',
     position: 'Chairman & CEO',
-    aiFocusArea: 'Open-source AI models plus AI for social and metaverse',
+    aiFocusArea: 'Open-source AI models plus AI for social & metaverse',
     flagshipAIProduct: 'Llama 3 / Meta AI',
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
@@ -144,7 +146,7 @@ const CompanyStatsCarousel: React.FC = () => {
 
   return (
     <div className="w-full max-w-6xl mx-auto py-8 px-4">
-      {/* Section header */}
+      {/* header */}
       <div className="mb-8 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-800 dark:text-white">
           AI Industry Leaders
@@ -154,7 +156,7 @@ const CompanyStatsCarousel: React.FC = () => {
         </p>
       </div>
 
-      {/* Carousel */}
+      {/* carousel */}
       <div className="relative px-12">
         <Carousel
           opts={{ align: 'start', loop: true }}
@@ -170,7 +172,7 @@ const CompanyStatsCarousel: React.FC = () => {
                 <div className="p-1 h-full">
                   <Card className="h-full border-2 border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-300 shadow-lg rounded-xl overflow-hidden">
                     <CardContent className="p-0 h-full flex flex-col">
-                      {/* Gradient header ------------------------------------------------ */}
+                      {/* gradient header */}
                       <div
                         className={`bg-gradient-to-br ${c.color} text-white p-6 rounded-t-xl relative`}
                       >
@@ -183,7 +185,7 @@ const CompanyStatsCarousel: React.FC = () => {
                             (e.currentTarget.style.display = 'none')
                           }
                         />
-                        {/* company name */}
+                        {/* name */}
                         <h3 className="text-2xl font-bold mb-2">{c.name}</h3>
 
                         {/* badges */}
@@ -197,7 +199,7 @@ const CompanyStatsCarousel: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Body --------------------------------------------------------- */}
+                      {/* body */}
                       <div className="p-6 flex flex-col flex-grow bg-white dark:bg-gray-800">
                         {/* CEO row */}
                         <div className="flex items-center gap-4 mb-4">
@@ -242,7 +244,7 @@ const CompanyStatsCarousel: React.FC = () => {
             ))}
           </CarouselContent>
 
-          {/* nav arrows */}
+          {/* arrows */}
           <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md" />
           <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md" />
         </Carousel>

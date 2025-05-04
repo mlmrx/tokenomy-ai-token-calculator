@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, coins-stack, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Product, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +37,7 @@ const Header = () => {
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
                 <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
-                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
+                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Products</Link>
                 <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
                 <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
@@ -59,7 +59,7 @@ const Header = () => {
               Home
             </Link>
             <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <coins-stack size={16} />
+              <Product size={16} />
               Products
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">

@@ -48,12 +48,12 @@ const App = () => {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="tokenomy-ui-theme">
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AuthProvider>
             <BrowserRouter>
+              <Toaster />
+              <Sonner />
               <Header />
               <NewsletterPopup
                 open={showNewsletterPopup}
@@ -70,9 +70,9 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </AuthProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };

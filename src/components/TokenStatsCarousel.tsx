@@ -235,7 +235,7 @@ const getGradientColors = (tailwind: string): { from: string; to: string } => {
 /* -------------------------------------------------------------------------- */
 /* COMPONENT                                                                 */
 /* -------------------------------------------------------------------------- */
-const CompanyStatsCarousel: React.FC = () => {
+const TokenStatsCarousel: React.FC = () => {
   const [api, setApi] = useState<CarouselApi | null>(null);
 
   /* Autoplay Effect */
@@ -432,4 +432,4 @@ const CompanyStatsCarousel: React.FC = () => {
   );
 };
 
-export default CompanyStatsCarousel;
+export default TokenStatsCarousel;

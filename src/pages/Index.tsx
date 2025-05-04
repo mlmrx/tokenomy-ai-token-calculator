@@ -29,7 +29,7 @@ import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo 
 import MainNavigation from "@/components/MainNavigation";
 import TokenizationInfo from "@/components/TokenizationInfo";
 import ModelRecommendation from "@/components/ModelRecommendation";
-import SpeedSimulator from "@/componets/SpeedSimulator";
+import { SpeedSimulator } from "@/componets/SpeedSimulator";
 import MemoryCalculator from "@/components/MemoryCalculator";
 import ExportData from "@/components/ExportData";
 import ModelComparisonChart from "@/components/ModelComparisonChart";

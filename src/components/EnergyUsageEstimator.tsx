@@ -8,9 +8,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// Updated Icon Imports for direct use in Gauge
 import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'; // Removed RadialBar imports
 
 // --- Configuration & Constants (May 2025 Data - Unchanged) ---
 type ModelSize = 'small' | 'medium' | 'large' | 'very_large';
@@ -72,33 +71,72 @@ const formatNumber = (num: number, precision: number = 1): string => {
 const formatTokenDisplay = (num: number): string => { /* ... V5 Function ... */ return num >= 1e6? (num/1e6).toFixed(2)+'M' : num >= 1e3? (num/1e3).toFixed(1)+'k' : num.toString(); };
 
 
-// --- Visually Enhanced Metric Gauge Component ---
-interface MetricGaugeProps {
+// --- NEW: Creative Metric Card Component ---
+interface MetricCardProps {
   value: number;
-  maxValue: number;
+  maxValue: number; // For scaling the progress bar
   label: string;
   unit: string;
-  color: string; // Base hex color for the gradient
-  icon: React.ElementType; // Lucide icon component
+  color: string; // Base hex color for styling
+  icon: React.ElementType;
   precision?: number;
   secondaryValue?: number;
   secondaryLabel?: string;
   secondaryUnit?: string;
 }
 
-const MetricGauge: React.FC<MetricGaugeProps> = ({
+const MetricCard: React.FC<MetricCardProps> = ({
     value, maxValue, label, unit, color, icon: Icon, precision = 1,
     secondaryValue, secondaryLabel, secondaryUnit
 }) => {
   const displayValue = formatNumber(value, precision);
   const displaySecondaryValue = secondaryValue !== undefined ? formatNumber(secondaryValue, precision) : '';
-  const gaugeValue = Math.min(value, maxValue);
-  const percentage = maxValue > 0 ? (gaugeValue / maxValue) * 100 : 0;
-  const gradientId = `gradient-${label.replace(/\s+/g, '-')}`;
+  const percentage = maxValue > 0 ? Math.min((value / maxValue) * 100, 100) : 0; // Cap at 100%
 
-  // Use a slightly darker shade for the gradient end
-  // Basic hex manipulation (adjust darkness factor as needed)
-  const darkenColor = (hex: string, factor: number): string => {
+  // Generate Tailwind classes for dynamic background gradient
+  // Note: Tailwind JIT needs to be able to "see" the full class names.
+  // For truly dynamic arbitrary colors, inline styles might be needed,
+  // but we can predefine a few color themes.
+  // Let's use inline styles for the gradient for flexibility.
+  const gradientStyle = {
+    background: `linear-gradient(to right, ${color} ${percentage}%, rgba(150, 150, 150, 0.15) ${percentage}%)`
+  };
+
+  return (
+    <div className="flex flex-col justify-between p-4 rounded-xl border bg-card dark:bg-gray-800/30 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full min-h-[180px]"> {/* Ensure consistent height */}
+      {/* Top Section: Icon and Label */}
+      <div className="flex items-center gap-2 text-base font-semibold text-muted-foreground mb-2">
+         <Icon className={`w-6 h-6`} style={{ color: color }}/>
+         <span>{label}</span>
+      </div>
+
+      {/* Middle Section: Value and Breakdown */}
+      <div className="text-center my-auto py-2"> {/* Center content vertically */}
+        <span className="text-4xl font-bold text-gray-800 dark:text-white">{displayValue}</span>
+        <span className="text-xl font-medium text-gray-600 dark:text-gray-300 ml-1.5">{unit}</span>
+        {secondaryValue !== undefined && secondaryLabel && (
+          <p className="text-sm text-muted-foreground mt-1">
+            ({secondaryLabel}: {displaySecondaryValue}{secondaryUnit ? ` ${secondaryUnit}` : ''})
+          </p>
+        )}
+      </div>
+
+      {/* Bottom Section: Progress Bar */}
+      <div className="w-full h-2 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mt-3">
+         {/* Apply gradient using inline style */}
+        <div
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${percentage}%`, backgroundColor: color }} // Fallback bg color
+          // If you want a gradient bar instead of solid color:
+          // style={{ width: `${percentage}%`, background: `linear-gradient(90deg, ${color} 0%, ${darkenColor(color, 0.3)} 100%)` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+// Helper function to darken color (if needed for gradient bar)
+const darkenColor = (hex: string, factor: number): string => {
     let r = parseInt(hex.substring(1, 3), 16);
     let g = parseInt(hex.substring(3, 5), 16);
     let b = parseInt(hex.substring(5, 7), 16);
@@ -106,61 +144,6 @@ const MetricGauge: React.FC<MetricGaugeProps> = ({
     g = Math.max(0, Math.floor(g * (1 - factor)));
     b = Math.max(0, Math.floor(b * (1 - factor)));
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-  };
-  const endColor = darkenColor(color, 0.2); // Make end color 20% darker
-
-  const data = [{ name: label, value: percentage, fill: `url(#${gradientId})` }];
-
-  return (
-    // Added subtle background and shadow to the container
-    <div className="flex flex-col items-center text-center p-4 rounded-xl border bg-card dark:bg-gray-800/30 shadow-md hover:shadow-lg transition-shadow duration-200">
-      {/* Label with Icon */}
-      <div className="flex items-center justify-center gap-2 text-base font-medium text-muted-foreground mb-3">
-         <Icon className={`w-5 h-5`} style={{ color: color }}/> {/* Use color for icon */}
-         <span>{label}</span>
-      </div>
-      {/* Gauge Container */}
-      <div style={{ width: '100%', height: 150 }}> {/* Increased height */}
-        <ResponsiveContainer>
-          <RadialBarChart
-            innerRadius="70%" // Make the ring slightly thinner relative to outer
-            outerRadius="95%" // Make the gauge fill more space
-            barSize={16} // Thicker bar
-            data={data}
-            startAngle={180} // Start from the bottom left
-            endAngle={0}   // End at the bottom right
-            cy="80%" // Position gauge lower to give text more space
-          >
-            {/* Define the gradient */}
-            <defs>
-              <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%"> {/* Horizontal gradient */}
-                <stop offset="0%" stopColor={color} stopOpacity={0.7}/>
-                <stop offset="100%" stopColor={endColor} stopOpacity={1}/>
-              </linearGradient>
-            </defs>
-            <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-            <RadialBar
-              background={{ fill: 'rgba(150, 150, 150, 0.15)' }} // More visible background track
-              dataKey="value"
-              cornerRadius={8} // More rounded corners
-              angleAxisId={0}
-            />
-            {/* Primary Value + Unit - More Prominent */}
-            <text x="50%" y="70%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold fill-current"> {/* Larger, Bolder */}
-              {displayValue}
-              <tspan className="text-xl font-medium ml-1.5 align-baseline">{unit}</tspan> {/* Adjusted unit style */}
-            </text>
-            {/* Secondary Value (Breakdown) */}
-            {secondaryValue !== undefined && secondaryLabel && (
-              <text x="50%" y="90%" textAnchor="middle" dominantBaseline="middle" className="text-sm text-muted-foreground fill-current">
-                ({secondaryLabel}: {displaySecondaryValue}{secondaryUnit ? ` ${secondaryUnit}` : ''})
-              </text>
-            )}
-          </RadialBarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
 };
 
 
@@ -299,13 +282,13 @@ export default function EnergyUsageEstimator() {
           </Tabs>
 
 
-          {/* --- Results Section (Using Enhanced Gauges) --- */}
+          {/* --- Results Section (Using Creative Metric Cards) --- */}
           <div className="space-y-6 pt-8 border-t dark:border-gray-700">
-             <h3 className="text-lg font-medium text-center mb-4">Estimated Impact Summary</h3>
-             {/* Row 1: Core Metrics Gauges */}
+             <h3 className="text-lg font-medium text-center mb-6">Estimated Impact Summary</h3> {/* Increased bottom margin */}
+             {/* Row 1: Core Metrics Cards */}
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"> {/* Increased gap */}
-                 <MetricGauge
-                    icon={Zap} // Energy Icon
+                 <MetricCard
+                    icon={Zap}
                     label="Total Energy"
                     value={calculationResults.totalFacilityEnergyKWh}
                     maxValue={200} // Adjust as needed
@@ -316,8 +299,8 @@ export default function EnergyUsageEstimator() {
                     secondaryLabel="Compute"
                     secondaryUnit="kWh"
                  />
-                  <MetricGauge
-                    icon={Leaf} // CO2 Icon
+                  <MetricCard
+                    icon={Leaf}
                     label={includeLifecycle ? "Total CO₂e" : "Operational CO₂e"}
                     value={calculationResults.totalCo2eKg}
                     maxValue={100} // Adjust as needed
@@ -328,8 +311,8 @@ export default function EnergyUsageEstimator() {
                     secondaryLabel={includeLifecycle ? "Op" : "Eff. Grid"}
                     secondaryUnit={includeLifecycle ? "kg" : "g/kWh"}
                  />
-                 <MetricGauge
-                    icon={Droplet} // Water Icon
+                 <MetricCard
+                    icon={Droplet}
                     label="Total Water"
                     value={calculationResults.totalWaterUsageLiters}
                     maxValue={1000} // Adjust as needed
@@ -340,8 +323,8 @@ export default function EnergyUsageEstimator() {
                     secondaryLabel="Direct Cooling"
                     secondaryUnit="L"
                  />
-                 <MetricGauge
-                    icon={DollarSign} // Cost Icon
+                 <MetricCard
+                    icon={DollarSign}
                     label="Est. Energy Cost"
                     value={calculationResults.totalEnergyCost}
                     maxValue={50} // Adjust as needed

@@ -355,4 +355,287 @@ const MemoryCalculator = () => {
           const P_non_mlp_base = P_total_raw - (L * P_moe_mlp_layer); const P_active_experts_layer = topK * P_dense_mlp_layer; P_active_raw = P_non_mlp_base + L * (P_router_layer + P_active_experts_layer);
       } else { P_active_raw = P_total_raw; }
       let P_lora_raw = 0;
-      if (isLora) { const R = lora.rank; const lora_matrices_per_layer = 2 * (d * R + R * d); P_lora_raw = L * lora_matrices_per_layer;
+      if (isLora) { 
+          const R = lora.rank; 
+          const lora_matrices_per_layer = 2 * (d * R + R * d); 
+          P_lora_raw = L * lora_matrices_per_layer;
+      }
+
+      // Calculate different parameter counts based on weight quantization
+      const paramMultiplier = selectedQuantization.memoryMultiplier;
+      const P_total = P_total_raw; // Raw count does not change with quantization
+      const P_trainable = P_trainable_raw + P_lora_raw; // Add LoRA params if applicable
+      const P_active = P_active_raw;
+      // Memory required to store params in different formats (adds a bit of overhead for bookkeeping)
+      const M_lora = P_lora_raw * 4 / (1024 * 1024 * 1024); // Always FP32
+      const M_params = P_total * paramMultiplier * (4/32) / (1024 * 1024 * 1024); // GB
+      const M_active_params = P_active * paramMultiplier * (4/32) / (1024 * 1024 * 1024); // GB
+
+      return { 
+          P_total, P_trainable, P_active, P_lora: P_lora_raw,
+          M_params, M_active_params, M_lora,
+          isMoE, isLora,
+      };
+  }, [parameters, architectureId, memoryFlags, selectedQuantization]);
+
+  // --- Memory Calculation Details for Training ---
+  const trainingMemoryDetails = useMemo(() => {
+      if (!selectedHardware) return null;
+
+      const { hiddenSize: d, numLayers: L, sequenceLength: S, microBatchSizePerGPU: B_micro } = parameters;
+      const { M_active_params, P_active, isMoE } = parameterDetails || {};
+      const { memoryMultiplier: paramMultiplier } = selectedQuantization || { memoryMultiplier: 1.0 };
+      const { flashAttention = true, gradientCheckpointFactor = 1.0, zeroStage = 0 } = memoryFlags || {};
+
+      // Base activation calculation for attention-based models (per layer)
+      const MLP_FACTOR = 4;
+      const isAttentionModel = parameters.numHeads > 0;
+
+      // --- Determine per-layer memory footprints ---
+      // A large fraction of GPU memory during training is used by activations
+      // kept in memory for the backward pass. These can be reduced via gradient checkpointing.
+
+      // Size of activations per token for forward pass
+      let bytes_per_token_fwd = 0;
+      // Base activations for all models: embeddings and misc operations
+      bytes_per_token_fwd += d * 2; // About 2 bytes per embedding dim
+      
+      // Additional activations for specific architectures
+      if (isAttentionModel) {
+          if (architectureId === 'TX-ED') {
+              // Full encoder-decoder has ~2x the activations
+              bytes_per_token_fwd += 2 * (d * 10 + (isMoE ? d * 4 : d * 8));
+          } else {
+              bytes_per_token_fwd += d * 10 + (isMoE ? d * 4 : d * 8); // Attention outputs + FF activations
+          }
+      } else {
+          // Non-attention models (SSM, Hyena, etc)
+          if (architectureId === 'SSM-MAMBA') {
+              bytes_per_token_fwd += d * 4; // SSM kernels
+          } else {
+              bytes_per_token_fwd += d * 3; // Other architectures generic estimate
+          }
+      }
+      
+      // Handle attention optimization
+      if (isAttentionModel && flashAttention) {
+          // FlashAttention reduces memory for attention ops
+          bytes_per_token_fwd *= 0.75; 
+      }
+
+      // Calculate KV cache for decoder models - retained per token
+      let kv_cache_bytes_per_token = 0;
+      if (architectureId === 'TX-DEC' || architectureId === 'TX-MOE') {
+          // KV cache: 2 * hidden_size * bytes_per_param for each token
+          kv_cache_bytes_per_token = 2 * d * (memoryFlags.kvCachePrecision === 'int8' ? 1 : 2);
+      }
+
+      // Calculate total activations memory requirement
+      // This depends on sequence length, batch size, and gradient checkpointing
+      const bytes_per_seq_fwd = bytes_per_token_fwd * S;
+      const activation_discount = Math.sqrt(gradientCheckpointFactor); // Gradient checkpointing
+      const M_activations = B_micro * bytes_per_seq_fwd * L * activation_discount / (1024 * 1024 * 1024);
+      
+      // KV cache memory (if applicable)
+      const M_kvcache = B_micro * kv_cache_bytes_per_token * S * L / (1024 * 1024 * 1024);
+
+      // Optimizer states (Adam with 8-bit stats uses ~10 bytes/param)
+      // ZeRO shards optimizer states across GPUs - only need 1/N per GPU
+      const optimizer_fraction_per_gpu = zeroStage >= 1 ? (1.0 / numGpus) : 1.0;
+      const M_optimizer = P_active * 10 * optimizer_fraction_per_gpu / (1024 * 1024 * 1024); // GB
+
+      // Gradients - ZeRO shards gradients across GPUs from stage 2+
+      const grads_fraction_per_gpu = zeroStage >= 2 ? (1.0 / numGpus) : 1.0;
+      const bytes_per_param_grad = paramMultiplier * (4/32) * 4; // 4 bytes per original param for gradient
+      const M_gradients = P_active * bytes_per_param_grad * grads_fraction_per_gpu / (1024 * 1024 * 1024); // GB
+
+      // Model weights - ZeRO shards weights across GPUs from stage 3
+      const weights_fraction_per_gpu = zeroStage >= 3 ? (1.0 / numGpus) : 1.0;
+      const M_model_sharded = M_active_params * weights_fraction_per_gpu; // GB
+
+      // CPU offload consideration
+      const cpu_fraction = memoryFlags.cpuOffloadPct / 100.0;
+      const M_optimizer_after_offload = M_optimizer * (1 - cpu_fraction);
+      
+      // Base memory for CUDA context and PyTorch overhead
+      const M_base = 2.0; // About 2 GB for CUDA context + framework overhead
+
+      // Calculate total memory per GPU for training
+      const M_total_training_per_gpu = (
+          M_base + 
+          M_activations + 
+          M_kvcache +
+          M_model_sharded +
+          M_optimizer_after_offload + 
+          M_gradients
+      );
+
+      // Create memory component breakdown
+      const memoryComponents = [
+          { name: "Model Weights", value: M_model_sharded, color: "#8884d8" },
+          { name: "Optimizer States", value: M_optimizer_after_offload, color: "#82ca9d" },
+          { name: "Gradients", value: M_gradients, color: "#ffc658" },
+          { name: "Activations", value: M_activations, color: "#ff8042" },
+          { name: "KV Cache", value: M_kvcache, color: "#0088FE" },
+          { name: "CUDA & PyTorch", value: M_base, color: "#8A2BE2" }
+      ];
+
+      // Filter out zero-value components and sort by size (largest first)
+      const filteredComponents = memoryComponents
+          .filter(item => item.value > 0)
+          .sort((a, b) => b.value - a.value);
+
+      // Maximum theoretical throughput calculation
+      const { bandwidthTBps } = selectedHardware;
+      // Estimate tokens/sec based on GPU memory bandwidth and model size
+      // This is a rough approximation based on bandwidth utilization 
+      const avg_params_per_token = P_active / 1000; // approximately how many params are activated per token
+      const bandwidth_utilization = 0.7; // 70% utilization of theoretical bandwidth
+      const tokens_per_second_estimated = bandwidthTBps ? 
+          Math.floor((bandwidthTBps * 1e12 * bandwidth_utilization) / (avg_params_per_token * 2 * 4)) : undefined; // 2 ops per param (mul+add), 4 bytes per FP32
+      
+      return {
+          M_total_training_per_gpu,
+          M_activations,
+          M_kvcache,
+          M_model_sharded,
+          M_optimizer_after_offload,
+          M_gradients,
+          M_base,
+          components: filteredComponents,
+          tokens_per_second_estimated
+      };
+  }, [parameters, memoryFlags, parameterDetails, selectedQuantization, numGpus, selectedHardware, architectureId]);
+
+  // --- Memory Calculation Details for Inference ---
+  const inferenceMemoryDetails = useMemo(() => {
+      if (!selectedHardware) return null;
+      
+      const { hiddenSize: d, numLayers: L, sequenceLength: S, microBatchSizePerGPU: B_micro } = parameters;
+      const { M_active_params } = parameterDetails || {};
+      
+      // For inference, we don't need optimizer states or full gradients
+      
+      // KV cache is usually the main memory consumer during inference
+      let kv_cache_bytes_per_token = 0;
+      if (architectureId === 'TX-DEC' || architectureId === 'TX-MOE') {
+          // KV cache: 2 * hidden_size * bytes_per_param for each token
+          // If using int8 KV cache, we use 1 byte per element instead of 2
+          kv_cache_bytes_per_token = 2 * d * (memoryFlags.kvCachePrecision === 'int8' ? 1 : 2);
+      }
+      
+      // Forward pass activations per sequence
+      // For inference, we only keep activations for the current token
+      const bytes_per_token_fwd = d * 4; // Simpler estimate for inference
+      const M_workingmem = B_micro * bytes_per_token_fwd * L / (1024 * 1024 * 1024);
+      
+      // KV cache memory (key contributor in inference)
+      const M_kvcache = B_micro * kv_cache_bytes_per_token * S * L / (1024 * 1024 * 1024);
+      
+      // Base memory for CUDA context and PyTorch overhead
+      const M_base = 1.5; // Typically less overhead than training
+      
+      // Calculate total memory per GPU for inference
+      const M_total_inference_per_gpu = M_base + M_active_params + M_workingmem + M_kvcache;
+      
+      // Create memory component breakdown
+      const memoryComponents = [
+          { name: "Model Weights", value: M_active_params, color: "#8884d8" },
+          { name: "Working Memory", value: M_workingmem, color: "#82ca9d" },
+          { name: "KV Cache", value: M_kvcache, color: "#0088FE" },
+          { name: "CUDA & PyTorch", value: M_base, color: "#8A2BE2" }
+      ];
+
+      // Filter out zero-value components and sort by size (largest first)
+      const filteredComponents = memoryComponents
+          .filter(item => item.value > 0)
+          .sort((a, b) => b.value - a.value);
+          
+      return {
+          M_total_inference_per_gpu,
+          M_active_params,
+          M_workingmem,
+          M_kvcache,
+          M_base,
+          components: filteredComponents
+      };
+  }, [parameters, memoryFlags, parameterDetails, selectedHardware, architectureId]);
+  
+  // --- Training Cost/Energy Estimation ---
+  const costEnergyEstimation = useMemo(() => {
+      if (!selectedHardware || !trainingMemoryDetails) return null;
+      
+      const { trainingSteps, tokensPerSecondPerGPU, gridCarbonIntensity } = costParams;
+      const { tokens_per_second_estimated } = trainingMemoryDetails;
+      
+      // Calculate how many tokens will be processed during training
+      const batchTokensPerStep = parameters.batchSize * parameters.sequenceLength;
+      const totalTokens = batchTokensPerStep * trainingSteps;
+      
+      // Time estimation based on tokens per second
+      const tokensPerSecond = tokensPerSecondPerGPU * numGpus; // Total tokens/sec across all GPUs
+      const trainingTimeSeconds = totalTokens / tokensPerSecond;
+      const trainingTimeHours = trainingTimeSeconds / 3600;
+      
+      // Energy consumption - powerW is in watts, convert to kWh
+      const energyPerGpuKWh = (selectedHardware.powerW / 1000) * trainingTimeHours;
+      const totalEnergyKWh = energyPerGpuKWh * numGpus;
+      
+      // Carbon footprint (metric tons of CO2e)
+      // Using gridCarbonIntensity in kg CO2e per kWh
+      const carbonEmissionsTonnes = (totalEnergyKWh * gridCarbonIntensity) / 1000;
+      
+      // Cost calculation
+      let totalCostUSD = 0;
+      const selectedCloudInstance = cloudInstanceProfiles.find(p => p.gpuType === selectedHardwareId);
+      if (selectedCloudInstance) {
+          // If we have an exact match for a cloud instance with this GPU
+          totalCostUSD = selectedCloudInstance.hourlyUSD * trainingTimeHours;
+      } else if (selectedHardware.hourlyUSD) {
+          // If the GPU has its own hourly cost defined
+          totalCostUSD = selectedHardware.hourlyUSD * numGpus * trainingTimeHours;
+      } else {
+          // Rough approximation based on GPU class and VRAM
+          const baseHourlyRate = (selectedHardwareId.includes('h100') || selectedHardwareId.includes('h200')) ? 
+              10 : (selectedHardwareId.includes('a100') ? 5 : 2);
+          const vramFactor = selectedHardware.vramGB / 40; // Normalize relative to 40GB
+          totalCostUSD = baseHourlyRate * vramFactor * numGpus * trainingTimeHours;
+      }
+      
+      return {
+          totalTokens,
+          trainingTimeHours,
+          totalEnergyKWh,
+          carbonEmissionsTonnes,
+          totalCostUSD,
+          costPerKTokens: (totalCostUSD / (totalTokens / 1000)),
+      };
+  }, [selectedHardware, trainingMemoryDetails, costParams, parameters.batchSize, parameters.sequenceLength, numGpus, selectedHardwareId]);
+
+  // Function to apply model preset
+  const handleApplyPreset = (preset: ModelPreset) => {
+      setArchitectureId(preset.archId);
+      setParameters(prev => ({
+          ...prev, // Keep current values as default
+          ...preset.params // Override with preset values
+      }));
+      setPrecision(preset.precision || 'bf16'); // Use preset precision or fallback
+      // Handle memory flags, preserving any values not specified in the preset
+      setMemoryFlags(prev => ({
+          ...prev, // Keep current flags as default
+          ...preset.flags, // Override with preset flags
+      }));
+      toast.success(`Applied preset: ${preset.name}`);
+  };
+
+  // TODO: Implement your UI using the calculated data
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1>Memory Calculator</h1>
+      {/* TODO: Add your UI components here */}
+    </div>
+  );
+};
+
+export default MemoryCalculator;

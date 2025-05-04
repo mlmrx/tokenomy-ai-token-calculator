@@ -28,6 +28,14 @@ const companyStats: CompanyStatType[] = [
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg",
     color: "from-blue-900 to-blue-700"
   },
+    {
+    name: "Amazon",
+    ceo: "Jeff Bezos",
+    position: "Chairman",
+    tokens: "50 trillion tokens/month",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg",
+    color: "from-blue-900 to-blue-700"
+  },
   {
     name: "OpenAI",
     ceo: "Sam Altman",
@@ -41,7 +49,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sundar Pichai",
     position: "CEO",
     tokens: "35 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg/1280px-Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg",
     color: "from-green-900 to-teal-700"
   },
   {
@@ -57,7 +65,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Dario Amodei",
     position: "CEO",
     tokens: "15 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Dario_Amodei_at_Beneficial_AI_2017.jpg/1280px-Dario_Amodei_at_Beneficial_AI_2017.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg",
     color: "from-amber-900 to-amber-700"
   }
 ];

@@ -133,7 +133,7 @@ function Stat({ label, children, tooltip, icon: Icon, color = "text-slate-800" }
 }
 
 // --- Main Component ---
-const EnhancedSpeedSimulator: React.FC = () => {
+const TokenSpeedSimulator: React.FC = () => {
     // --- State ---
     const [uiMode, setUiMode] = useState<UIMode>('simple');
     const [selectedPreset, setSelectedPreset] = useState<string>("GPT-4o"); // Default to a preset
@@ -532,7 +532,7 @@ const EnhancedSpeedSimulator: React.FC = () => {
     );
 };
 
-export default EnhancedSpeedSimulator;
+export default TokenSpeedSimulator;
 
 // --- Dummy Shadcn UI Components & Recharts (for demonstration) ---
 // Remove these if you have shadcn/ui and recharts properly configured.

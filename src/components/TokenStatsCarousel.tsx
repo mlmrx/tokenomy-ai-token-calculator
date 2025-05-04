@@ -35,7 +35,7 @@ interface CompanyStatType {
   estimatedTokens: string; // Display string for latest value
   tokenHistory: TokenDataPoint[]; // Historical data
   imageUrl: string;
-  logoUrl: string;
+  logoUrl: string; // Kept in data structure, but not used in render
   color: string;       // Tailwind gradient classes
   gradientId: string; // unique ID for Recharts <defs>
   foundedYear: number;
@@ -235,7 +235,7 @@ const getGradientColors = (tailwind: string): { from: string; to: string } => {
 /* -------------------------------------------------------------------------- */
 /* COMPONENT                                                                 */
 /* -------------------------------------------------------------------------- */
-const TokenStatsCarousel: React.FC = () => {
+const CompanyStatsCarousel: React.FC = () => {
   const [api, setApi] = useState<CarouselApi | null>(null);
 
   /* Autoplay Effect */
@@ -255,7 +255,7 @@ const TokenStatsCarousel: React.FC = () => {
           AI Industry Leaders & Scale
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-400">
-          Key players, their flagship products, and estimated monthly token processing
+          Flagship AI and estimated monthly token trends (2024)
         </p>
       </div>
 
@@ -285,14 +285,7 @@ const TokenStatsCarousel: React.FC = () => {
                       <div
                         className={`bg-gradient-to-br ${comp.color} text-white p-6 rounded-t-xl relative`}
                       >
-                        {/* Company Logo */}
-                        <img
-                          src={comp.logoUrl}
-                          alt={`${comp.name} logo`}
-                          className="absolute top-4 right-4 h-8 w-auto opacity-80"
-                          // Hide logo element if image fails to load
-                          onError={(e) => (e.currentTarget.style.display = 'none')}
-                        />
+                        {/* Removed Company Logo Img Tag */}
                         {/* Company Name */}
                         <h3 className="text-2xl font-bold mb-1">
                           {comp.name}
@@ -432,4 +425,4 @@ const TokenStatsCarousel: React.FC = () => {
   );
 };
 
-export default TokenStatsCarousel;
+export default CompanyStatsCarousel;

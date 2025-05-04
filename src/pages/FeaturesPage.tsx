@@ -1,9 +1,14 @@
 
 import React from "react";
 import Features from "./Features";
+import Layout from "@/components/Layout";
 
 const FeaturesPage = () => {
-  return <Features />;
+  return (
+    <Layout>
+      <Features />
+    </Layout>
+  );
 };
 
 export default FeaturesPage;

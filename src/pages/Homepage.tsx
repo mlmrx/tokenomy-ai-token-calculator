@@ -7,7 +7,7 @@ import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
-import EnergyUsageEstimator from "@/components/EnergyUsageEstimator";
+
 
 const Homepage = () => {
   return (
@@ -49,10 +49,7 @@ const Homepage = () => {
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />
 
-            {/* Energy Usage Estimator */}
-            <div className="w-full max-w-4xl">
-              <EnergyUsageEstimator />
-            </div>
+
           </div>
         </div>
       </section>

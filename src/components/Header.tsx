@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Product, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -59,7 +59,7 @@ const Header = () => {
               Home
             </Link>
             <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <CreditCard size={16} />
+              <Product size={16} />
               Products
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">

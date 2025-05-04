@@ -8,37 +8,18 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb } from 'lucide-react';
+import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb, TrendingUp, Globe } from 'lucide-react'; // Added TrendingUp, Globe
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 
 // --- Configuration & Constants (May 2025 Data - Unchanged) ---
 type ModelSize = 'small' | 'medium' | 'large' | 'very_large';
-// Added provider key directly for easier access
-const MODEL_DEFINITIONS: Record<string, { provider: string; sizeCategory: ModelSize }> = {
-  // OpenAI
-  'gpt-4o': { provider: 'OpenAI', sizeCategory: 'very_large' },
-  'gpt-4': { provider: 'OpenAI', sizeCategory: 'large' },
-  'gpt-4-turbo': { provider: 'OpenAI', sizeCategory: 'large' },
-  'gpt-3.5-turbo': { provider: 'OpenAI', sizeCategory: 'medium' },
-  // Anthropic
-  'claude-3-opus': { provider: 'Anthropic', sizeCategory: 'very_large' },
-  'claude-3-sonnet': { provider: 'Anthropic', sizeCategory: 'large' },
-  'claude-3-haiku': { provider: 'Anthropic', sizeCategory: 'medium' },
-  // Google
-  'gemini-1.5-pro': { provider: 'Google', sizeCategory: 'large' },
-  'gemini-1.0-pro': { provider: 'Google', sizeCategory: 'medium' },
-  // Meta
-  'llama-3-70b': { provider: 'Meta', sizeCategory: 'large' },
-  'llama-3-8b': { provider: 'Meta', sizeCategory: 'small' },
-  // Mistral
-  'mistral-large': { provider: 'Mistral', sizeCategory: 'large' },
-  'mistral-medium': { provider: 'Mistral', sizeCategory: 'medium' },
-  'mistral-small': { provider: 'Mistral', sizeCategory: 'small' },
-  // Generic Sizes (Fallback)
-  'generic-small': { provider: 'Generic', sizeCategory: 'small' },
-  'generic-medium': { provider: 'Generic', sizeCategory: 'medium' },
-  'generic-large': { provider: 'Generic', sizeCategory: 'large' },
-  'generic-very_large': { provider: 'Generic', sizeCategory: 'very_large' },
+const MODEL_DEFINITIONS: Record<string, { provider: string; sizeCategory: ModelSize }> = { /* ... V5 Data ... */
+  'gpt-4o': { provider: 'OpenAI', sizeCategory: 'very_large' }, 'gpt-4': { provider: 'OpenAI', sizeCategory: 'large' }, 'gpt-4-turbo': { provider: 'OpenAI', sizeCategory: 'large' }, 'gpt-3.5-turbo': { provider: 'OpenAI', sizeCategory: 'medium' },
+  'claude-3-opus': { provider: 'Anthropic', sizeCategory: 'very_large' }, 'claude-3-sonnet': { provider: 'Anthropic', sizeCategory: 'large' }, 'claude-3-haiku': { provider: 'Anthropic', sizeCategory: 'medium' },
+  'gemini-1.5-pro': { provider: 'Google', sizeCategory: 'large' }, 'gemini-1.0-pro': { provider: 'Google', sizeCategory: 'medium' },
+  'llama-3-70b': { provider: 'Meta', sizeCategory: 'large' }, 'llama-3-8b': { provider: 'Meta', sizeCategory: 'small' },
+  'mistral-large': { provider: 'Mistral', sizeCategory: 'large' }, 'mistral-medium': { provider: 'Mistral', sizeCategory: 'medium' }, 'mistral-small': { provider: 'Mistral', sizeCategory: 'small' },
+  'generic-small': { provider: 'Generic', sizeCategory: 'small' }, 'generic-medium': { provider: 'Generic', sizeCategory: 'medium' }, 'generic-large': { provider: 'Generic', sizeCategory: 'large' }, 'generic-very_large': { provider: 'Generic', sizeCategory: 'very_large' },
 };
 const getModelCategories = () => { /* ... V5 Function ... */
     const categories: Record<string, string[]> = {};
@@ -79,8 +60,6 @@ const OFFSET_PROJECTS = [ /* ... V5 Data ... */
 ];
 
 // --- NEW: Provider Theme Colors ---
-// Using Tailwind color names for easier integration with shadcn/ui themes potentially
-// Ensure these colors are defined in your tailwind.config.js or use default Tailwind colors
 const PROVIDER_THEMES: Record<string, { gradientFrom: string; gradientTo: string; color: string }> = {
     'OpenAI': { gradientFrom: 'from-green-100', gradientTo: 'to-emerald-100', color: 'text-green-600 dark:text-green-400' },
     'Anthropic': { gradientFrom: 'from-orange-100', gradientTo: 'to-amber-100', color: 'text-orange-600 dark:text-orange-400' },
@@ -88,7 +67,7 @@ const PROVIDER_THEMES: Record<string, { gradientFrom: string; gradientTo: string
     'Meta': { gradientFrom: 'from-indigo-100', gradientTo: 'to-violet-100', color: 'text-indigo-600 dark:text-indigo-400' },
     'Mistral': { gradientFrom: 'from-rose-100', gradientTo: 'to-pink-100', color: 'text-rose-600 dark:text-rose-400' },
     'Generic': { gradientFrom: 'from-gray-100', gradientTo: 'to-slate-100', color: 'text-gray-600 dark:text-gray-400' },
-    // Dark mode gradients (adjust as needed)
+    // Dark mode gradients
     'OpenAI_dark': { gradientFrom: 'dark:from-green-900/50', gradientTo: 'dark:to-emerald-900/50', color: 'text-green-600 dark:text-green-400' },
     'Anthropic_dark': { gradientFrom: 'dark:from-orange-900/50', gradientTo: 'dark:to-amber-900/50', color: 'text-orange-600 dark:text-orange-400' },
     'Google_dark': { gradientFrom: 'dark:from-blue-900/50', gradientTo: 'dark:to-sky-900/50', color: 'text-blue-600 dark:text-blue-400' },
@@ -120,7 +99,7 @@ const darkenColor = (hex: string, factor: number): string => {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 };
 
-// --- Refined Metric Gauge Component (V11 - with subtle background) ---
+// --- Refined Metric Gauge Component (V11) ---
 interface MetricGaugeProps {
   value: number;
   maxValue: number;
@@ -148,7 +127,6 @@ const MetricGauge: React.FC<MetricGaugeProps> = ({
   const data = [{ name: label, value: percentage, fill: `url(#${gradientId})` }];
 
   return (
-    // Added bg-card for slight differentiation
     <div className="flex flex-col items-center text-center p-3 rounded-xl border bg-card dark:bg-gray-800/50 shadow-md hover:shadow-lg transition-shadow duration-200">
       {/* Label with Icon */}
       <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground mb-1">
@@ -306,12 +284,11 @@ export default function EnergyUsageEstimator() {
   // --- Render ---
   return (
     <TooltipProvider>
-      {/* Apply dynamic background to the main card if desired */}
       <Card className="w-full max-w-5xl mx-auto font-sans shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
          {/* Header with Dynamic Theme */}
-         <CardHeader className={`pb-4 ${headerClasses}`}> {/* Applied dynamic classes */}
+         <CardHeader className={`pb-4 ${headerClasses}`}>
             <div className="flex items-center gap-2 mb-1">
-                <Leaf className={`h-6 w-6 ${iconColorClass}`} /> {/* Applied dynamic color */}
+                <Leaf className={`h-6 w-6 ${iconColorClass}`} />
                 <CardTitle className="text-xl font-semibold">Energy Usage Estimator</CardTitle>
             </div>
             <CardDescription>Estimate AI environmental impact (energy, emissions, water, cost) with advanced options. (Data ~May 2025)</CardDescription>
@@ -405,6 +382,34 @@ export default function EnergyUsageEstimator() {
                     secondaryUnit="$/kWh"
                  />
              </div>
+
+             {/* --- NEW: Why This Matters Panel --- */}
+              <div className="pt-6">
+                  <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
+                      <CardHeader className="pb-3">
+                          <CardTitle className="text-base font-semibold flex items-center gap-2 text-blue-800 dark:text-blue-300">
+                              <Info className="w-5 h-5" />
+                              Why measuring AI energy matters
+                          </CardTitle>
+                      </CardHeader>
+                      <CardContent className="text-sm text-blue-900 dark:text-blue-200 space-y-2">
+                          <ul className="list-disc pl-5 space-y-1">
+                              <li>
+                                  <strong>LLM growth = surging power demand.</strong> The IEA projects that data-centre electricity use could more than double to &gt; 945 TWh by 2030—more than today’s entire demand of Japan. <span className="text-xs opacity-80">(Source: IEA)</span>
+                              </li>
+                              <li>
+                                  <strong>AI is eating the grid.</strong> Data-centres are expected to account for ≈20 % of all new electricity demand in advanced economies between now and 2030. <span className="text-xs opacity-80">(Source: IEA)</span>
+                              </li>
+                              <li>
+                                  <strong>Every prompt has a footprint.</strong> Running GPT-4 on an H100 burns ≈36 J per token; a 1-million-token batch therefore uses ≈12 kWh—enough to drive an average U.S. car &gt; 30 km. <span className="text-xs opacity-80">(Sources: ACL Anthology, US EPA)</span>
+                              </li>
+                          </ul>
+                           <p className="text-xs text-muted-foreground pt-2 italic">
+                               (Numbers auto-update when you change model, tokens or region.)
+                           </p>
+                      </CardContent>
+                  </Card>
+              </div>
 
 
              {/* Row 2: Equivalencies & Chart (Unchanged) */}

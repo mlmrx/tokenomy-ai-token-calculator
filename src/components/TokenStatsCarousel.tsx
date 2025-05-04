@@ -34,7 +34,7 @@ const companyStats: CompanyStatType[] = [
     position: "Chairman",
     tokens: "50 trillion tokens/month",
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg",
-    color: "from-blue-900 to-blue-700"
+    color: "from-[#FF9900] to-[#FFB84D]"
   },
   {
     name: "OpenAI",

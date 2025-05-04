@@ -27,7 +27,6 @@ interface ModelPreset {
     priceIn: number; // $/1M tokens
     priceOut: number; // $/1M tokens
     themeColor: string; // Primary Tailwind color class (e.g., 'indigo', 'rose', 'emerald')
-    // Optional: Add context window size? params?
 }
 
 // Structure for storing a pinned comparison run
@@ -65,8 +64,6 @@ function* simulate(params: SimParams): Generator<Tick, void, unknown> {
 }
 
 // --- Presets & Constants ---
-// Added more models, company info, and theme colors
-// Note: Speed/TTFT/Pricing are estimates and can vary significantly. Verify with official sources.
 const MODEL_PRESETS: Record<string, ModelPreset> = {
   // OpenAI
   "GPT-4o": { company: "OpenAI", speed: 154, ttfToken: 0.29, priceIn: 5.0, priceOut: 15.0, themeColor: "cyan" },
@@ -133,7 +130,8 @@ function Stat({ label, children, tooltip, icon: Icon, color = "text-slate-800" }
 }
 
 // --- Main Component ---
-const TokenSpeedSimulator: React.FC = () => {
+// FIX: Changed export from default to named export
+export const TokenSpeedSimulator: React.FC = () => {
     // --- State ---
     const [uiMode, setUiMode] = useState<UIMode>('simple');
     const [selectedPreset, setSelectedPreset] = useState<string>("GPT-4o"); // Default to a preset
@@ -183,8 +181,6 @@ const TokenSpeedSimulator: React.FC = () => {
     }, [isCustomMode, currentPresetData]);
 
     // Generate dynamic Tailwind classes based on the theme color
-    // NOTE: For this to work reliably, ensure these color combinations exist in your Tailwind config
-    // or use colors that are always available (like indigo, red, green, etc.)
     const themeClasses = useMemo(() => ({
         text: `text-${activeThemeColor}-600`,
         textHover: `hover:text-${activeThemeColor}-700`,
@@ -518,13 +514,29 @@ const TokenSpeedSimulator: React.FC = () => {
              `}</style>
              {/* Inject dynamic theme colors */}
               <style jsx global>{`
+                /* Inject dynamic theme colors - Tailwind JIT needs these classes */
+                /* bg */ .bg-cyan-600 {} .bg-orange-600 {} .bg-blue-600 {} .bg-sky-600 {} .bg-rose-600 {} .bg-indigo-600 {}
+                /* hover:bg */ .hover:bg-cyan-700 {} .hover:bg-orange-700 {} .hover:bg-blue-700 {} .hover:bg-sky-700 {} .hover:bg-rose-700 {} .hover:bg-indigo-700 {}
+                /* text */ .text-cyan-600 {} .text-orange-600 {} .text-blue-600 {} .text-sky-600 {} .text-rose-600 {} .text-indigo-600 {}
+                /* hover:text */ .hover:text-cyan-700 {} .hover:text-orange-700 {} .hover:text-blue-700 {} .hover:text-sky-700 {} .hover:text-rose-700 {} .hover:text-indigo-700 {}
+                /* border */ .border-cyan-500 {} .border-orange-500 {} .border-blue-500 {} .border-sky-500 {} .border-rose-500 {} .border-indigo-500 {}
+                /* ring */ .focus:ring-cyan-500 {} .focus:ring-orange-500 {} .focus:ring-blue-500 {} .focus:ring-sky-500 {} .focus:ring-rose-500 {} .focus:ring-indigo-500 {}
+                /* progress */ .[&>div]:bg-cyan-500 {} .[&>div]:bg-orange-500 {} .[&>div]:bg-blue-500 {} .[&>div]:bg-sky-500 {} .[&>div]:bg-rose-500 {} .[&>div]:bg-indigo-500 {}
+                /* stroke */ .stroke-cyan-500 {} .stroke-orange-500 {} .stroke-blue-500 {} .stroke-sky-500 {} .stroke-rose-500 {} .stroke-indigo-500 {}
+                /* fill */ .fill-cyan-500 {} .fill-orange-500 {} .fill-blue-500 {} .fill-sky-500 {} .fill-rose-500 {} .fill-indigo-500 {}
+                /* from */ .from-cyan-100 {} .from-orange-100 {} .from-blue-100 {} .from-sky-100 {} .from-rose-100 {} .from-indigo-100 {}
+                /* to */ .to-cyan-200 {} .to-orange-200 {} .to-blue-200 {} .to-sky-200 {} .to-rose-200 {} .to-indigo-200 {}
+                /* bg-gradient-to-br */ .to-cyan-50 {} .to-orange-50 {} .to-blue-50 {} .to-sky-50 {} .to-rose-50 {} .to-indigo-50 {}
+                /* border */ .border-cyan-200 {} .border-orange-200 {} .border-blue-200 {} .border-sky-200 {} .border-rose-200 {} .border-indigo-200 {}
+                /* hover:shadow */ .hover:shadow-cyan-100 {} .hover:shadow-orange-100 {} .hover:shadow-blue-100 {} .hover:shadow-sky-100 {} .hover:shadow-rose-100 {} .hover:shadow-indigo-100 {}
+
                 :root {
-                  --theme-color-50: theme(colors.${activeThemeColor}.50);
-                  --theme-color-100: theme(colors.${activeThemeColor}.100);
-                  --theme-color-200: theme(colors.${activeThemeColor}.200);
-                  --theme-color-500: theme(colors.${activeThemeColor}.500);
-                  --theme-color-600: theme(colors.${activeThemeColor}.600);
-                  --theme-color-700: theme(colors.${activeThemeColor}.700);
+                  --theme-color-50: theme(colors.${activeThemeColor}.50, #eff6ff);
+                  --theme-color-100: theme(colors.${activeThemeColor}.100, #dbeafe);
+                  --theme-color-200: theme(colors.${activeThemeColor}.200, #c7d2fe);
+                  --theme-color-500: theme(colors.${activeThemeColor}.500, #6366f1);
+                  --theme-color-600: theme(colors.${activeThemeColor}.600, #4f46e5);
+                  --theme-color-700: theme(colors.${activeThemeColor}.700, #4338ca);
                 }
              `}</style>
 
@@ -532,7 +544,8 @@ const TokenSpeedSimulator: React.FC = () => {
     );
 };
 
-export default TokenSpeedSimulator;
+// FIX: Removed default export
+// export default TokenSpeedSimulator;
 
 // --- Dummy Shadcn UI Components & Recharts (for demonstration) ---
 // Remove these if you have shadcn/ui and recharts properly configured.

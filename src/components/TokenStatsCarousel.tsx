@@ -25,7 +25,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Satya Nadella",
     position: "CEO",
     tokens: "50 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/86/Satya_Nadella.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg",
     color: "from-blue-900 to-blue-700"
   },
   {

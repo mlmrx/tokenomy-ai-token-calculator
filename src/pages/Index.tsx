@@ -29,7 +29,7 @@ import { getModelCategories, estimateTokens, calculateCost, getTokenizationInfo 
 import MainNavigation from "@/components/MainNavigation";
 import TokenizationInfo from "@/components/TokenizationInfo";
 import ModelRecommendation from "@/components/ModelRecommendation";
-import TokenSpeedSimulator from "@/componets/EnhancedSpeedSimulator";
+import EnhancedSpeedSimulator from "@/componets/EnhancedSpeedSimulator";
 import MemoryCalculator from "@/components/MemoryCalculator";
 import ExportData from "@/components/ExportData";
 import ModelComparisonChart from "@/components/ModelComparisonChart";
@@ -734,7 +734,7 @@ const Index = () => {
         {activeTab === "speed" && (
           <div className="speed-bg-gradient p-6 rounded-lg mb-6">
             <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
-              <TokenSpeedSimulator />
+              <EnhancedSpeedSimulator />
             </div>
           </div>
         )}

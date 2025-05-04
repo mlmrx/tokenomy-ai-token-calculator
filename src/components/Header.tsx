@@ -37,7 +37,7 @@ const Header = () => {
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
                 <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
-                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link
+                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
                 <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
                 <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>

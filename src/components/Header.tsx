@@ -59,7 +59,7 @@ const Header = () => {
               Home
             </Link>
             <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <Calculator size={16} />
+              <CreditCard size={16} />
               Products
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">

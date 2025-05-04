@@ -1,7 +1,7 @@
 
 import React from "react";
 import Layout from "@/components/Layout";
-import { EnergyUsageEstimator } from "@/components/EnergyUsageEstimator";
+import EnergyUsageEstimator from "@/components/EnergyUsageEstimator";
 
 const EnergyEstimatorPage = () => {
   return (

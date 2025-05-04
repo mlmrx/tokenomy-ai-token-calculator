@@ -37,6 +37,7 @@ const Header = () => {
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
                 <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
+                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link
                 <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
                 <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
@@ -56,6 +57,10 @@ const Header = () => {
             <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Home size={16} />
               Home
+            </Link>
+                        <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <FontAwesomeIcon icon={faProductHunt} size={16} />
+              Product
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Lightbulb size={16} />

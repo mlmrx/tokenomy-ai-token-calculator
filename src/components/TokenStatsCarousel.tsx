@@ -8,7 +8,6 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCarousel } from "@/components/ui/carousel";
 
 type CompanyStatType = {
   name: string;
@@ -64,7 +63,7 @@ const companyStats: CompanyStatType[] = [
 ];
 
 const TokenStatsCarousel = () => {
-  const [api, setApi] = useState<ReturnType<typeof useCarousel>["api"]>();
+  const [api, setApi] = useState(null);
   
   useEffect(() => {
     if (!api) return;

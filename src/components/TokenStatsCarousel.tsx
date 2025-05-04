@@ -33,7 +33,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sam Altman",
     position: "CEO",
     tokens: "20+ trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Sam_Altman_TechCrunch_Disrupt_2019.jpg/1280px-Sam_Altman_TechCrunch_Disrupt_2019.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg",
     color: "from-purple-900 to-purple-700"
   },
   {

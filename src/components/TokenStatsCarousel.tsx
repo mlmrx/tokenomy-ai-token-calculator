@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -8,6 +8,7 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCarousel } from "@/components/ui/carousel";
 
 type CompanyStatType = {
   name: string;
@@ -25,7 +26,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Satya Nadella",
     position: "CEO",
     tokens: "50 trillion tokens/month",
-    imageUrl: "/lovable-uploads/783e465a-6206-4dbc-b0df-0747d4d09494.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/86/Satya_Nadella.jpg",
     color: "from-blue-900 to-blue-700"
   },
   {
@@ -33,7 +34,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sam Altman",
     position: "CEO",
     tokens: "20+ trillion tokens/month",
-    imageUrl: "https://images.unsplash.com/photo-1642132652089-320681afc21a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Sam_Altman_TechCrunch_Disrupt_2019.jpg/1280px-Sam_Altman_TechCrunch_Disrupt_2019.jpg",
     color: "from-purple-900 to-purple-700"
   },
   {
@@ -41,7 +42,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sundar Pichai",
     position: "CEO",
     tokens: "35 trillion tokens/month",
-    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg/1280px-Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg",
     color: "from-green-900 to-teal-700"
   },
   {
@@ -49,7 +50,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Mark Zuckerberg",
     position: "CEO",
     tokens: "30 trillion tokens/month",
-    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg",
     color: "from-indigo-900 to-indigo-700"
   },
   {
@@ -57,12 +58,26 @@ const companyStats: CompanyStatType[] = [
     ceo: "Dario Amodei",
     position: "CEO",
     tokens: "15 trillion tokens/month",
-    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Dario_Amodei_at_Beneficial_AI_2017.jpg/1280px-Dario_Amodei_at_Beneficial_AI_2017.jpg",
     color: "from-amber-900 to-amber-700"
   }
 ];
 
 const TokenStatsCarousel = () => {
+  const [api, setApi] = useState<ReturnType<typeof useCarousel>["api"]>();
+  
+  useEffect(() => {
+    if (!api) return;
+    
+    // Start autoplay
+    const autoplayInterval = setInterval(() => {
+      api.scrollNext();
+    }, 3000); // Move to next slide every 3 seconds
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(autoplayInterval);
+  }, [api]);
+  
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="mb-6 text-center">
@@ -77,6 +92,7 @@ const TokenStatsCarousel = () => {
             loop: true,
           }}
           className="w-full"
+          setApi={setApi}
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {companyStats.map((company, index) => (

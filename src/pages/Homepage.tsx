@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
+import EnergyUsageEstimator from "@/components/EnergyUsageEstimator";
 
 const Homepage = () => {
   return (
@@ -22,10 +22,10 @@ const Homepage = () => {
           <div className="flex flex-col items-center text-center space-y-8 md:space-y-12">
             <div className="space-y-4 max-w-3xl">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
-                Optimize Your AI Token Usage
+                Unleash the Power of AI with Smart Token Management
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-                Smart tools to calculate, simulate, and optimize your AI model token usage for better performance and lower costs.
+                Revolutionize your AI experience with tools that maximize performance while minimizing costs through intelligent token optimization.
               </p>
             </div>
             
@@ -49,61 +49,9 @@ const Homepage = () => {
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />
 
-            {/* Satya Nadella Quote Section */}
-            <div className="w-full max-w-3xl mx-auto mt-8 mb-4 rounded-2xl overflow-hidden shadow-xl">
-              <div className="bg-[url('/lovable-uploads/783e465a-6206-4dbc-b0df-0747d4d09494.png')] bg-cover bg-center p-8 md:p-12 text-white relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-indigo-900/60 backdrop-blur-sm"></div>
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-                  <div className="space-y-4">
-                    <p className="text-blue-300 font-semibold">@satyanadella</p>
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
-                      "we processed <span className="text-yellow-300">50 TRILLION</span> tokens last month."
-                    </h2>
-                    <p className="text-lg font-medium">— Satya Nadella</p>
-                    <p className="text-blue-200 text-sm">Microsoft CEO on the scale of AI language processing</p>
-                  </div>
-                  <div className="hidden md:flex md:flex-1 justify-end">
-                    <div className="p-3 bg-blue-500/20 backdrop-blur-md rounded-full">
-                      <Calculator className="h-16 w-16 text-blue-200" />
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 relative z-10">
-                  <Button 
-                    variant="outline" 
-                    className="bg-white/10 text-white border-white/20 backdrop-blur-sm hover:bg-white/20"
-                    asChild
-                  >
-                    <Link to="/tools">
-                      Optimize your tokens <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Animated Dashboard Preview */}
-            <div className="relative w-full max-w-4xl shadow-2xl rounded-xl overflow-hidden transform transition-transform duration-500 hover:scale-[1.02] border border-gray-200 dark:border-gray-800">
-              <div className="bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                </div>
-              </div>
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1642132652089-320681afc21a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                  alt="Tokenomy Dashboard Interface" 
-                  className="w-full aspect-[16/9] object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                  <div className="p-6 text-white text-left">
-                    <p className="text-lg md:text-xl font-medium">Interactive token optimization tools</p>
-                    <p className="text-sm opacity-80">Calculate, simulate, and visualize token usage across AI models</p>
-                  </div>
-                </div>
-              </div>
+            {/* Energy Usage Estimator */}
+            <div className="w-full max-w-4xl">
+              <EnergyUsageEstimator />
             </div>
           </div>
         </div>

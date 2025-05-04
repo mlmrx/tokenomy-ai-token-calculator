@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
-import EnergyUsageEstimator from "@/components/EnergyUsageEstimator";
 
 const Homepage = () => {
   return (
@@ -15,17 +15,17 @@ const Homepage = () => {
       <AINewsMarquee />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-28">
+      <section className="relative overflow-hidden py-28 md:py-36">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/20 dark:to-indigo-950/20 -z-10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(120,120,255,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(150,100,255,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="flex flex-col items-center text-center space-y-8 md:space-y-12">
-            <div className="space-y-4 max-w-3xl">
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
-                Unleash the Power of AI with Smart Token Management
+          <div className="flex flex-col items-center text-center space-y-12 md:space-y-16">
+            <div className="space-y-6 max-w-3xl">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+                Master AI Token Economy with Confidence
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-                Revolutionize your AI experience with tools that maximize performance while minimizing costs through intelligent token optimization.
+                Unlock the full potential of your AI investments with tools that maximize performance while optimizing costs.
               </p>
             </div>
             
@@ -48,11 +48,6 @@ const Homepage = () => {
 
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />
-
-            {/* Energy Usage Estimator */}
-            <div className="w-full max-w-4xl">
-              <EnergyUsageEstimator />
-            </div>
           </div>
         </div>
       </section>
@@ -67,70 +62,69 @@ const Homepage = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors hover:shadow-lg group">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                    <Calculator className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-full group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
+                    <Calculator className="h-8 w-8 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Calculator</h3>
                   <p className="text-muted-foreground">
                     Calculate tokens, costs, and analyze your content across different AI models
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="group-hover:bg-purple-50 dark:group-hover:bg-purple-900/20" asChild>
                     <Link to="/tools">Try Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors hover:shadow-lg group">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                    <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                    <LineChart className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Speed Simulator</h3>
                   <p className="text-muted-foreground">
                     Simulate token processing speeds and optimize for faster AI response times
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20" asChild>
                     <Link to="/tools">Try Simulator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-900 transition-colors">
+            <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-900 transition-colors hover:shadow-lg group">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full">
-                    <BarChart className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  <div className="p-4 bg-amber-100 dark:bg-amber-900/30 rounded-full group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors">
+                    <BarChart className="h-8 w-8 text-amber-600 dark:text-amber-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Memory Calculator</h3>
                   <p className="text-muted-foreground">
                     Estimate memory requirements and optimize token usage for complex AI tasks
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="group-hover:bg-amber-50 dark:group-hover:bg-amber-900/20" asChild>
                     <Link to="/tools">Try Memory Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
             
-            {/* New Energy Usage Estimator Card */}
-            <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors">
+            <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors hover:shadow-lg group">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
-                    <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-full group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
+                    <Leaf className="h-8 w-8 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Energy Usage Estimator</h3>
                   <p className="text-muted-foreground">
                     Calculate the environmental impact and energy consumption of your AI token usage
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="group-hover:bg-green-50 dark:group-hover:bg-green-900/20" asChild>
                     <Link to="/tools">Try Energy Estimator</Link>
                   </Button>
                 </div>

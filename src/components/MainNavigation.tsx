@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { BarChart4, LineChart, Calculator, BarChart, Leaf } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 interface MainNavigationProps {
   activeTab: string;
@@ -24,6 +25,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <Calculator className="h-5 w-5" />,
       gradientFrom: "from-blue-600",
       gradientTo: "to-indigo-500",
+      path: "/tools"
     },
     {
       id: "speed",
@@ -31,6 +33,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <LineChart className="h-5 w-5" />,
       gradientFrom: "from-purple-600",
       gradientTo: "to-pink-500",
+      path: "/tools"
     },
     {
       id: "memory",
@@ -38,6 +41,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <BarChart className="h-5 w-5" />,
       gradientFrom: "from-amber-500",
       gradientTo: "to-orange-600",
+      path: "/tools"
     },
     {
       id: "energy",
@@ -45,6 +49,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <Leaf className="h-5 w-5" />,
       gradientFrom: "from-green-500",
       gradientTo: "to-emerald-600",
+      path: "/tools/energy"
     },
   ];
 
@@ -52,8 +57,9 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
     <nav className="flex justify-center w-full">
       <div className="flex items-center justify-center space-x-1 md:space-x-3 bg-gradient-to-r from-gray-900/5 to-gray-800/10 backdrop-blur-sm p-1.5 rounded-full shadow-lg border border-white/20">
         {menuItems.map((item) => (
-          <button
+          <Link 
             key={item.id}
+            to={item.path}
             onClick={() => onTabChange(item.id)}
             className={`flex items-center justify-center px-3 py-2 md:px-5 md:py-2.5 rounded-full transition-all duration-300 ${
               activeTab === item.id
@@ -67,7 +73,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
                 {item.label}
               </span>
             </div>
-          </button>
+          </Link>
         ))}
       </div>
       <style dangerouslySetInnerHTML={{

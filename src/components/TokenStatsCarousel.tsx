@@ -25,7 +25,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Satya Nadella",
     position: "CEO",
     tokens: "50 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/86/Satya_Nadella.jpg",
+    imageUrl: "/lovable-uploads/40533b2f-b8f5-4888-b17b-311dfbdbd1d8.png",
     color: "from-blue-900 to-blue-700"
   },
   {
@@ -33,7 +33,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sam Altman",
     position: "CEO",
     tokens: "20+ trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Sam_Altman_TechCrunch_Disrupt_2019.jpg/1280px-Sam_Altman_TechCrunch_Disrupt_2019.jpg",
+    imageUrl: "/lovable-uploads/a505e7d6-f02a-48e2-99d9-93d1b36c4c37.png",
     color: "from-purple-900 to-purple-700"
   },
   {
@@ -41,7 +41,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Sundar Pichai",
     position: "CEO",
     tokens: "35 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg/1280px-Sundar_Pichai_at_the_2023_SelectUSA_Investment_Summit_%2853373956697%29_%28cropped%29.jpg",
+    imageUrl: "/lovable-uploads/fda6a5d7-f0e5-4212-be42-ca41509d5cb0.png",
     color: "from-green-900 to-teal-700"
   },
   {
@@ -49,7 +49,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Mark Zuckerberg",
     position: "CEO",
     tokens: "30 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg",
+    imageUrl: "/lovable-uploads/8bd5c282-47c5-4eff-a520-9fd6885f2419.png",
     color: "from-indigo-900 to-indigo-700"
   },
   {
@@ -57,7 +57,7 @@ const companyStats: CompanyStatType[] = [
     ceo: "Dario Amodei",
     position: "CEO",
     tokens: "15 trillion tokens/month",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Dario_Amodei_at_Beneficial_AI_2017.jpg/1280px-Dario_Amodei_at_Beneficial_AI_2017.jpg",
+    imageUrl: "/lovable-uploads/1bd1d833-2d1b-43fe-91ab-807c88f11709.png",
     color: "from-amber-900 to-amber-700"
   }
 ];

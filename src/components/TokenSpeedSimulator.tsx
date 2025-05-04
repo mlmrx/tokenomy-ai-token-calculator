@@ -115,6 +115,9 @@ const TOOLTIPS = { /* Tooltips unchanged - Omitted for brevity */
     chartAdvanced: "Shows live simulation progress. Pin runs to compare.",
     pinRun: "Add the current simulation results (parameters, stats, chart data) to the comparison.",
     pinnedRuns: "Pinned simulation runs for comparison. Click 'X' to remove.",
+    genSpeed: "Generation speed in tokens per second.",
+    ttfToken: "Time to first token in seconds.",
+    pricing: "Price per million tokens for input and output."
 };
 const LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ";
 const FLASH_DURATION_MS = 50;
@@ -130,7 +133,6 @@ function Stat({ label, children, tooltip, icon: Icon, color = "text-slate-800" }
 }
 
 // --- Main Component ---
-// FIX: Changed export from default to named export
 export const TokenSpeedSimulator: React.FC = () => {
     // --- State ---
     const [uiMode, setUiMode] = useState<UIMode>('simple');
@@ -199,7 +201,6 @@ export const TokenSpeedSimulator: React.FC = () => {
         liveLineStroke: `stroke-${activeThemeColor}-500`, // Color for the live/current line in charts
         liveAreaFill: `fill-${activeThemeColor}-500`, // Base color for area fill gradient
     }), [activeThemeColor]);
-
 
     const effectiveSpeed = useMemo(() => { /* ... calculation unchanged ... */
         if (!isCustomMode && currentPresetData) return currentPresetData.speed; const base = BASE_SPEEDS[hardware] || BASE_SPEEDS['gpu_mid']; const modelFactor = FACTORS.modelSize(modelSize); const quantFactor = FACTORS.quantization[quantization]; const batchFactor = FACTORS.batchSize(batchSize); const seqLenFactor = FACTORS.sequenceLength(sequenceLength); const parallelFactor = FACTORS.parallelism[parallelism]; const kvCacheFactor = FACTORS.kvCache(useKvCache); const networkFactor = FACTORS.networkLatency(networkLatency); const utilizationFactor = FACTORS.hardwareUtilization(hardwareUtilization); const speed = base * modelFactor * quantFactor * seqLenFactor * parallelFactor * kvCacheFactor * networkFactor * utilizationFactor; return Math.max(0.1, speed);
@@ -301,6 +302,7 @@ export const TokenSpeedSimulator: React.FC = () => {
                         </CardDescription>
                     </div>
                     {/* UI Mode Toggle - Pill style */}
+
                     <div className="flex items-center space-x-1 p-1 bg-slate-200/70 rounded-full border border-slate-300/50 shadow-inner">
                          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="sm" onClick={() => handleUiModeChange(false)} className={`rounded-full px-3 py-1 h-8 text-xs ${uiMode === 'simple' ? `bg-white shadow ${themeClasses.text} font-semibold` : `text-slate-600 hover:bg-slate-100/70`}`}><Eye className="h-4 w-4 mr-1.5"/> Simple</Button></TooltipTrigger><TooltipContent>Switch to Simple View</TooltipContent></Tooltip>
                          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="sm" onClick={() => handleUiModeChange(true)} className={`rounded-full px-3 py-1 h-8 text-xs ${uiMode === 'advanced' ? `bg-white shadow ${themeClasses.text} font-semibold` : `text-slate-600 hover:bg-slate-100/70`}`}><Code className="h-4 w-4 mr-1.5"/> Advanced</Button></TooltipTrigger><TooltipContent>Switch to Advanced View</TooltipContent></Tooltip>
@@ -534,27 +536,4 @@ export const TokenSpeedSimulator: React.FC = () => {
                   --theme-color-50: theme(colors.${activeThemeColor}.50, #eff6ff);
                   --theme-color-100: theme(colors.${activeThemeColor}.100, #dbeafe);
                   --theme-color-200: theme(colors.${activeThemeColor}.200, #c7d2fe);
-                  --theme-color-500: theme(colors.${activeThemeColor}.500, #6366f1);
-                  --theme-color-600: theme(colors.${activeThemeColor}.600, #4f46e5);
-                  --theme-color-700: theme(colors.${activeThemeColor}.700, #4338ca);
-                }
-             `}</style>
-
-        </TooltipProvider>
-    );
-};
-
-// FIX: Removed default export
-export default TokenSpeedSimulator;
-
-// --- Dummy Shadcn UI Components & Recharts (for demonstration) ---
-// Remove these if you have shadcn/ui and recharts properly configured.
-/*
-import { Button as ShadButton } from "@/components/ui/button"; // etc.
-// ... (Dummy components from previous response - Omitted for brevity) ...
-const DummyAreaChart: React.FC<any> = ({ children, data }) => <div className="border border-dashed border-gray-300 p-2 text-xs text-center text-gray-500">Area Chart Placeholder<pre className="text-left text-[8px] overflow-auto max-h-40">{JSON.stringify(data?.slice(-5), null, 1)}</pre>{children}</div>;
-const DummyArea: React.FC<any> = ({ dataKey, name }) => <p>Area: {name} ({dataKey})</p>;
-
- const { Slider = DummySlider, Select = DummySelect, SelectContent = DummySelectContent, SelectGroup = DummySelectGroup, SelectLabel = DummySelectLabel, SelectItem = DummySelectItem, SelectTrigger = DummySelectTrigger, SelectValue = DummySelectValue, Checkbox = DummyCheckbox, Switch = DummySwitch, Tooltip = DummyTooltip, TooltipContent = DummyTooltipContent, TooltipProvider = DummyTooltipProvider, TooltipTrigger = DummyTooltipTrigger, Card = DummyCard, CardContent = DummyCardContent, CardHeader = DummyCardHeader, CardTitle = DummyCardTitle, CardDescription = DummyCardDescription, Label = DummyLabel, Input = DummyInput, Button = DummyButton, Progress = DummyProgress, Separator = DummySeparator } = { /* ... dummy assignments ... * / };
- const { ResponsiveContainer = DummyResponsiveContainer, LineChart = DummyLineChart, Line = DummyLine, AreaChart = DummyAreaChart, Area = DummyArea, XAxis = DummyXAxis, YAxis = DummyYAxis, CartesianGrid = DummyCartesianGrid, Tooltip: RechartsTooltip = DummyRechartsTooltip, Legend = DummyLegend } = { /* ... dummy assignments ... * / };
-*/
+                  --theme-color-500: theme(colors.${activeThemeColor}.500,

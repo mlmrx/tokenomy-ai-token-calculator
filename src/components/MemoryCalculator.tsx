@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 // Shadcn UI Components - Ensure these are installed and configured
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -273,17 +274,39 @@ const MemoryCalculator = () => {
 
   const deserializeState = useCallback((encodedState: string) => {
     try {
-        const jsonString = atob(encodedState); const parsedState = JSON.parse(jsonString);
+        const jsonString = atob(encodedState); 
+        const parsedState = JSON.parse(jsonString);
         const validationResult = AppStateSchema.safeParse(parsedState);
-        if (!validationResult.success) { console.error("URL state validation failed:", validationResult.error.errors); toast.error("Failed to load configuration from link: Invalid data."); window.location.hash = ""; return false; } // Return false on failure
+        if (!validationResult.success) { 
+            console.error("URL state validation failed:", validationResult.error.errors);
+            toast.error("Failed to load configuration from link: Invalid data.");
+            window.location.hash = "";
+            return false; // Return false on failure
+        }
         const state = validationResult.data;
         setArchitectureId(architectureTypes.some(a => a.id === state.arch) ? state.arch : architectureTypes[0].id);
-        setParameters(state.p); setMemoryFlags(state.f); setPrecision(state.prec);
-        setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id); // Default to H100 80GB SXM on error
-        setNumGpus(state.ng); setCostParams(state.cost);
+        
+        // Fix: Use as ModelParameters to ensure all required fields are present
+        setParameters(state.p as ModelParameters);
+        
+        // Fix: Use as MemoryFlags to ensure all required fields are present
+        setMemoryFlags(state.f as MemoryFlags);
+        
+        setPrecision(state.prec);
+        setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id);
+        setNumGpus(state.ng);
+        
+        // Fix: Use as CostEnergyParams to ensure all required fields are present
+        setCostParams(state.cost as CostEnergyParams);
+        
         toast.success("Configuration loaded from link.");
         return true; // Return true on success
-    } catch (error) { console.error("Error deserializing state:", error); toast.error("Failed to load configuration from link: Invalid format."); window.location.hash = ""; return false; } // Return false on failure
+    } catch (error) { 
+        console.error("Error deserializing state:", error);
+        toast.error("Failed to load configuration from link: Invalid format.");
+        window.location.hash = "";
+        return false; // Return false on failure
+    }
   }, []); // Removed setters from deps
 
    // Effect to load state from URL hash on initial mount (Modified)
@@ -615,16 +638,55 @@ const MemoryCalculator = () => {
   // Function to apply model preset
   const handleApplyPreset = (preset: ModelPreset) => {
       setArchitectureId(preset.archId);
-      setParameters(prev => ({
-          ...prev, // Keep current values as default
-          ...preset.params // Override with preset values
-      }));
+      
+      // FIX: Ensure we provide default values for any missing properties in the preset
+      setParameters(prev => {
+          const updatedParams = { ...prev };
+          
+          if (preset.params.hiddenSize !== undefined) updatedParams.hiddenSize = preset.params.hiddenSize;
+          if (preset.params.numLayers !== undefined) updatedParams.numLayers = preset.params.numLayers;
+          if (preset.params.numHeads !== undefined) updatedParams.numHeads = preset.params.numHeads;
+          if (preset.params.vocabSize !== undefined) updatedParams.vocabSize = preset.params.vocabSize;
+          if (preset.params.sequenceLength !== undefined) updatedParams.sequenceLength = preset.params.sequenceLength;
+          if (preset.params.batchSize !== undefined) updatedParams.batchSize = preset.params.batchSize;
+          if (preset.params.microBatchSizePerGPU !== undefined) updatedParams.microBatchSizePerGPU = preset.params.microBatchSizePerGPU;
+          
+          return updatedParams;
+      });
+      
       setPrecision(preset.precision || 'bf16'); // Use preset precision or fallback
-      // Handle memory flags, preserving any values not specified in the preset
-      setMemoryFlags(prev => ({
-          ...prev, // Keep current flags as default
-          ...preset.flags, // Override with preset flags
-      }));
+      
+      // FIX: Ensure we provide default values for any missing properties in the preset flags
+      setMemoryFlags(prev => {
+          const updatedFlags = { ...prev };
+          
+          if (preset.flags) {
+              if (preset.flags.flashAttention !== undefined) updatedFlags.flashAttention = preset.flags.flashAttention;
+              if (preset.flags.gradientCheckpointFactor !== undefined) updatedFlags.gradientCheckpointFactor = preset.flags.gradientCheckpointFactor;
+              if (preset.flags.zeroStage !== undefined) updatedFlags.zeroStage = preset.flags.zeroStage;
+              if (preset.flags.cpuOffloadPct !== undefined) updatedFlags.cpuOffloadPct = preset.flags.cpuOffloadPct;
+              
+              if (preset.flags.moe) {
+                  updatedFlags.moe = {
+                      experts: preset.flags.moe.experts || 8, // Default if missing
+                      topK: preset.flags.moe.topK || 2 // Default if missing
+                  };
+              }
+              
+              if (preset.flags.lora) {
+                  updatedFlags.lora = {
+                      rank: preset.flags.lora.rank || 8 // Default if missing
+                  };
+              }
+              
+              if (preset.flags.sequenceParallelism !== undefined) updatedFlags.sequenceParallelism = preset.flags.sequenceParallelism;
+              if (preset.flags.kvCachePrecision !== undefined) updatedFlags.kvCachePrecision = preset.flags.kvCachePrecision;
+              if (preset.flags.sparsity24 !== undefined) updatedFlags.sparsity24 = preset.flags.sparsity24;
+          }
+          
+          return updatedFlags;
+      });
+      
       toast.success(`Applied preset: ${preset.name}`);
   };
 

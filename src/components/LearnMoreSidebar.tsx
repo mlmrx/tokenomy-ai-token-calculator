@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface LearnMoreSidebarProps {
   isOpen: boolean;
@@ -124,45 +125,63 @@ const LearnMoreSidebar = ({ isOpen, onClose }: LearnMoreSidebarProps) => {
           <TabsContent value="faq" className="mt-4">
             <ScrollArea className="h-[70vh]">
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">What is a token?</h3>
-                  <p>Tokens are chunks of text that AI models process. They can be as short as one character or as long as one word. English text typically averages about 4 characters per token.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">Why do different models have different token counts?</h3>
-                  <p>Each AI model uses its own tokenization scheme, trained on different data. This leads to variations in how text is split into tokens across models.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">How accurate is the cost estimation?</h3>
-                  <p>Our cost estimations are based on the latest published pricing from each AI provider. Prices may change, and actual billing might include additional factors like API usage fees.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">What is token speed?</h3>
-                  <p>Token speed refers to how quickly a model can generate new tokens. It includes first token latency (time to generate the first token) and throughput (tokens per second thereafter).</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">How is energy consumption estimated?</h3>
-                  <p>Energy estimates are based on published research about model efficiency and datacenter energy profiles. These are approximations and actual consumption may vary.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">What affects memory requirements for LLMs?</h3>
-                  <p>Key factors include: model size (parameters), batch size, sequence length, precision (FP16, FP32, INT8), and optimization techniques like activation checkpointing.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">Can I use these calculators for commercial purposes?</h3>
-                  <p>Yes, these tools are free to use for both personal and commercial planning. For high-volume API access, please contact us about enterprise options.</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">How often is pricing data updated?</h3>
-                  <p>We strive to update pricing information within 24-48 hours of any announced changes by providers.</p>
-                </div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>What is a token?</AccordionTrigger>
+                    <AccordionContent>
+                      Tokens are chunks of text that AI models process. They can be as short as one character or as long as one word. English text typically averages about 4 characters per token.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Why do different models have different token counts?</AccordionTrigger>
+                    <AccordionContent>
+                      Each AI model uses its own tokenization scheme, trained on different data. This leads to variations in how text is split into tokens across models.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>How accurate is the cost estimation?</AccordionTrigger>
+                    <AccordionContent>
+                      Our cost estimations are based on the latest published pricing from each AI provider. Prices may change, and actual billing might include additional factors like API usage fees.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger>What is token speed?</AccordionTrigger>
+                    <AccordionContent>
+                      Token speed refers to how quickly a model can generate new tokens. It includes first token latency (time to generate the first token) and throughput (tokens per second thereafter).
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-5">
+                    <AccordionTrigger>How is energy consumption estimated?</AccordionTrigger>
+                    <AccordionContent>
+                      Energy estimates are based on published research about model efficiency and datacenter energy profiles. These are approximations and actual consumption may vary.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-6">
+                    <AccordionTrigger>What affects memory requirements for LLMs?</AccordionTrigger>
+                    <AccordionContent>
+                      Key factors include: model size (parameters), batch size, sequence length, precision (FP16, FP32, INT8), and optimization techniques like activation checkpointing.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-7">
+                    <AccordionTrigger>Can I use these calculators for commercial purposes?</AccordionTrigger>
+                    <AccordionContent>
+                      Yes, these tools are free to use for both personal and commercial planning. For high-volume API access, please contact us about enterprise options.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-8">
+                    <AccordionTrigger>How often is pricing data updated?</AccordionTrigger>
+                    <AccordionContent>
+                      We strive to update pricing information within 24-48 hours of any announced changes by providers.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
             </ScrollArea>
           </TabsContent>

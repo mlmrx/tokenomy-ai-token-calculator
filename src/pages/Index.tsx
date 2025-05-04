@@ -31,7 +31,6 @@ import TokenizationInfo from "@/components/TokenizationInfo";
 import ModelRecommendation from "@/components/ModelRecommendation";
 import TokenSpeedSimulator from "@/components/TokenSpeedSimulator";
 import MemoryCalculator from "@/components/MemoryCalculator";
-import EnergyUsageEstimator from "@/components/EnergyUsageEstimator";
 import ExportData from "@/components/ExportData";
 import ModelComparisonChart from "@/components/ModelComparisonChart";
 import TokenizationChart from "@/components/TokenizationChart";
@@ -733,25 +732,17 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          <div className="speed-bg-gradient p-6 rounded-lg mb-6">
-            <div className="backdrop-blur-sm p-6 rounded-lg shadow-xl">
+          //<div className="speed-bg-gradient p-6 rounded-lg mb-6">
+            <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <TokenSpeedSimulator />
             </div>
-          </div>
+          //</div>
         )}
         
         {activeTab === "memory" && (
           <div className="memory-bg-gradient p-6 rounded-lg mb-6">
             <div className="bg-gradient-to-br from-amber-800/60 to-orange-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <MemoryCalculator />
-            </div>
-          </div>
-        )}
-
-        {activeTab === "energy" && (
-          <div className="energy-bg-gradient p-6 rounded-lg mb-6">
-            <div className="bg-gradient-to-br from-green-800/60 to-green-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
-              <EnergyUsageEstimator />
             </div>
           </div>
         )}

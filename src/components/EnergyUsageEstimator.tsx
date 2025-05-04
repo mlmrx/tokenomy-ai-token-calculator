@@ -8,7 +8,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb, TrendingUp, Globe } from 'lucide-react'; // Added TrendingUp, Globe
+import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb, TrendingUp, Globe } from 'lucide-react';
+// Import necessary components from recharts for gauges
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 
 // --- Configuration & Constants (May 2025 Data - Unchanged) ---
@@ -59,7 +60,7 @@ const OFFSET_PROJECTS = [ /* ... V5 Data ... */
     { id: 'renewable-wind-india', name: 'Wind Power Generation India', price_usd_per_tonne_co2e: 8, link: '#' },
 ];
 
-// --- NEW: Provider Theme Colors ---
+// --- Provider Theme Colors (Unchanged) ---
 const PROVIDER_THEMES: Record<string, { gradientFrom: string; gradientTo: string; color: string }> = {
     'OpenAI': { gradientFrom: 'from-green-100', gradientTo: 'to-emerald-100', color: 'text-green-600 dark:text-green-400' },
     'Anthropic': { gradientFrom: 'from-orange-100', gradientTo: 'to-amber-100', color: 'text-orange-600 dark:text-orange-400' },
@@ -99,7 +100,7 @@ const darkenColor = (hex: string, factor: number): string => {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 };
 
-// --- Refined Metric Gauge Component (V11) ---
+// --- Fixed Metric Gauge Component ---
 interface MetricGaugeProps {
   value: number;
   maxValue: number;
@@ -120,50 +121,61 @@ const MetricGauge: React.FC<MetricGaugeProps> = ({
   const displayValue = formatNumber(value, precision);
   const displaySecondaryValue = secondaryValue !== undefined ? formatNumber(secondaryValue, precision) : '';
   const gaugeValue = Math.min(value, maxValue);
-  const percentage = maxValue > 0 ? (gaugeValue / maxValue) * 100 : 0;
+  // Ensure percentage is between 0 and 100
+  const percentage = maxValue > 0 ? Math.max(0, Math.min((gaugeValue / maxValue) * 100, 100)) : 0;
   const gradientId = `gradient-${label.replace(/\s+/g, '-')}`;
   const endColor = darkenColor(color, 0.3);
 
+  // Data for the single bar in the radial chart
   const data = [{ name: label, value: percentage, fill: `url(#${gradientId})` }];
 
   return (
+    // Added bg-card/dark:bg-gray-800/50 for slight background differentiation
     <div className="flex flex-col items-center text-center p-3 rounded-xl border bg-card dark:bg-gray-800/50 shadow-md hover:shadow-lg transition-shadow duration-200">
       {/* Label with Icon */}
       <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground mb-1">
          <Icon className={`w-4 h-4`} style={{ color: color }}/>
          <span>{label}</span>
       </div>
-      {/* Gauge Container */}
-      <div style={{ width: '100%', height: 80 }}> {/* Adjusted height for arc only */}
-        <ResponsiveContainer>
+      {/* Gauge Container - Fixed Height */}
+      <div className="relative w-full h-[80px]"> {/* Use fixed height for chart area */}
+        <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart
-            innerRadius="75%"
-            outerRadius="105%"
-            barSize={22} // Thicker bar
+            cx="50%" // Center horizontally
+            cy="100%" // Center vertically at the bottom
+            innerRadius="70%" // Adjust inner radius
+            outerRadius="110%" // Adjust outer radius to control arc size relative to container
+            barSize={20} // Thickness of the bar
             data={data}
-            startAngle={180}
-            endAngle={0}
-            cy="100%" // Position center at the bottom
+            startAngle={180} // Start at the left
+            endAngle={0} // End at the right (180 degrees arc)
           >
             {/* Define the gradient */}
             <defs>
               <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={color} stopOpacity={0.7}/>
+                <stop offset="0%" stopColor={color} stopOpacity={0.8}/>
                 <stop offset="100%" stopColor={endColor} stopOpacity={1}/>
               </linearGradient>
             </defs>
-            <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-            <RadialBar
-              background={false} // No background track for cleaner look
-              dataKey="value"
-              cornerRadius={11} // Fully rounded ends
+            {/* Background track for the gauge */}
+            <PolarAngleAxis
+              type="number"
+              domain={[0, 100]} // Percentage domain
               angleAxisId={0}
+              tick={false} // Hide ticks
+            />
+            {/* The actual data bar */}
+            <RadialBar
+              background={{ fill: 'rgba(150, 150, 150, 0.1)' }} // Subtle background track
+              dataKey="value"
+              angleAxisId={0}
+              cornerRadius={10} // Rounded ends
             />
           </RadialBarChart>
         </ResponsiveContainer>
       </div>
       {/* Text Information Below Gauge */}
-      <div className="mt-2 text-center">
+      <div className="mt-1 text-center"> {/* Reduced margin-top */}
           {/* Primary Value + Unit */}
           <span className="text-xl font-semibold text-gray-800 dark:text-white">
               {displayValue}
@@ -383,7 +395,7 @@ export default function EnergyUsageEstimator() {
                  />
              </div>
 
-             {/* --- NEW: Why This Matters Panel --- */}
+             {/* --- Why This Matters Panel --- */}
               <div className="pt-6">
                   <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
                       <CardHeader className="pb-3">

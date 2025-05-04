@@ -1,189 +1,256 @@
+import React, { useEffect, useState } from 'react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from '@/components/ui/carousel';
+import { Card, CardContent } from '@/components/ui/card';
+
 /* -------------------------------------------------------------------------- */
-/*  REAL DATA  – parsed from trimed_estimated_tokens_2022_2024.csv            */
-/*  (values shown are trillions of tokens per month, Jan-24 ➜ Dec-24)         */
+/*  DATA MODEL                                                                */
 /* -------------------------------------------------------------------------- */
-export const companyStats: CompanyStatType[] = [
+export interface CompanyStatType {
+  name: string;
+  ceo: string;
+  position: string;
+  aiFocusArea: string;
+  flagshipAIProduct: string;
+  imageUrl: string;
+  logoUrl: string;
+  color: string;          // Tailwind gradient classes
+  foundedYear: number;
+  headquarters: string;
+  estimatedTokens: string; // NEW   (≈ tokens/month)
+  stats: string;           // FY-24 revenue | valuation (not shown but retained)
+}
+
+/* -------------------------------------------------------------------------- */
+/*  DATA                                                                      */
+/* -------------------------------------------------------------------------- */
+const companyStats: CompanyStatType[] = [
   {
-    name: "Microsoft",
-    ceo: "Satya Nadella",
-    position: "Chairman & CEO",
+    name: 'Microsoft',
+    ceo: 'Satya Nadella',
+    position: 'Chairman & CEO',
     aiFocusArea:
-      "Large-scale cloud AI infrastructure and integrated AI assistants",
-    flagshipAIProduct: "Azure AI / Microsoft Copilot",
-    estimatedTokens: "≈ 80 Trillion tokens / month", // Dec-24
-    tokenHistory: [
-      { month: "Jan 24", tokens: 58 },
-      { month: "Feb 24", tokens: 60 },
-      { month: "Mar 24", tokens: 62 },
-      { month: "Apr 24", tokens: 64 },
-      { month: "May 24", tokens: 66 },
-      { month: "Jun 24", tokens: 68 },
-      { month: "Jul 24", tokens: 70 },
-      { month: "Aug 24", tokens: 72 },
-      { month: "Sep 24", tokens: 74 },
-      { month: "Oct 24", tokens: 76 },
-      { month: "Nov 24", tokens: 78 },
-      { month: "Dec 24", tokens: 80 },
-    ],
+      'Large-scale cloud AI infrastructure and integrated AI assistants',
+    flagshipAIProduct: 'Azure AI / Microsoft Copilot',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1024px-Microsoft_logo.svg.png",
-    color: "from-blue-600 to-sky-500",
-    gradientId: "msftGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+    color: 'from-[#0078D4] to-[#00A4EF]',
     foundedYear: 1975,
-    headquarters: "Redmond, Washington, USA",
+    headquarters: 'Redmond, Washington, USA',
+    estimatedTokens: '≈ 80 T tokens / month',
+    stats: 'FY-24 revenue $245 B | M-cap $3.24 T',
   },
   {
-    name: "Amazon",
-    ceo: "Jeff Bezos",
-    position: "Executive Chairman",
-    aiFocusArea: "Cloud AI services, e-commerce AI, and voice assistants",
-    flagshipAIProduct: "AWS Bedrock / Alexa",
-    estimatedTokens: "≈ 25 Trillion tokens / month",
-    tokenHistory: [
-      { month: "Jan 24", tokens: 18.09 },
-      { month: "Feb 24", tokens: 18.71 },
-      { month: "Mar 24", tokens: 19.34 },
-      { month: "Apr 24", tokens: 19.97 },
-      { month: "May 24", tokens: 20.60 },
-      { month: "Jun 24", tokens: 21.26 },
-      { month: "Jul 24", tokens: 21.86 },
-      { month: "Aug 24", tokens: 22.49 },
-      { month: "Sep 24", tokens: 23.11 },
-      { month: "Oct 24", tokens: 23.74 },
-      { month: "Nov 24", tokens: 24.37 },
-      { month: "Dec 24", tokens: 25.00 },
-    ],
+    name: 'Amazon',
+    ceo: 'Jeff Bezos',
+    position: 'Executive Chairman',
+    aiFocusArea: 'Cloud AI services, e-commerce AI, and voice assistants',
+    flagshipAIProduct: 'AWS Bedrock / Amazon Q',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg',
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1024px-Amazon_logo.svg.png",
-    color: "from-orange-500 to-yellow-400",
-    gradientId: "amznGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+    color: 'from-[#FF9900] to-[#FFB84D]',
     foundedYear: 1994,
-    headquarters: "Seattle, Washington, USA",
+    headquarters: 'Seattle, Washington, USA',
+    estimatedTokens: '≈ 25 T tokens / month',
+    stats: 'FY-24 revenue $638 B | M-cap $2.02 T',
   },
   {
-    name: "OpenAI",
-    ceo: "Sam Altman",
-    position: "CEO",
-    aiFocusArea: "Pioneering large language models and generative-AI research",
-    flagshipAIProduct: "ChatGPT / GPT-4o",
-    estimatedTokens: "≈ 28 Trillion tokens / month",
-    tokenHistory: [
-      { month: "Jan 24", tokens: 19.51 },
-      { month: "Feb 24", tokens: 20.29 },
-      { month: "Mar 24", tokens: 21.06 },
-      { month: "Apr 24", tokens: 21.83 },
-      { month: "May 24", tokens: 22.60 },
-      { month: "Jun 24", tokens: 23.37 },
-      { month: "Jul 24", tokens: 24.11 },
-      { month: "Aug 24", tokens: 24.91 },
-      { month: "Sep 24", tokens: 25.69 },
-      { month: "Oct 24", tokens: 26.46 },
-      { month: "Nov 24", tokens: 27.23 },
-      { month: "Dec 24", tokens: 28.00 },
-    ],
+    name: 'OpenAI',
+    ceo: 'Sam Altman',
+    position: 'CEO',
+    aiFocusArea: 'Pioneering large-language models & generative-AI research',
+    flagshipAIProduct: 'ChatGPT / GPT-4o',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/1024px-OpenAI_Logo.svg.png",
-    color: "from-teal-500 to-emerald-500",
-    gradientId: "oaiGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/4/4c/OpenAI_Logo.svg',
+    color: 'from-[#10A37F] to-[#1DBE8E]',
     foundedYear: 2015,
-    headquarters: "San Francisco, California, USA",
+    headquarters: 'San Francisco, California, USA',
+    estimatedTokens: '≈ 28 T tokens / month',
+    stats: 'ARR $3.4 B | Valuation $157 B',
   },
   {
-    name: "Google",
-    ceo: "Sundar Pichai",
-    position: "CEO",
+    name: 'Google',
+    ceo: 'Sundar Pichai',
+    position: 'CEO',
     aiFocusArea:
-      "Leading AI research, cloud-AI platform, and integrated AI features",
-    flagshipAIProduct: "Gemini / Vertex AI",
-    estimatedTokens: "≈ 100 Trillion tokens / month",
-    tokenHistory: [
-      { month: "Jan 24", tokens: 73.29 },
-      { month: "Feb 24", tokens: 75.71 },
-      { month: "Mar 24", tokens: 78.14 },
-      { month: "Apr 24", tokens: 80.57 },
-      { month: "May 24", tokens: 83.00 },
-      { month: "Jun 24", tokens: 85.43 },
-      { month: "Jul 24", tokens: 87.86 },
-      { month: "Aug 24", tokens: 90.29 },
-      { month: "Sep 24", tokens: 92.71 },
-      { month: "Oct 24", tokens: 95.14 },
-      { month: "Nov 24", tokens: 97.57 },
-      { month: "Dec 24", tokens: 100.00 },
-    ],
+      'Leading AI research, cloud-AI platform, and integrated AI features',
+    flagshipAIProduct: 'Gemini / Vertex AI',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1024px-Google_2015_logo.svg.png",
-    color: "from-red-500 to-blue-500",
-    gradientId: "googGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+    color: 'from-[#4285F4] to-[#34A853]',
     foundedYear: 1998,
-    headquarters: "Mountain View, California, USA",
+    headquarters: 'Mountain View, California, USA',
+    estimatedTokens: '≈ 100 T tokens / month',
+    stats: 'FY-24 revenue $350 B | M-cap $2.01 T',
   },
   {
-    name: "Meta",
-    ceo: "Mark Zuckerberg",
-    position: "Chairman & CEO",
-    aiFocusArea:
-      "Open-source AI models and AI for social media and the metaverse",
-    flagshipAIProduct: "Llama 3 / Meta AI",
-    estimatedTokens: "≈ 8 Trillion tokens / month",
-    tokenHistory: [
-      { month: "Jan 24", tokens: 5.8 },
-      { month: "Feb 24", tokens: 6.0 },
-      { month: "Mar 24", tokens: 6.2 },
-      { month: "Apr 24", tokens: 6.4 },
-      { month: "May 24", tokens: 6.6 },
-      { month: "Jun 24", tokens: 6.8 },
-      { month: "Jul 24", tokens: 7.0 },
-      { month: "Aug 24", tokens: 7.2 },
-      { month: "Sep 24", tokens: 7.4 },
-      { month: "Oct 24", tokens: 7.6 },
-      { month: "Nov 24", tokens: 7.8 },
-      { month: "Dec 24", tokens: 8.0 },
-    ],
+    name: 'Meta',
+    ceo: 'Mark Zuckerberg',
+    position: 'Chairman & CEO',
+    aiFocusArea: 'Open-source AI models plus AI for social & metaverse',
+    flagshipAIProduct: 'Llama 3 / Meta AI',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
     logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png",
-    color: "from-blue-700 to-indigo-600",
-    gradientId: "metaGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta_Platforms_Inc._logo.svg',
+    color: 'from-[#0866FF] to-[#0090FF]',
     foundedYear: 2004,
-    headquarters: "Menlo Park, California, USA",
+    headquarters: 'Menlo Park, California, USA',
+    estimatedTokens: '≈ 8 T tokens / month',
+    stats: 'FY-24 revenue $164.5 B | M-cap $1.51 T',
   },
   {
-    name: "Anthropic",
-    ceo: "Dario Amodei",
-    position: "CEO",
-    aiFocusArea: "AI safety and constitutional-AI principles",
-    flagshipAIProduct: "Claude 3 (Opus)",
-    estimatedTokens: "≈ 12 Trillion tokens / month",
-    tokenHistory: [
-      { month: "Jan 24", tokens: 8.29 },
-      { month: "Feb 24", tokens: 8.63 },
-      { month: "Mar 24", tokens: 8.97 },
-      { month: "Apr 24", tokens: 9.30 },
-      { month: "May 24", tokens: 9.64 },
-      { month: "Jun 24", tokens: 9.97 },
-      { month: "Jul 24", tokens: 10.32 },
-      { month: "Aug 24", tokens: 10.65 },
-      { month: "Sep 24", tokens: 10.99 },
-      { month: "Oct 24", tokens: 11.33 },
-      { month: "Nov 24", tokens: 11.66 },
-      { month: "Dec 24", tokens: 12.00 },
-    ],
+    name: 'Anthropic',
+    ceo: 'Dario Amodei',
+    position: 'CEO',
+    aiFocusArea: 'AI safety & constitutional-AI research',
+    flagshipAIProduct: 'Claude 3 (Opus/Sonnet/Haiku)',
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg",
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg',
     logoUrl:
-      "https://images.crunchbase.com/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/gudggzfh7mq5dajv9zld",
-    color: "from-orange-800 to-amber-700",
-    gradientId: "anthropicGradient",
+      'https://upload.wikimedia.org/wikipedia/commons/5/55/Anthropic_logo.svg',
+    color: 'from-[#00E79D] to-[#00996C]',
     foundedYear: 2021,
-    headquarters: "San Francisco, California, USA",
+    headquarters: 'San Francisco, California, USA',
+    estimatedTokens: '≈ 12 T tokens / month',
+    stats: 'ARR $1.4 B | Valuation $61.5 B',
   },
 ];
+
+/* -------------------------------------------------------------------------- */
+/*  COMPONENT                                                                 */
+/* -------------------------------------------------------------------------- */
+const CompanyStatsCarousel: React.FC = () => {
+  const [api, setApi] = useState<CarouselApi | null>(null);
+
+  /* autoplay --------------------------------------------------------------- */
+  useEffect(() => {
+    if (!api) return;
+    const id = setInterval(() => api.scrollNext?.(), 5_000);
+    return () => clearInterval(id);
+  }, [api]);
+
+  return (
+    <div className="w-full max-w-6xl mx-auto py-8 px-4">
+      {/* header */}
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-800 dark:text-white">
+          AI Industry Leaders
+        </h2>
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          Key players, their flagship AI, and monthly token scale
+        </p>
+      </div>
+
+      {/* carousel */}
+      <div className="relative px-12">
+        <Carousel
+          opts={{ align: 'start', loop: true }}
+          className="w-full"
+          setApi={setApi}
+        >
+          <CarouselContent className="-ml-4">
+            {companyStats.map((c, i) => (
+              <CarouselItem
+                key={i}
+                className="pl-4 md:basis-1/2 lg:basis-1/3"
+              >
+                <div className="p-1 h-full">
+                  <Card className="h-full border-2 border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-300 shadow-lg rounded-xl overflow-hidden">
+                    <CardContent className="p-0 h-full flex flex-col">
+                      {/* gradient header */}
+                      <div
+                        className={`bg-gradient-to-br ${c.color} text-white p-6 rounded-t-xl relative`}
+                      >
+                        {/* logo */}
+                        <img
+                          src={c.logoUrl}
+                          alt={`${c.name} logo`}
+                          className="absolute top-4 right-4 h-8 w-auto opacity-80"
+                          onError={(e) =>
+                            (e.currentTarget.style.display = 'none')
+                          }
+                        />
+                        {/* name */}
+                        <h3 className="text-2xl font-bold mb-2">{c.name}</h3>
+
+                        {/* badges */}
+                        <div className="flex flex-wrap gap-2">
+                          <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
+                            {c.flagshipAIProduct}
+                          </span>
+                          <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
+                            {c.estimatedTokens}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* body */}
+                      <div className="p-6 flex flex-col flex-grow bg-white dark:bg-gray-800">
+                        {/* CEO row */}
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 flex-shrink-0">
+                            <img
+                              src={c.imageUrl}
+                              alt={c.ceo}
+                              className="w-full h-full object-cover"
+                              onError={(e) =>
+                                (e.currentTarget.src =
+                                  `https://placehold.co/64x64/eee/ccc?text=${c.ceo[0]}`)
+                              }
+                            />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-lg text-gray-900 dark:text-white">
+                              {c.ceo}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {c.position}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* AI focus */}
+                        <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 font-medium">
+                            AI Focus
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {c.aiFocusArea}
+                          </p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                            Founded: {c.foundedYear} | HQ: {c.headquarters}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+
+          {/* arrows */}
+          <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md" />
+          <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md" />
+        </Carousel>
+      </div>
+    </div>
+  );
+};
+
+export default CompanyStatsCarousel;

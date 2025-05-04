@@ -9,18 +9,36 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info, Leaf, Car, Smartphone, TreeDeciduous, Zap, Cpu, MapPin, Percent, DollarSign, Download, Code, Droplet, Upload, Target, Bell, Link as LinkIcon, AlertTriangle, Lightbulb } from 'lucide-react';
-// Import necessary components from recharts for gauges
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'; // Re-added Radial imports
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 
 // --- Configuration & Constants (May 2025 Data - Unchanged) ---
 type ModelSize = 'small' | 'medium' | 'large' | 'very_large';
-const MODEL_DEFINITIONS: Record<string, { provider: string; sizeCategory: ModelSize }> = { /* ... V5 Data ... */
-  'gpt-4o': { provider: 'OpenAI', sizeCategory: 'very_large' }, 'gpt-4': { provider: 'OpenAI', sizeCategory: 'large' }, 'gpt-4-turbo': { provider: 'OpenAI', sizeCategory: 'large' }, 'gpt-3.5-turbo': { provider: 'OpenAI', sizeCategory: 'medium' },
-  'claude-3-opus': { provider: 'Anthropic', sizeCategory: 'very_large' }, 'claude-3-sonnet': { provider: 'Anthropic', sizeCategory: 'large' }, 'claude-3-haiku': { provider: 'Anthropic', sizeCategory: 'medium' },
-  'gemini-1.5-pro': { provider: 'Google', sizeCategory: 'large' }, 'gemini-1.0-pro': { provider: 'Google', sizeCategory: 'medium' },
-  'llama-3-70b': { provider: 'Meta', sizeCategory: 'large' }, 'llama-3-8b': { provider: 'Meta', sizeCategory: 'small' },
-  'mistral-large': { provider: 'Mistral', sizeCategory: 'large' }, 'mistral-medium': { provider: 'Mistral', sizeCategory: 'medium' }, 'mistral-small': { provider: 'Mistral', sizeCategory: 'small' },
-  'generic-small': { provider: 'Generic', sizeCategory: 'small' }, 'generic-medium': { provider: 'Generic', sizeCategory: 'medium' }, 'generic-large': { provider: 'Generic', sizeCategory: 'large' }, 'generic-very_large': { provider: 'Generic', sizeCategory: 'very_large' },
+// Added provider key directly for easier access
+const MODEL_DEFINITIONS: Record<string, { provider: string; sizeCategory: ModelSize }> = {
+  // OpenAI
+  'gpt-4o': { provider: 'OpenAI', sizeCategory: 'very_large' },
+  'gpt-4': { provider: 'OpenAI', sizeCategory: 'large' },
+  'gpt-4-turbo': { provider: 'OpenAI', sizeCategory: 'large' },
+  'gpt-3.5-turbo': { provider: 'OpenAI', sizeCategory: 'medium' },
+  // Anthropic
+  'claude-3-opus': { provider: 'Anthropic', sizeCategory: 'very_large' },
+  'claude-3-sonnet': { provider: 'Anthropic', sizeCategory: 'large' },
+  'claude-3-haiku': { provider: 'Anthropic', sizeCategory: 'medium' },
+  // Google
+  'gemini-1.5-pro': { provider: 'Google', sizeCategory: 'large' },
+  'gemini-1.0-pro': { provider: 'Google', sizeCategory: 'medium' },
+  // Meta
+  'llama-3-70b': { provider: 'Meta', sizeCategory: 'large' },
+  'llama-3-8b': { provider: 'Meta', sizeCategory: 'small' },
+  // Mistral
+  'mistral-large': { provider: 'Mistral', sizeCategory: 'large' },
+  'mistral-medium': { provider: 'Mistral', sizeCategory: 'medium' },
+  'mistral-small': { provider: 'Mistral', sizeCategory: 'small' },
+  // Generic Sizes (Fallback)
+  'generic-small': { provider: 'Generic', sizeCategory: 'small' },
+  'generic-medium': { provider: 'Generic', sizeCategory: 'medium' },
+  'generic-large': { provider: 'Generic', sizeCategory: 'large' },
+  'generic-very_large': { provider: 'Generic', sizeCategory: 'very_large' },
 };
 const getModelCategories = () => { /* ... V5 Function ... */
     const categories: Record<string, string[]> = {};
@@ -60,6 +78,25 @@ const OFFSET_PROJECTS = [ /* ... V5 Data ... */
     { id: 'renewable-wind-india', name: 'Wind Power Generation India', price_usd_per_tonne_co2e: 8, link: '#' },
 ];
 
+// --- NEW: Provider Theme Colors ---
+// Using Tailwind color names for easier integration with shadcn/ui themes potentially
+// Ensure these colors are defined in your tailwind.config.js or use default Tailwind colors
+const PROVIDER_THEMES: Record<string, { gradientFrom: string; gradientTo: string; color: string }> = {
+    'OpenAI': { gradientFrom: 'from-green-100', gradientTo: 'to-emerald-100', color: 'text-green-600 dark:text-green-400' },
+    'Anthropic': { gradientFrom: 'from-orange-100', gradientTo: 'to-amber-100', color: 'text-orange-600 dark:text-orange-400' },
+    'Google': { gradientFrom: 'from-blue-100', gradientTo: 'to-sky-100', color: 'text-blue-600 dark:text-blue-400' },
+    'Meta': { gradientFrom: 'from-indigo-100', gradientTo: 'to-violet-100', color: 'text-indigo-600 dark:text-indigo-400' },
+    'Mistral': { gradientFrom: 'from-rose-100', gradientTo: 'to-pink-100', color: 'text-rose-600 dark:text-rose-400' },
+    'Generic': { gradientFrom: 'from-gray-100', gradientTo: 'to-slate-100', color: 'text-gray-600 dark:text-gray-400' },
+    // Dark mode gradients (adjust as needed)
+    'OpenAI_dark': { gradientFrom: 'dark:from-green-900/50', gradientTo: 'dark:to-emerald-900/50', color: 'text-green-600 dark:text-green-400' },
+    'Anthropic_dark': { gradientFrom: 'dark:from-orange-900/50', gradientTo: 'dark:to-amber-900/50', color: 'text-orange-600 dark:text-orange-400' },
+    'Google_dark': { gradientFrom: 'dark:from-blue-900/50', gradientTo: 'dark:to-sky-900/50', color: 'text-blue-600 dark:text-blue-400' },
+    'Meta_dark': { gradientFrom: 'dark:from-indigo-900/50', gradientTo: 'dark:to-violet-900/50', color: 'text-indigo-600 dark:text-indigo-400' },
+    'Mistral_dark': { gradientFrom: 'dark:from-rose-900/50', gradientTo: 'dark:to-pink-900/50', color: 'text-rose-600 dark:text-rose-400' },
+    'Generic_dark': { gradientFrom: 'dark:from-gray-900/50', gradientTo: 'dark:to-slate-900/50', color: 'text-gray-600 dark:text-gray-400' },
+};
+
 // --- Helper Function (Number Formatting - Unchanged) ---
 const formatNumber = (num: number, precision: number = 1): string => {
     if (isNaN(num)) return 'N/A'; if (num === 0) return '0';
@@ -71,7 +108,7 @@ const formatNumber = (num: number, precision: number = 1): string => {
 };
 const formatTokenDisplay = (num: number): string => { /* ... V5 Function ... */ return num >= 1e6? (num/1e6).toFixed(2)+'M' : num >= 1e3? (num/1e3).toFixed(1)+'k' : num.toString(); };
 
-// Helper function to darken color (if needed for gradient bar)
+// Helper function to darken color
 const darkenColor = (hex: string, factor: number): string => {
     if (!hex || hex.length < 7) return '#888888'; // Fallback color
     let r = parseInt(hex.substring(1, 3), 16);
@@ -83,7 +120,7 @@ const darkenColor = (hex: string, factor: number): string => {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 };
 
-// --- Improved Metric Gauge Component ---
+// --- Refined Metric Gauge Component (V11 - with subtle background) ---
 interface MetricGaugeProps {
   value: number;
   maxValue: number;
@@ -106,29 +143,29 @@ const MetricGauge: React.FC<MetricGaugeProps> = ({
   const gaugeValue = Math.min(value, maxValue);
   const percentage = maxValue > 0 ? (gaugeValue / maxValue) * 100 : 0;
   const gradientId = `gradient-${label.replace(/\s+/g, '-')}`;
-  const endColor = darkenColor(color, 0.3); // Darker end color for gradient
+  const endColor = darkenColor(color, 0.3);
 
   const data = [{ name: label, value: percentage, fill: `url(#${gradientId})` }];
 
   return (
-    <div className="flex flex-col items-center text-center p-3 rounded-xl border bg-card dark:bg-gray-800/30 shadow-md hover:shadow-lg transition-shadow duration-200">
+    // Added bg-card for slight differentiation
+    <div className="flex flex-col items-center text-center p-3 rounded-xl border bg-card dark:bg-gray-800/50 shadow-md hover:shadow-lg transition-shadow duration-200">
       {/* Label with Icon */}
-      <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+      <div className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground mb-1">
          <Icon className={`w-4 h-4`} style={{ color: color }}/>
          <span>{label}</span>
       </div>
       {/* Gauge Container */}
-      <div style={{ width: '100%', height: 120 }}> {/* Adjusted height */}
+      <div style={{ width: '100%', height: 80 }}> {/* Adjusted height for arc only */}
         <ResponsiveContainer>
           <RadialBarChart
-            // Make the arc take up more space
-            innerRadius="60%"
-            outerRadius="100%"
-            barSize={20} // Thicker bar
+            innerRadius="75%"
+            outerRadius="105%"
+            barSize={22} // Thicker bar
             data={data}
-            startAngle={180} // Start from the bottom left
-            endAngle={0}   // End at the bottom right
-            cy="100%" // Position gauge lower so top half is visible
+            startAngle={180}
+            endAngle={0}
+            cy="100%" // Position center at the bottom
           >
             {/* Define the gradient */}
             <defs>
@@ -139,25 +176,29 @@ const MetricGauge: React.FC<MetricGaugeProps> = ({
             </defs>
             <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
             <RadialBar
-              background={{ fill: 'rgba(150, 150, 150, 0.15)' }} // Visible background track
+              background={false} // No background track for cleaner look
               dataKey="value"
-              cornerRadius={10} // Rounded corners
+              cornerRadius={11} // Fully rounded ends
               angleAxisId={0}
             />
-            {/* Text positioned inside the gauge */}
-            {/* Primary Value + Unit - Smaller Font */}
-            <text x="50%" y="80%" textAnchor="middle" dominantBaseline="middle" className="text-xl font-semibold fill-current"> {/* Smaller font */}
-              {displayValue}
-              <tspan className="text-base font-normal ml-1">{unit}</tspan> {/* Smaller unit */}
-            </text>
-            {/* Secondary Value (Breakdown) - Smaller Font */}
-            {secondaryValue !== undefined && secondaryLabel && (
-              <text x="50%" y="95%" textAnchor="middle" dominantBaseline="middle" className="text-[10px] text-muted-foreground fill-current"> {/* Even smaller breakdown */}
-                ({secondaryLabel}: {displaySecondaryValue}{secondaryUnit ? ` ${secondaryUnit}` : ''})
-              </text>
-            )}
           </RadialBarChart>
         </ResponsiveContainer>
+      </div>
+      {/* Text Information Below Gauge */}
+      <div className="mt-2 text-center">
+          {/* Primary Value + Unit */}
+          <span className="text-xl font-semibold text-gray-800 dark:text-white">
+              {displayValue}
+          </span>
+          <span className="text-base font-normal text-gray-600 dark:text-gray-400 ml-1">
+              {unit}
+          </span>
+          {/* Secondary Value (Breakdown) */}
+          {secondaryValue !== undefined && secondaryLabel && (
+          <p className="text-xs text-muted-foreground mt-0.5">
+              ({secondaryLabel}: {displaySecondaryValue}{secondaryUnit ? ` ${secondaryUnit}` : ''})
+          </p>
+          )}
       </div>
     </div>
   );
@@ -255,13 +296,24 @@ export default function EnergyUsageEstimator() {
   const handleExport = (format: 'csv' | 'json') => { /* ... V5 Logic ... */ console.log(`Exporting ${format}...`); };
   const generateEmbedSnippet = () => { /* ... V5 Logic ... */ return `<div>Snippet...</div>`; };
 
+  // --- Dynamic Theme Calculation ---
+  const currentProvider = MODEL_DEFINITIONS[selectedModel]?.provider || 'Generic';
+  const lightTheme = PROVIDER_THEMES[currentProvider] || PROVIDER_THEMES['Generic'];
+  const darkTheme = PROVIDER_THEMES[`${currentProvider}_dark`] || PROVIDER_THEMES['Generic_dark'];
+  const headerClasses = `bg-gradient-to-r ${lightTheme.gradientFrom} ${lightTheme.gradientTo} ${darkTheme.gradientFrom} ${darkTheme.gradientTo}`;
+  const iconColorClass = lightTheme.color; // Use the text color class for the icon
+
   // --- Render ---
   return (
     <TooltipProvider>
-      <Card className="w-full max-w-5xl mx-auto font-sans shadow-lg border border-gray-200 dark:border-gray-700">
-         {/* Header (Unchanged) */}
-         <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 pb-4">
-            <div className="flex items-center gap-2 mb-1"><Leaf className="h-6 w-6 text-green-600 dark:text-green-400" /><CardTitle className="text-xl font-semibold">Energy Usage Estimator</CardTitle></div>
+      {/* Apply dynamic background to the main card if desired */}
+      <Card className="w-full max-w-5xl mx-auto font-sans shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+         {/* Header with Dynamic Theme */}
+         <CardHeader className={`pb-4 ${headerClasses}`}> {/* Applied dynamic classes */}
+            <div className="flex items-center gap-2 mb-1">
+                <Leaf className={`h-6 w-6 ${iconColorClass}`} /> {/* Applied dynamic color */}
+                <CardTitle className="text-xl font-semibold">Energy Usage Estimator</CardTitle>
+            </div>
             <CardDescription>Estimate AI environmental impact (energy, emissions, water, cost) with advanced options. (Data ~May 2025)</CardDescription>
          </CardHeader>
 
@@ -299,7 +351,7 @@ export default function EnergyUsageEstimator() {
           </Tabs>
 
 
-          {/* --- Results Section (Using Improved Gauges) --- */}
+          {/* --- Results Section (Using Refined Gauges) --- */}
           <div className="space-y-6 pt-8 border-t dark:border-gray-700">
              <h3 className="text-lg font-medium text-center mb-6">Estimated Impact Summary</h3>
              {/* Row 1: Core Metrics Gauges */}

@@ -130,7 +130,6 @@ function Stat({ label, children, tooltip, icon: Icon, color = "text-slate-800" }
 }
 
 // --- Main Component ---
-// FIX: Changed export from default to named export
 export const TokenSpeedSimulator: React.FC = () => {
     // --- State ---
     const [uiMode, setUiMode] = useState<UIMode>('simple');
@@ -161,7 +160,7 @@ export const TokenSpeedSimulator: React.FC = () => {
     // Comparison State... (unchanged)
     const [comparisonRuns, setComparisonRuns] = useState<ComparisonRun[]>([]);
 
-    // --- Refs (unchanged) ---
+    // --- Refs (unchanged) --- 
     const simLoopRef = useRef<NodeJS.Timeout | null>(null); /* ... */
     const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const secondIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -199,7 +198,6 @@ export const TokenSpeedSimulator: React.FC = () => {
         liveLineStroke: `stroke-${activeThemeColor}-500`, // Color for the live/current line in charts
         liveAreaFill: `fill-${activeThemeColor}-500`, // Base color for area fill gradient
     }), [activeThemeColor]);
-
 
     const effectiveSpeed = useMemo(() => { /* ... calculation unchanged ... */
         if (!isCustomMode && currentPresetData) return currentPresetData.speed; const base = BASE_SPEEDS[hardware] || BASE_SPEEDS['gpu_mid']; const modelFactor = FACTORS.modelSize(modelSize); const quantFactor = FACTORS.quantization[quantization]; const batchFactor = FACTORS.batchSize(batchSize); const seqLenFactor = FACTORS.sequenceLength(sequenceLength); const parallelFactor = FACTORS.parallelism[parallelism]; const kvCacheFactor = FACTORS.kvCache(useKvCache); const networkFactor = FACTORS.networkLatency(networkLatency); const utilizationFactor = FACTORS.hardwareUtilization(hardwareUtilization); const speed = base * modelFactor * quantFactor * seqLenFactor * parallelFactor * kvCacheFactor * networkFactor * utilizationFactor; return Math.max(0.1, speed);
@@ -300,7 +298,7 @@ export const TokenSpeedSimulator: React.FC = () => {
                             Explore LLM performance and cost trade-offs interactively.
                         </CardDescription>
                     </div>
-                    {/* UI Mode Toggle - Pill style */}
+                    {/* UI Mode Toggle - Pill style */} 
                     <div className="flex items-center space-x-1 p-1 bg-slate-200/70 rounded-full border border-slate-300/50 shadow-inner">
                          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="sm" onClick={() => handleUiModeChange(false)} className={`rounded-full px-3 py-1 h-8 text-xs ${uiMode === 'simple' ? `bg-white shadow ${themeClasses.text} font-semibold` : `text-slate-600 hover:bg-slate-100/70`}`}><Eye className="h-4 w-4 mr-1.5"/> Simple</Button></TooltipTrigger><TooltipContent>Switch to Simple View</TooltipContent></Tooltip>
                          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="sm" onClick={() => handleUiModeChange(true)} className={`rounded-full px-3 py-1 h-8 text-xs ${uiMode === 'advanced' ? `bg-white shadow ${themeClasses.text} font-semibold` : `text-slate-600 hover:bg-slate-100/70`}`}><Code className="h-4 w-4 mr-1.5"/> Advanced</Button></TooltipTrigger><TooltipContent>Switch to Advanced View</TooltipContent></Tooltip>
@@ -401,6 +399,7 @@ export const TokenSpeedSimulator: React.FC = () => {
                                 </div>
                             </fieldset>
                             <Separator className={`my-8 border-${activeThemeColor}-200/60 transition-colors duration-500`}/>
+
                             {/* Advanced Results Section */}
                             <div className="mt-4 pt-4">
                                 <h3 className="text-xl font-semibold text-center mb-4">{isCustomMode ? 'Estimated Performance (Custom)' : `Performance & Pricing (${activePresetKey})`}</h3>
@@ -512,8 +511,9 @@ export const TokenSpeedSimulator: React.FC = () => {
                   --theme-color-700: #4338ca; /* Default: indigo-700 */
                 }
              `}</style>
+             
              {/* Inject dynamic theme colors */}
-              <style jsx global>{`
+             <style jsx global>{`
                 /* Inject dynamic theme colors - Tailwind JIT needs these classes */
                 /* bg */ .bg-cyan-600 {} .bg-orange-600 {} .bg-blue-600 {} .bg-sky-600 {} .bg-rose-600 {} .bg-indigo-600 {}
                 /* hover:bg */ .hover:bg-cyan-700 {} .hover:bg-orange-700 {} .hover:bg-blue-700 {} .hover:bg-sky-700 {} .hover:bg-rose-700 {} .hover:bg-indigo-700 {}

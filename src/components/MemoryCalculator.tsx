@@ -125,60 +125,18 @@ const modelPresets: ModelPreset[] = [
 ];
 
 // --- Helper Functions ---
-/**
- * Formats a large number into a human-readable string with metric prefixes (K, M, B, T).
- * Includes basic handling for small numbers and zero.
- * @param num - The number to format.
- * @param precision - Number of decimal places for the scaled number.
- * @returns Formatted string (e.g., "1.23 M", "10 K", "500").
- */
 const formatNumber = (num: number, precision: number = 2): string => {
-    if (num === 0) return "0";
-    const absNum = Math.abs(num);
-
-    // Handle numbers between -1 and 1 (exclusive of 0)
-    if (absNum < 1) {
-        // Use fixed precision for small numbers, potentially scientific notation if very small
-        if (absNum < 1e-6) {
-            return num.toExponential(precision);
-        }
-        return num.toFixed(precision);
-    }
-
-    const units = ['', 'K', 'M', 'B', 'T']; // Kilo, Mega, Giga, Tera
-    // Determine the correct tier based on the magnitude
-    const tier = Math.max(0, Math.min(units.length - 1, Math.floor(Math.log10(absNum) / 3)));
-
-    // If tier is 0, the number is less than 1000, format without suffix
-    if (tier === 0) return num.toFixed(0);
-
-    const suffix = units[tier];
-    const scale = Math.pow(10, tier * 3);
-    const scaled = num / scale;
-
-    // Format the scaled number with the specified precision
+    if (num === 0) return "0"; const absNum = Math.abs(num);
+    if (absNum < 1) { if (absNum < 1e-6) { return num.toExponential(precision); } return num.toFixed(precision); }
+    const units = ['', 'K', 'M', 'B', 'T']; const tier = Math.max(0, Math.min(units.length - 1, Math.floor(Math.log10(absNum) / 3)));
+    if (tier === 0) return num.toFixed(0); const suffix = units[tier]; const scale = Math.pow(10, tier * 3); const scaled = num / scale;
     return scaled.toFixed(precision) + " " + suffix;
 };
-
-/**
- * Formats bytes into a human-readable string (KB, MB, GB, etc.).
- * @param bytes - Number of bytes.
- * @param decimals - Number of decimal places.
- * @returns Formatted string.
- */
 const formatBytes = (bytes: number, decimals: number = 2): string => {
-    if (bytes <= 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB']; // Added PB
-    // Calculate the logarithm base 1024 to find the correct unit
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    // Ensure index is within the bounds of the sizes array
-    const index = Math.min(i, sizes.length - 1);
-    // Calculate the value in the chosen unit and format it
+    if (bytes <= 0) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals; const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k)); const index = Math.min(i, sizes.length - 1);
     return parseFloat((bytes / Math.pow(k, index)).toFixed(dm)) + ' ' + sizes[index];
 };
-
 const gigabytesToBytes = (gb: number): number => gb * 1024 * 1024 * 1024;
 const bytesToGigabytes = (bytes: number): number => bytes / (1024 * 1024 * 1024);
 
@@ -198,7 +156,6 @@ const ModelParametersSchema = z.object({
 const CostEnergyParamsSchema = z.object({
   trainingSteps: z.number().positive(), tokensPerSecondPerGPU: z.number().positive(), gridCarbonIntensity: z.number().nonnegative(),
 });
-
 const AppStateSchema = z.object({
   v: z.literal(2), arch: z.string(), p: ModelParametersSchema, f: MemoryFlagsSchema, prec: z.string(), hw: z.string(), ng: z.number().positive(), cost: CostEnergyParamsSchema,
 });
@@ -209,54 +166,72 @@ const MemoryCalculator = () => {
   // --- State Definitions ---
   const [architectureId, setArchitectureId] = useState<string>(modelPresets[0].archId);
   const [parameters, setParameters] = useState<ModelParameters>(() => ({
-      // Initial default values (will be overridden by useEffect -> preset)
-      hiddenSize: 4096, numLayers: 32, numHeads: 32, vocabSize: 50000, sequenceLength: 8192,
-      batchSize: 8, microBatchSizePerGPU: 1,
+      hiddenSize: 4096, numLayers: 32, numHeads: 32, vocabSize: 50000, sequenceLength: 8192, batchSize: 8, microBatchSizePerGPU: 1,
   }));
   const [precision, setPrecision] = useState<string>(modelPresets[0].precision || "bf16");
   const [memoryFlags, setMemoryFlags] = useState<MemoryFlags>(() => ({
-      // Initial default values (will be overridden by useEffect -> preset)
-      flashAttention: true, gradientCheckpointFactor: 1.0, zeroStage: 0, cpuOffloadPct: 0,
-      moe: undefined, lora: undefined,
+      flashAttention: true, gradientCheckpointFactor: 1.0, zeroStage: 0, cpuOffloadPct: 0, moe: undefined, lora: undefined,
   }));
-  const [selectedHardwareId, setSelectedHardwareId] = useState<string>(gpuProfiles[6].id); // Default H100 80GB SXM
+  const [selectedHardwareId, setSelectedHardwareId] = useState<string>(gpuProfiles[6].id);
   const [numGpus, setNumGpus] = useState<number>(8);
   const [costParams, setCostParams] = useState<CostEnergyParams>({
-      // Initial default values (will be overridden by useEffect -> preset)
       trainingSteps: 100000, tokensPerSecondPerGPU: 3000, gridCarbonIntensity: DEFAULT_GRID_INTENSITY,
   });
   const [isInitializedFromUrl, setIsInitializedFromUrl] = useState(false);
 
-  // Initialize state properly based on the first preset on initial mount
-  useEffect(() => {
-      const initialPreset = modelPresets[0];
-      setArchitectureId(initialPreset.archId);
-      setParameters(prev => ({
-          ...prev, // Keep base defaults if preset doesn't specify everything
-          ...initialPreset.params
-      }));
-      setPrecision(initialPreset.precision || 'bf16'); // Use preset precision or fallback
-      setMemoryFlags(prev => ({
-          ...prev, // Keep base defaults
-          ...initialPreset.flags
-      }));
-      setCostParams({ // Reset cost params to defaults on mount
-          trainingSteps: 100000, tokensPerSecondPerGPU: 3000, gridCarbonIntensity: DEFAULT_GRID_INTENSITY,
+  // Handler to apply presets, ensuring consistency
+  const handleApplyPreset = useCallback((preset: ModelPreset) => {
+      setArchitectureId(preset.archId);
+      setParameters(prev => {
+          const newParams = {
+              hiddenSize: 4096, numLayers: 32, numHeads: 32, vocabSize: 50000, sequenceLength: 8192, batchSize: 8, microBatchSizePerGPU: 1, // Start with base defaults
+              ...preset.params // Apply preset params
+          };
+          // Ensure microBatch <= globalBatch after applying preset
+          newParams.microBatchSizePerGPU = Math.min(newParams.microBatchSizePerGPU, newParams.batchSize);
+          newParams.batchSize = Math.max(newParams.batchSize, newParams.microBatchSizePerGPU);
+          return newParams;
       });
-      // Only attempt to load from URL *after* setting initial defaults
+      setPrecision(preset.precision || 'bf16'); // Use preset precision string directly
+      setMemoryFlags({ flashAttention: true, gradientCheckpointFactor: 1.0, zeroStage: 0, cpuOffloadPct: 0, moe: undefined, lora: undefined, ...preset.flags });
+      toast.success(`Preset "${preset.name}" loaded.`);
+  }, []); // Empty dependency array is fine here as it only uses setters
+
+  // Deserialize state from URL
+  const deserializeState = useCallback((encodedState: string) => {
+    try {
+        const jsonString = atob(encodedState); const parsedState = JSON.parse(jsonString);
+        const validationResult = AppStateSchema.safeParse(parsedState);
+        if (!validationResult.success) { console.error("URL state validation failed:", validationResult.error.errors); toast.error("Failed to load configuration from link: Invalid data."); window.location.hash = ""; return false; }
+        const state = validationResult.data;
+        setArchitectureId(architectureTypes.some(a => a.id === state.arch) ? state.arch : architectureTypes[0].id);
+        setParameters(state.p); setMemoryFlags(state.f); setPrecision(state.prec);
+        setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id);
+        setNumGpus(state.ng); setCostParams(state.cost);
+        toast.success("Configuration loaded from link.");
+        return true;
+    } catch (error) { console.error("Error deserializing state:", error); toast.error("Failed to load configuration from link: Invalid format."); window.location.hash = ""; return false; }
+  }, []); // Removed setters from deps, they don't need to be listed
+
+  // Initialize state on mount: Load from URL or apply first preset
+  useEffect(() => {
+      let loaded = false;
       if (window.location.hash && window.location.hash.length > 1) {
           const encodedState = window.location.hash.substring(1);
-          deserializeState(encodedState);
-      } else {
-          setIsInitializedFromUrl(true); // Mark as initialized if no hash
+          loaded = deserializeState(encodedState);
       }
-  }, []); // Run only once on mount
+      // If not loaded from URL (no hash or invalid hash), apply the first preset
+      if (!loaded) {
+          handleApplyPreset(modelPresets[0]);
+      }
+      setIsInitializedFromUrl(true); // Mark initialization attempt complete
+  }, [deserializeState, handleApplyPreset]); // Add handleApplyPreset to dependencies
 
   // --- Input Definitions ---
   const parametersList: Record<keyof Omit<ModelParameters, 'microBatchSizePerGPU'>, ParameterDef> = {
     hiddenSize: { name: "Hidden Size (d_model)", value: parameters.hiddenSize, min: 128, max: 32768, step: 128, unit: "", tooltip: "Dimensionality of the model's embeddings and layers." },
     numLayers: { name: "Number of Layers (L)", value: parameters.numLayers, min: 1, max: 200, step: 1, unit: "", tooltip: "Number of transformer blocks (encoder or decoder)." },
-    numHeads: { name: "Attention Heads", value: parameters.numHeads, min: 0, max: 128, step: 1, unit: "", tooltip: "Number of parallel attention mechanisms per layer (0 for non-attention models)." }, // Min set to 0
+    numHeads: { name: "Attention Heads", value: parameters.numHeads, min: 0, max: 128, step: 1, unit: "", tooltip: "Number of parallel attention mechanisms per layer (0 for non-attention models)." },
     vocabSize: { name: "Vocabulary Size (V)", value: parameters.vocabSize, min: 1000, max: 262144, step: 1000, unit: "", log: false, tooltip: "Number of unique tokens the model recognizes." },
     sequenceLength: { name: "Sequence Length (S)", value: parameters.sequenceLength, min: 128, max: 131072, step: 128, unit: "tokens", log: true, tooltip: "Maximum number of tokens processed in one input sequence." },
     batchSize: { name: "Target Global Batch Size (B)", value: parameters.batchSize, min: 1, max: 8192, step: 1, unit: "", log: true, tooltip: "Total effective batch size across all GPUs after gradient accumulation." }
@@ -265,48 +240,19 @@ const MemoryCalculator = () => {
        name: "Micro Batch Size / GPU", value: parameters.microBatchSizePerGPU, min: 1, max: 256, step: 1, unit: "", log: false, tooltip: "Number of sequences processed by each GPU in a single forward/backward pass before gradient accumulation."
    };
 
-  // --- Permalink State Serialization/Deserialization ---
+  // --- Permalink State Serialization ---
   const serializeState = useCallback((): string => {
     const state: AppState = { v: 2, arch: architectureId, p: parameters, f: memoryFlags, prec: precision, hw: selectedHardwareId, ng: numGpus, cost: costParams };
     try { return btoa(JSON.stringify(state)); } catch (error) { console.error("Error serializing state:", error); return ""; }
   }, [architectureId, parameters, memoryFlags, precision, selectedHardwareId, numGpus, costParams]);
 
-  const deserializeState = useCallback((encodedState: string) => {
-    try {
-        const jsonString = atob(encodedState); const parsedState = JSON.parse(jsonString);
-        const validationResult = AppStateSchema.safeParse(parsedState);
-        if (!validationResult.success) { console.error("URL state validation failed:", validationResult.error.errors); toast.error("Failed to load configuration from link: Invalid data."); window.location.hash = ""; return false; } // Return false on failure
-        const state = validationResult.data;
-        setArchitectureId(architectureTypes.some(a => a.id === state.arch) ? state.arch : architectureTypes[0].id);
-        setParameters(state.p); setMemoryFlags(state.f); setPrecision(state.prec);
-        setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id); // Default to H100 80GB SXM on error
-        setNumGpus(state.ng); setCostParams(state.cost);
-        toast.success("Configuration loaded from link.");
-        return true; // Return true on success
-    } catch (error) { console.error("Error deserializing state:", error); toast.error("Failed to load configuration from link: Invalid format."); window.location.hash = ""; return false; } // Return false on failure
-  }, []); // Removed setters from deps
-
-   // Effect to load state from URL hash on initial mount (Modified)
-   useEffect(() => {
-       let loaded = false;
-       if (window.location.hash && window.location.hash.length > 1) {
-           const encodedState = window.location.hash.substring(1);
-           loaded = deserializeState(encodedState);
-       }
-       setIsInitializedFromUrl(true); // Mark initialization attempt complete
-       // If loading failed or no hash, apply preset 0 explicitly
-       if (!loaded) {
-            handleApplyPreset(modelPresets[0]);
-       }
-   }, [deserializeState]); // Run only once on mount
-
    // Effect to update URL hash when state changes
    useEffect(() => {
-       if (!isInitializedFromUrl) return; // Don't update URL during initial load/deserialization
+       if (!isInitializedFromUrl) return;
        const handler = setTimeout(() => {
            const encodedState = serializeState();
            window.history.replaceState(null, '', `#${encodedState}`);
-       }, 500); // Debounce update
+       }, 500);
        return () => clearTimeout(handler);
    }, [serializeState, isInitializedFromUrl]);
 
@@ -317,45 +263,22 @@ const MemoryCalculator = () => {
 
   // --- Parameter Count Calculation ---
   const parameterDetails = useMemo(() => {
-      const { hiddenSize: d, numLayers: L, vocabSize: V, sequenceLength: S } = parameters;
-      const { moe, lora } = memoryFlags;
+      const { hiddenSize: d, numLayers: L, vocabSize: V, sequenceLength: S } = parameters; const { moe, lora } = memoryFlags;
       let P_total_raw = 0; let P_trainable_raw = 0; let P_active_raw = 0;
       let isMoE = !!(moe && moe.experts > 1 && (architectureId === 'TX-DEC' || architectureId === 'TX-MOE' || architectureId === 'TX-ED'));
-      let isLora = !!(lora && lora.rank > 0);
-      const MLP_FACTOR = 4; const MLP_intermediate = MLP_FACTOR * d;
-
+      let isLora = !!(lora && lora.rank > 0); const MLP_FACTOR = 4; const MLP_intermediate = MLP_FACTOR * d;
       switch (architectureId) {
-          case 'TX-DEC': case 'TX-MOE':
-              const P_attn_layer_dec = 4 * d * d; const P_mlp_layer_dec = 2 * d * MLP_intermediate; const P_norm_layer_dec = 2 * (2 * d);
-              const P_layer_dec = P_attn_layer_dec + P_mlp_layer_dec + P_norm_layer_dec; const P_embedding_dec = V * d; const P_output_proj_dec = V * d; const P_final_norm_dec = 2 * d;
-              P_total_raw = P_embedding_dec + (L * P_layer_dec) + P_final_norm_dec + P_output_proj_dec; break;
-          case 'TX-ENC':
-              const P_pos_embed_enc = S * d; const P_type_embed_enc = 2 * d; const P_embed_norm_enc = 2 * d; const P_embeddings_total_enc = V * d + P_pos_embed_enc + P_type_embed_enc + P_embed_norm_enc;
-              const P_attn_layer_enc = 4 * d * d; const P_mlp_layer_enc = 2 * d * MLP_intermediate; const P_norm_layer_enc = 2 * (2 * d); const P_layer_enc = P_attn_layer_enc + P_mlp_layer_enc + P_norm_layer_enc;
-              const P_pooler_enc = d * d + d; P_total_raw = P_embeddings_total_enc + (L * P_layer_enc) + P_pooler_enc; break;
-          case 'TX-ED':
-              const P_enc_attn_ed = 4 * d * d; const P_enc_mlp_ed = 2 * d * MLP_intermediate; const P_enc_norm_ed = 2 * (2 * d); const P_enc_layer_ed = P_enc_attn_ed + P_enc_mlp_ed + P_enc_norm_ed;
-              const P_dec_self_attn_ed = 4 * d * d; const P_dec_cross_attn_ed = 4 * d * d; const P_dec_mlp_ed = 2 * d * MLP_intermediate; const P_dec_norm_ed = 3 * (2 * d); const P_dec_layer_ed = P_dec_self_attn_ed + P_dec_cross_attn_ed + P_dec_mlp_ed + P_dec_norm_ed;
-              const P_embedding_ed = V * d; const P_final_norm_ed = 2 * d; P_total_raw = P_embedding_ed + (L * P_enc_layer_ed) + (L * P_dec_layer_ed) + P_final_norm_ed; break;
-          case 'SSM-MAMBA':
-              const P_ssm_kernel_proj = 4 * d * d; const P_conv_gate = 6 * d; const P_layer_mamba = P_ssm_kernel_proj + P_conv_gate;
-              P_total_raw = V * d + (L * P_layer_mamba) + V * d; break;
-          case 'RWKV-RNN':
-              const P_mix_rwkv = 2 * d * d; const P_other_rwkv = 6 * d; const P_layer_rwkv = P_mix_rwkv + P_other_rwkv;
-              P_total_raw = V * d + (L * P_layer_rwkv) + V * d; break;
-          case 'HYENA':
-              const k_conv = 128; const P_proj_hyena = 4 * d * d; const P_conv_hyena = 2 * d * k_conv; const P_layer_hyena = P_proj_hyena + P_conv_hyena;
-              P_total_raw = V * d + (L * P_layer_hyena) + V * d; break;
+          case 'TX-DEC': case 'TX-MOE': const P_attn_layer_dec = 4 * d * d; const P_mlp_layer_dec = 2 * d * MLP_intermediate; const P_norm_layer_dec = 2 * (2 * d); const P_layer_dec = P_attn_layer_dec + P_mlp_layer_dec + P_norm_layer_dec; const P_embedding_dec = V * d; const P_output_proj_dec = V * d; const P_final_norm_dec = 2 * d; P_total_raw = P_embedding_dec + (L * P_layer_dec) + P_final_norm_dec + P_output_proj_dec; break;
+          case 'TX-ENC': const P_pos_embed_enc = S * d; const P_type_embed_enc = 2 * d; const P_embed_norm_enc = 2 * d; const P_embeddings_total_enc = V * d + P_pos_embed_enc + P_type_embed_enc + P_embed_norm_enc; const P_attn_layer_enc = 4 * d * d; const P_mlp_layer_enc = 2 * d * MLP_intermediate; const P_norm_layer_enc = 2 * (2 * d); const P_layer_enc = P_attn_layer_enc + P_mlp_layer_enc + P_norm_layer_enc; const P_pooler_enc = d * d + d; P_total_raw = P_embeddings_total_enc + (L * P_layer_enc) + P_pooler_enc; break;
+          case 'TX-ED': const P_enc_attn_ed = 4 * d * d; const P_enc_mlp_ed = 2 * d * MLP_intermediate; const P_enc_norm_ed = 2 * (2 * d); const P_enc_layer_ed = P_enc_attn_ed + P_enc_mlp_ed + P_enc_norm_ed; const P_dec_self_attn_ed = 4 * d * d; const P_dec_cross_attn_ed = 4 * d * d; const P_dec_mlp_ed = 2 * d * MLP_intermediate; const P_dec_norm_ed = 3 * (2 * d); const P_dec_layer_ed = P_dec_self_attn_ed + P_dec_cross_attn_ed + P_dec_mlp_ed + P_dec_norm_ed; const P_embedding_ed = V * d; const P_final_norm_ed = 2 * d; P_total_raw = P_embedding_ed + (L * P_enc_layer_ed) + (L * P_dec_layer_ed) + P_final_norm_ed; break;
+          case 'SSM-MAMBA': const P_ssm_kernel_proj = 4 * d * d; const P_conv_gate = 6 * d; const P_layer_mamba = P_ssm_kernel_proj + P_conv_gate; P_total_raw = V * d + (L * P_layer_mamba) + V * d; break;
+          case 'RWKV-RNN': const P_mix_rwkv = 2 * d * d; const P_other_rwkv = 6 * d; const P_layer_rwkv = P_mix_rwkv + P_other_rwkv; P_total_raw = V * d + (L * P_layer_rwkv) + V * d; break;
+          case 'HYENA': const k_conv = 128; const P_proj_hyena = 4 * d * d; const P_conv_hyena = 2 * d * k_conv; const P_layer_hyena = P_proj_hyena + P_conv_hyena; P_total_raw = V * d + (L * P_layer_hyena) + V * d; break;
           default: P_total_raw = 0;
       }
       P_trainable_raw = P_total_raw;
-      if (isMoE) {
-          const experts = moe.experts; const topK = moe.topK; const P_dense_mlp_layer = 2 * d * MLP_intermediate; const P_router_layer = d * experts; const P_experts_total_layer = experts * P_dense_mlp_layer; const P_moe_mlp_layer = P_router_layer + P_experts_total_layer;
-          P_total_raw = P_total_raw - (L * P_dense_mlp_layer) + (L * P_moe_mlp_layer); P_trainable_raw = P_total_raw;
-          const P_non_mlp_base = P_total_raw - (L * P_moe_mlp_layer); const P_active_experts_layer = topK * P_dense_mlp_layer; P_active_raw = P_non_mlp_base + L * (P_router_layer + P_active_experts_layer);
-      } else { P_active_raw = P_total_raw; }
-      let P_lora_raw = 0;
-      if (isLora) { const R = lora.rank; const lora_matrices_per_layer = 2 * (d * R + R * d); P_lora_raw = L * lora_matrices_per_layer; P_trainable_raw = P_lora_raw; }
+      if (isMoE) { const experts = moe.experts; const topK = moe.topK; const P_dense_mlp_layer = 2 * d * MLP_intermediate; const P_router_layer = d * experts; const P_experts_total_layer = experts * P_dense_mlp_layer; const P_moe_mlp_layer = P_router_layer + P_experts_total_layer; P_total_raw = P_total_raw - (L * P_dense_mlp_layer) + (L * P_moe_mlp_layer); P_trainable_raw = P_total_raw; const P_non_mlp_base = P_total_raw - (L * P_moe_mlp_layer); const P_active_experts_layer = topK * P_dense_mlp_layer; P_active_raw = P_non_mlp_base + L * (P_router_layer + P_active_experts_layer); } else { P_active_raw = P_total_raw; }
+      let P_lora_raw = 0; if (isLora) { const R = lora.rank; const lora_matrices_per_layer = 2 * (d * R + R * d); P_lora_raw = L * lora_matrices_per_layer; P_trainable_raw = P_lora_raw; }
       return { totalParamsRaw: P_total_raw, trainableParamsRaw: P_trainable_raw, activeParamsRaw: P_active_raw, loraParamsRaw: P_lora_raw, isMoE, isLora };
   }, [parameters, architectureId, memoryFlags]);
 
@@ -363,32 +286,20 @@ const MemoryCalculator = () => {
   const { memoryRequirementsBytes, memoryRequirementsGB, derivedParams } = useMemo(() => {
       const { hiddenSize: d, numLayers: L, sequenceLength: S, microBatchSizePerGPU: B_micro, batchSize: B_global_target } = parameters;
       const { totalParamsRaw, trainableParamsRaw, loraParamsRaw, isMoE, isLora } = parameterDetails;
-      const { flashAttention, gradientCheckpointFactor, zeroStage, cpuOffloadPct, kvCachePrecision } = memoryFlags; // Removed moe from destructuring, use isMoE
-      const N_gpus = numGpus > 0 ? numGpus : 1;
-      const bytesPerParamModel = selectedQuantization.bitsPerParameter / 8;
-      const bytesPerParamOpt = 32 / 8; const optFactor = 2;
-      const effective_batch_per_step = B_micro * N_gpus;
-      const gradientAccumulationSteps = effective_batch_per_step > 0 ? Math.ceil(B_global_target / effective_batch_per_step) : 1;
-
-      // 1. Model Weights Memory
+      const { flashAttention, gradientCheckpointFactor, zeroStage, cpuOffloadPct, kvCachePrecision } = memoryFlags; const N_gpus = numGpus > 0 ? numGpus : 1;
+      const bytesPerParamModel = selectedQuantization.bitsPerParameter / 8; const bytesPerParamOpt = 32 / 8; const optFactor = 2;
+      const effective_batch_per_step = B_micro * N_gpus; const gradientAccumulationSteps = effective_batch_per_step > 0 ? Math.ceil(B_global_target / effective_batch_per_step) : 1;
       let modelWeightsBytes = totalParamsRaw * bytesPerParamModel; if (isLora) { modelWeightsBytes += loraParamsRaw * (16 / 8); } if (zeroStage === 3) { modelWeightsBytes /= N_gpus; }
-      // 2. Optimizer States Memory
       let optimizerStateBytes = trainableParamsRaw * bytesPerParamOpt * optFactor; if (zeroStage >= 1) { optimizerStateBytes /= N_gpus; }
-      // 3. Gradient Memory
       const computePrecisionBits = (selectedQuantization.bitsPerParameter <= 16 && selectedQuantization.id !== 'int8') ? 16 : 32; const bytesPerParamCompute = computePrecisionBits / 8;
       let gradientMemoryBytes = trainableParamsRaw * bytesPerParamCompute; if (zeroStage >= 2) { gradientMemoryBytes /= N_gpus; }
-      // 4. Activation Memory
       let activationMemoryBytes = 0; const bytesPerActivation = bytesPerParamCompute; let baseActivFactor = 0;
       if (architectureId.startsWith('TX')) { baseActivFactor = 28; } else if (architectureId === 'SSM-MAMBA' || architectureId === 'RWKV-RNN') { baseActivFactor = 4; } else if (architectureId === 'HYENA') { baseActivFactor = 16; }
       activationMemoryBytes = B_micro * S * d * L * bytesPerActivation * baseActivFactor;
       if (flashAttention && S > 1024 && architectureId.startsWith('TX')) { activationMemoryBytes *= 0.7; } if (gradientCheckpointFactor < 1.0) { activationMemoryBytes *= gradientCheckpointFactor; } if (isMoE) { activationMemoryBytes *= 1.1; }
-      // 5. Temporary Buffers & Fragmentation
       const FRAGMENTATION_FACTOR = 0.10; let tempMemoryBytes = (modelWeightsBytes + optimizerStateBytes + gradientMemoryBytes + activationMemoryBytes) * FRAGMENTATION_FACTOR;
-      // 6. CPU Offload
       let cpuSwapBytes = 0; if (zeroStage >= 1 && cpuOffloadPct > 0) { const offloadFraction = cpuOffloadPct / 100; let bytesToOffload = 0; if (zeroStage >= 1) bytesToOffload += optimizerStateBytes; if (zeroStage >= 2) bytesToOffload += gradientMemoryBytes; cpuSwapBytes = bytesToOffload * offloadFraction; if (zeroStage >= 1) optimizerStateBytes *= (1 - offloadFraction); if (zeroStage >= 2) gradientMemoryBytes *= (1 - offloadFraction); }
-      // Totals per GPU
       const totalTrainingBytesPerGPU = modelWeightsBytes + activationMemoryBytes + optimizerStateBytes + gradientMemoryBytes + tempMemoryBytes;
-      // Inference Memory Estimation
       let inferenceModelWeightsBytes = totalParamsRaw * bytesPerParamModel; if (isLora) { inferenceModelWeightsBytes += loraParamsRaw * (16 / 8); }
       let inferenceActivationBytes = 0; const INFERENCE_KV_CACHE_FACTOR = 1.0; const INFERENCE_SSM_FACTOR = 0.1;
       if (architectureId.startsWith('TX')) { const kvBytes = B_micro * S * L * 2 * d * (kvCachePrecision === 'int8' ? 1 : bytesPerParamCompute); inferenceActivationBytes = kvBytes * INFERENCE_KV_CACHE_FACTOR; }
@@ -396,7 +307,6 @@ const MemoryCalculator = () => {
       else { inferenceActivationBytes = activationMemoryBytes * 0.5; }
       if (flashAttention && S > 1024 && architectureId.startsWith('TX')) { inferenceActivationBytes *= 0.7; }
       const inferenceTempBytes = tempMemoryBytes * 0.5; const totalInferenceBytesPerGPU = inferenceModelWeightsBytes + inferenceActivationBytes + inferenceTempBytes;
-      // Package results
       const bytesResult = { modelWeightsBytes, activationMemoryBytes, optimizerStateBytes, gradientMemoryBytes, tempMemoryBytes, totalTrainingBytesPerGPU, totalInferenceBytesPerGPU, cpuSwapBytes };
       const gbResult = { modelWeightsGB: bytesToGigabytes(bytesResult.modelWeightsBytes), activationMemoryGB: bytesToGigabytes(bytesResult.activationMemoryBytes), optimizerStateGB: bytesToGigabytes(bytesResult.optimizerStateBytes), gradientMemoryGB: bytesToGigabytes(bytesResult.gradientMemoryBytes), tempMemoryGB: bytesToGigabytes(bytesResult.tempMemoryBytes), totalTrainingGB: bytesToGigabytes(bytesResult.totalTrainingBytesPerGPU), totalInferenceGB: bytesToGigabytes(bytesResult.totalInferenceBytesPerGPU), cpuSwapGB: bytesToGigabytes(bytesResult.cpuSwapBytes) };
       const derivedResult = { gradientAccumulationSteps };
@@ -438,7 +348,7 @@ const MemoryCalculator = () => {
       if (isMicroBatch && numValue > parameters.batchSize) { numValue = parameters.batchSize; toast.warning("Micro batch size cannot exceed global batch size."); }
       if (param === 'batchSize' && numValue < parameters.microBatchSizePerGPU) { numValue = parameters.microBatchSizePerGPU; toast.warning("Global batch size cannot be smaller than micro batch size."); }
       setParameters(prev => ({ ...prev, [param]: numValue }));
-  }, [parameters.batchSize, parameters.microBatchSizePerGPU]); // Removed parametersList dependency as it's constant
+  }, [parameters.batchSize, parameters.microBatchSizePerGPU]); // Only depends on these specific params for validation
 
   const handleFlagChange = useCallback((flag: keyof MemoryFlags, value: any) => {
       if (flag === 'moe' && value === true) value = { experts: 8, topK: 2 }; else if (flag === 'moe' && value === false) value = undefined;
@@ -453,20 +363,7 @@ const MemoryCalculator = () => {
       setCostParams(prev => ({ ...prev, [param]: numValue }));
   }, []);
 
-  const handleApplyPreset = useCallback((preset: ModelPreset) => {
-      setArchitectureId(preset.archId);
-      // setModelType(preset.modelType); // modelType is less critical now with archId
-      setParameters(prev => {
-          const newParams = { ...prev, ...preset.params };
-          // Ensure microBatch <= globalBatch after applying preset
-          newParams.microBatchSizePerGPU = Math.min(newParams.microBatchSizePerGPU, newParams.batchSize);
-          newParams.batchSize = Math.max(newParams.batchSize, newParams.microBatchSizePerGPU);
-          return newParams;
-      });
-      if (preset.precision) setPrecision(preset.precision); // Use preset precision string directly
-      setMemoryFlags({ flashAttention: true, gradientCheckpointFactor: 1.0, zeroStage: 0, cpuOffloadPct: 0, moe: undefined, lora: undefined, ...preset.flags });
-      toast.success(`Preset "${preset.name}" loaded.`);
-  }, []); // Removed quantizationTypes dependency
+  // handleApplyPreset is defined in the useEffect for initialization
 
   const handleCopyLink = useCallback(() => {
       const encodedState = serializeState(); const url = `${window.location.origin}${window.location.pathname}#${encodedState}`;
@@ -480,11 +377,19 @@ const MemoryCalculator = () => {
         { name: "Temp/Overhead", value: memoryRequirementsGB.tempMemoryGB },
     ].filter(item => item && item.value > 0.001), [memoryRequirementsGB]);
 
-    const inferenceMemoryBreakdownData = useMemo(() => [
-        { name: "Model Weights", value: memoryRequirementsGB.totalInferenceGB > 0 ? bytesToGigabytes(memoryRequirementsBytes.totalInferenceBytesPerGPU - memoryRequirementsBytes.activationMemoryBytes * 0.5 - memoryRequirementsBytes.tempMemoryBytes * 0.5) : 0 }, // Infer weights from total
-        { name: "Activations", value: bytesToGigabytes(memoryRequirementsBytes.activationMemoryBytes * 0.5) },
-        { name: "Temp/Overhead", value: bytesToGigabytes(memoryRequirementsBytes.tempMemoryBytes * 0.5) },
-    ].filter(item => item && item.value > 0.001), [memoryRequirementsBytes, memoryRequirementsGB.totalInferenceGB]); // Use totalInferenceGB to infer weights
+    const inferenceMemoryBreakdownData = useMemo(() => {
+        // Calculate inference weights based on total inference memory minus estimated activations and temp
+        const inferenceActivationsGB = bytesToGigabytes(memoryRequirementsBytes.activationMemoryBytes * 0.5);
+        const inferenceTempGB = bytesToGigabytes(memoryRequirementsBytes.tempMemoryBytes * 0.5);
+        const inferredWeightsGB = Math.max(0, memoryRequirementsGB.totalInferenceGB - inferenceActivationsGB - inferenceTempGB);
+
+        return [
+            { name: "Model Weights", value: inferredWeightsGB },
+            { name: "Activations", value: inferenceActivationsGB },
+            { name: "Temp/Overhead", value: inferenceTempGB },
+        ].filter(item => item && item.value > 0.001);
+    }, [memoryRequirementsBytes, memoryRequirementsGB.totalInferenceGB]);
+
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF19AF', '#DB2777'];
     const vramUsagePercent = selectedHardware ? (memoryRequirementsGB.totalTrainingGB / selectedHardware.vramGB) * 100 : 0;
@@ -530,7 +435,18 @@ const MemoryCalculator = () => {
                      {Object.entries(parametersList).map(([key, param]) => (
                          <div key={key}>
                              <div className="flex justify-between items-center mb-1">
-                                 <Label htmlFor={key} className="text-sm font-medium flex items-center"> {param.name} {param.unit && `(${param.unit})`} {param.tooltip && (<ShadTooltip><TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger><TooltipContent><p className="max-w-xs">{param.tooltip}</p></TooltipContent></ShadTooltip>)} </Label>
+                                 {/* Label with Tooltip Trigger on InfoIcon */}
+                                 <Label htmlFor={key} className="text-sm font-medium flex items-center">
+                                     {param.name} {param.unit && `(${param.unit})`}
+                                     {param.tooltip && (
+                                         <ShadTooltip>
+                                             <TooltipTrigger asChild>
+                                                 <InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/>
+                                             </TooltipTrigger>
+                                             <TooltipContent><p className="max-w-xs">{param.tooltip}</p></TooltipContent>
+                                         </ShadTooltip>
+                                     )}
+                                 </Label>
                                  <Input type="number" id={`${key}-input`} value={parameters[key as keyof Omit<ModelParameters, 'microBatchSizePerGPU'>]} onChange={(e) => handleParameterChange(key as keyof Omit<ModelParameters, 'microBatchSizePerGPU'>, e.target.value)} min={param.min} max={param.max} step={param.step} className="w-28 h-8 text-sm" aria-label={`${param.name} value`}/>
                              </div>
                              <Slider id={key} min={param.min} max={param.max} step={param.step} value={[parameters[key as keyof Omit<ModelParameters, 'microBatchSizePerGPU'>]]} onValueChange={(value) => handleParameterChange(key as keyof Omit<ModelParameters, 'microBatchSizePerGPU'>, value[0])} className="mt-1" aria-label={`${param.name} slider`}/>
@@ -539,7 +455,18 @@ const MemoryCalculator = () => {
                      {/* Micro Batch Size Input */}
                      <div>
                          <div className="flex justify-between items-center mb-1">
-                             <Label htmlFor="microBatchSizePerGPU" className="text-sm font-medium flex items-center">{microBatchSizeDef.name} {microBatchSizeDef.tooltip && (<ShadTooltip><TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger><TooltipContent><p className="max-w-xs">{microBatchSizeDef.tooltip}</p></TooltipContent></ShadTooltip>)} </Label>
+                              {/* Label with Tooltip Trigger on InfoIcon */}
+                             <Label htmlFor="microBatchSizePerGPU" className="text-sm font-medium flex items-center">
+                                 {microBatchSizeDef.name}
+                                 {microBatchSizeDef.tooltip && (
+                                     <ShadTooltip>
+                                         <TooltipTrigger asChild>
+                                             <InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/>
+                                         </TooltipTrigger>
+                                         <TooltipContent><p className="max-w-xs">{microBatchSizeDef.tooltip}</p></TooltipContent>
+                                     </ShadTooltip>
+                                 )}
+                             </Label>
                              <Input type="number" id="microBatchSizePerGPU-input" value={parameters.microBatchSizePerGPU} onChange={(e) => handleParameterChange('microBatchSizePerGPU', e.target.value)} min={microBatchSizeDef.min} max={microBatchSizeDef.max} step={microBatchSizeDef.step} className="w-28 h-8 text-sm" aria-label={`${microBatchSizeDef.name} value`}/>
                          </div>
                          <Slider id="microBatchSizePerGPU" min={microBatchSizeDef.min} max={microBatchSizeDef.max} step={microBatchSizeDef.step} value={[parameters.microBatchSizePerGPU]} onValueChange={(value) => handleParameterChange('microBatchSizePerGPU', value[0])} className="mt-1" aria-label={`${microBatchSizeDef.name} slider`}/>
@@ -551,16 +478,25 @@ const MemoryCalculator = () => {
                  <CardHeader className="pb-4"><CardTitle className="text-lg">2. Precision & Quantization</CardTitle></CardHeader>
                  <CardContent>
                      <div>
-                         <Label htmlFor="precision">Compute & Storage Precision</Label>
-                         <ShadTooltip>
-                             <TooltipTrigger asChild>
-                                 <Select value={precision} onValueChange={setPrecision}>
-                                     <SelectTrigger id="precision"><SelectValue /></SelectTrigger>
-                                     <SelectContent> {quantizationTypes.map(q => ( <SelectItem key={q.id} value={q.id}> {q.name} ({q.bitsPerParameter}-bit) </SelectItem> ))} </SelectContent>
-                                 </Select>
-                             </TooltipTrigger>
-                             <TooltipContent side="right" className="max-w-sm p-2"> <p>Select the numerical format.</p> <p className="mt-1"><strong>{selectedQuantization.name}:</strong> {selectedQuantization.performanceImpact}</p> {selectedQuantization.hwSupport && <p className="text-xs mt-1">HW Support: {selectedQuantization.hwSupport}</p>} {selectedQuantization.reference && <p className="text-xs mt-1">Ref: {selectedQuantization.reference}</p>} </TooltipContent>
-                         </ShadTooltip>
+                         {/* Label with Tooltip Trigger on InfoIcon */}
+                         <Label htmlFor="precision" className="mb-1 flex items-center">
+                             Compute & Storage Precision
+                             <ShadTooltip>
+                                 <TooltipTrigger asChild>
+                                     <InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/>
+                                 </TooltipTrigger>
+                                 <TooltipContent side="right" className="max-w-sm p-2">
+                                     <p>Select the numerical format.</p>
+                                     <p className="mt-1"><strong>{selectedQuantization.name}:</strong> {selectedQuantization.performanceImpact}</p>
+                                     {selectedQuantization.hwSupport && <p className="text-xs mt-1">HW Support: {selectedQuantization.hwSupport}</p>}
+                                     {selectedQuantization.reference && <p className="text-xs mt-1">Ref: {selectedQuantization.reference}</p>}
+                                 </TooltipContent>
+                             </ShadTooltip>
+                         </Label>
+                         <Select value={precision} onValueChange={setPrecision}>
+                             <SelectTrigger id="precision"><SelectValue /></SelectTrigger>
+                             <SelectContent> {quantizationTypes.map(q => ( <SelectItem key={q.id} value={q.id}> {q.name} ({q.bitsPerParameter}-bit) </SelectItem> ))} </SelectContent>
+                         </Select>
                      </div>
                  </CardContent>
                </Card>
@@ -569,11 +505,100 @@ const MemoryCalculator = () => {
                   <AccordionItem value="item-1">
                     <AccordionTrigger className="text-lg font-semibold px-6 py-4 hover:no-underline"> <span className="mr-auto">3. Advanced Optimizations (Optional)</span> </AccordionTrigger>
                     <AccordionContent className="px-6 pb-6 space-y-6">
-                       {/* Flash Attention */} <div className="flex items-center justify-between space-x-2 border-b pb-4"> <Label htmlFor="flashAttention" className="flex flex-col space-y-1 pr-4"> <span>FlashAttention / SDPA</span> <span className="font-normal leading-snug text-muted-foreground text-sm"> Use memory-efficient attention kernel (reduces activation memory, esp. for long sequences). </span> </Label> <ShadTooltip> <TooltipTrigger asChild><Switch id="flashAttention" checked={memoryFlags.flashAttention} onCheckedChange={(c) => handleFlagChange('flashAttention', c)} /></TooltipTrigger> <TooltipContent><p>Applies ~30% activation memory reduction heuristic if SeqLen > 1024.</p></TooltipContent> </ShadTooltip> </div>
-                       {/* Gradient Checkpointing */} <div className="border-b pb-4"> <div className="flex justify-between items-center mb-1"> <Label htmlFor="gradCheckpoint" className="flex flex-col space-y-1"> <span>Gradient Checkpointing</span> <span className="font-normal leading-snug text-muted-foreground text-sm"> Trade compute for memory by recomputing activations. Factor = % of activation memory retained. </span> </Label> <span className="text-sm font-medium whitespace-nowrap ml-2">{Math.round(memoryFlags.gradientCheckpointFactor * 100)}% Memory</span> </div> <Slider id="gradCheckpoint" min={0.3} max={1.0} step={0.05} value={[memoryFlags.gradientCheckpointFactor]} onValueChange={(v) => handleFlagChange('gradientCheckpointFactor', v[0])} aria-label="Gradient Checkpointing Factor"/> <span className="text-xs text-muted-foreground">100% = Off, Lower % = More Memory Saved (but more recompute)</span> </div>
-                       {/* ZeRO Optimization */} <div className="border-b pb-4"> <Label className="mb-2 block font-medium">ZeRO Stage (DeepSpeed/FSDP)</Label> <ShadTooltip> <TooltipTrigger asChild> <RadioGroup value={String(memoryFlags.zeroStage)} onValueChange={(v) => handleFlagChange('zeroStage', v)} className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2"> {[0, 1, 2, 3].map(stage => ( <div key={stage} className="flex items-center space-x-2"> <RadioGroupItem value={String(stage)} id={`zero-${stage}`} /> <Label htmlFor={`zero-${stage}`} className="font-normal">Stage {stage}</Label> </div> ))} </RadioGroup> </TooltipTrigger> <TooltipContent side="bottom" className="max-w-md p-3"> <p className="font-semibold mb-1">ZeRO partitions model state across GPUs:</p> <ul className="list-disc list-inside text-xs space-y-1"> <li><b>Stage 0:</b> None (standard data parallelism).</li> <li><b>Stage 1:</b> Shards Optimizer States.</li> <li><b>Stage 2:</b> Shards Optimizer States & Gradients.</li> <li><b>Stage 3:</b> Shards Optimizer States, Gradients, & Model Parameters.</li> </ul> <p className="text-xs mt-2">Reduces memory per GPU but increases communication.</p> </TooltipContent> </ShadTooltip> {memoryFlags.zeroStage >= 1 && ( <div className="mt-4"> <div className="flex justify-between items-center mb-1"> <Label htmlFor="cpuOffload" className="flex flex-col space-y-1"> <span>ZeRO CPU Offload %</span> <span className="font-normal leading-snug text-muted-foreground text-sm"> Offload sharded optimizer/gradients (Stage {memoryFlags.zeroStage}) to CPU RAM. </span> </Label> <span className="text-sm font-medium whitespace-nowrap ml-2">{memoryFlags.cpuOffloadPct}%</span> </div> <Slider id="cpuOffload" min={0} max={100} step={5} value={[memoryFlags.cpuOffloadPct]} onValueChange={(v) => handleFlagChange('cpuOffloadPct', v[0])} disabled={memoryFlags.zeroStage === 0} aria-label="CPU Offload Percentage"/> <span className="text-xs text-muted-foreground">Requires sufficient CPU RAM. Slows down training due to PCIe transfers.</span> </div> )} </div>
-                       {/* Mixture of Experts (MoE) */} <div className="border-b pb-4"> <div className="flex items-center justify-between mb-3"> <Label className="font-medium flex items-center">Mixture of Experts (MoE) <ShadTooltip> <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger> <TooltipContent><p className="max-w-xs">Replaces dense MLP layers with sparse MoE layers. Increases total parameters but keeps active parameters/token low.</p></TooltipContent> </ShadTooltip> </Label> <Switch id="enableMoE" checked={!!memoryFlags.moe} onCheckedChange={(checked) => handleFlagChange('moe', checked)} aria-label="Enable Mixture of Experts"/> </div> {memoryFlags.moe && ( <div className="grid grid-cols-2 gap-4"> <div> <Label htmlFor="moeExperts" className="text-sm">Total Experts (E)</Label> <Input id="moeExperts" type="number" min="2" step="1" value={memoryFlags.moe.experts} onChange={(e) => handleFlagChange('moe', { ...memoryFlags.moe, experts: parseInt(e.target.value) || 2 })} className="h-8 text-sm"/> </div> <div> <Label htmlFor="moeTopK" className="text-sm">Activated Experts (K)</Label> <Input id="moeTopK" type="number" min="1" step="1" max={memoryFlags.moe.experts} value={memoryFlags.moe.topK} onChange={(e) => handleFlagChange('moe', { ...memoryFlags.moe, topK: Math.min(parseInt(e.target.value) || 1, memoryFlags.moe?.experts || 1) })} className="h-8 text-sm"/> </div> </div> )} </div>
-                       {/* LoRA / QLoRA */} <div className="border-b pb-4"> <div className="flex items-center justify-between mb-3"> <Label className="font-medium flex items-center">LoRA (Low-Rank Adaptation) <ShadTooltip> <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger> <TooltipContent><p className="max-w-xs">Parameter-Efficient Fine-Tuning (PEFT) method. Freezes base model, trains small adapter matrices. Drastically reduces trainable params & optimizer memory.</p></TooltipContent> </ShadTooltip> </Label> <Switch id="enableLora" checked={!!memoryFlags.lora} onCheckedChange={(checked) => handleFlagChange('lora', checked)} aria-label="Enable LoRA"/> </div> {memoryFlags.lora && ( <div className="mt-2"> <Label htmlFor="loraRank" className="text-sm">LoRA Rank (r)</Label> <ShadTooltip> <TooltipTrigger asChild> <Select value={String(memoryFlags.lora.rank)} onValueChange={(v) => handleFlagChange('lora', { ...memoryFlags.lora, rank: parseInt(v) || 4 })}> <SelectTrigger id="loraRank" className="h-8 text-sm"><SelectValue /></SelectTrigger> <SelectContent> {[4, 8, 16, 32, 64, 128, 256].map(r => <SelectItem key={r} value={String(r)}>{r}</SelectItem>)} </SelectContent> </Select> </TooltipTrigger> <TooltipContent> <p>LoRA rank 'r'. Higher rank means more trainable parameters (≈ 2*L*2*H*r) but potentially better adaptation. Common values: 4-64.</p> </TooltipContent> </ShadTooltip> </div> )} </div>
+                       {/* Flash Attention */}
+                       <div className="flex items-center justify-between space-x-2 border-b pb-4">
+                           {/* Label with Tooltip Trigger on InfoIcon */}
+                            <Label htmlFor="flashAttention" className="flex flex-col space-y-1 pr-4">
+                                <span className="flex items-center">
+                                    FlashAttention / SDPA
+                                    <ShadTooltip>
+                                        <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger>
+                                        <TooltipContent><p>Applies ~30% activation memory reduction heuristic if SeqLen > 1024.</p></TooltipContent>
+                                    </ShadTooltip>
+                                </span>
+                                <span className="font-normal leading-snug text-muted-foreground text-sm"> Use memory-efficient attention kernel. </span>
+                            </Label>
+                            <Switch id="flashAttention" checked={memoryFlags.flashAttention} onCheckedChange={(c) => handleFlagChange('flashAttention', c)} />
+                        </div>
+                       {/* Gradient Checkpointing */}
+                       <div className="border-b pb-4">
+                           <div className="flex justify-between items-center mb-1">
+                               <Label htmlFor="gradCheckpoint" className="flex flex-col space-y-1">
+                                   <span>Gradient Checkpointing</span>
+                                   <span className="font-normal leading-snug text-muted-foreground text-sm"> Trade compute for memory by recomputing activations. Factor = % of activation memory retained. </span>
+                               </Label>
+                               <span className="text-sm font-medium whitespace-nowrap ml-2">{Math.round(memoryFlags.gradientCheckpointFactor * 100)}% Memory</span>
+                           </div>
+                           <Slider id="gradCheckpoint" min={0.3} max={1.0} step={0.05} value={[memoryFlags.gradientCheckpointFactor]} onValueChange={(v) => handleFlagChange('gradientCheckpointFactor', v[0])} aria-label="Gradient Checkpointing Factor"/>
+                           <span className="text-xs text-muted-foreground">100% = Off, Lower % = More Memory Saved (but more recompute)</span>
+                       </div>
+                       {/* ZeRO Optimization */}
+                       <div className="border-b pb-4">
+                            {/* Label with Tooltip Trigger on InfoIcon */}
+                           <Label className="mb-2 block font-medium flex items-center">
+                               ZeRO Stage (DeepSpeed/FSDP)
+                               <ShadTooltip>
+                                   <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger>
+                                   <TooltipContent side="bottom" className="max-w-md p-3">
+                                       <p className="font-semibold mb-1">ZeRO partitions model state across GPUs:</p>
+                                       <ul className="list-disc list-inside text-xs space-y-1"> <li><b>Stage 0:</b> None (standard data parallelism).</li> <li><b>Stage 1:</b> Shards Optimizer States.</li> <li><b>Stage 2:</b> Shards Optimizer States & Gradients.</li> <li><b>Stage 3:</b> Shards Optimizer States, Gradients, & Model Parameters.</li> </ul>
+                                       <p className="text-xs mt-2">Reduces memory per GPU but increases communication.</p>
+                                   </TooltipContent>
+                               </ShadTooltip>
+                           </Label>
+                           <RadioGroup value={String(memoryFlags.zeroStage)} onValueChange={(v) => handleFlagChange('zeroStage', v)} className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
+                               {[0, 1, 2, 3].map(stage => ( <div key={stage} className="flex items-center space-x-2"> <RadioGroupItem value={String(stage)} id={`zero-${stage}`} /> <Label htmlFor={`zero-${stage}`} className="font-normal">Stage {stage}</Label> </div> ))}
+                           </RadioGroup>
+                           {/* ZeRO CPU Offload */}
+                           {memoryFlags.zeroStage >= 1 && ( <div className="mt-4"> <div className="flex justify-between items-center mb-1"> <Label htmlFor="cpuOffload" className="flex flex-col space-y-1"> <span>ZeRO CPU Offload %</span> <span className="font-normal leading-snug text-muted-foreground text-sm"> Offload sharded optimizer/gradients (Stage {memoryFlags.zeroStage}) to CPU RAM. </span> </Label> <span className="text-sm font-medium whitespace-nowrap ml-2">{memoryFlags.cpuOffloadPct}%</span> </div> <Slider id="cpuOffload" min={0} max={100} step={5} value={[memoryFlags.cpuOffloadPct]} onValueChange={(v) => handleFlagChange('cpuOffloadPct', v[0])} disabled={memoryFlags.zeroStage === 0} aria-label="CPU Offload Percentage"/> <span className="text-xs text-muted-foreground">Requires sufficient CPU RAM. Slows down training due to PCIe transfers.</span> </div> )}
+                       </div>
+                       {/* Mixture of Experts (MoE) */}
+                       <div className="border-b pb-4">
+                           <div className="flex items-center justify-between mb-3">
+                               {/* Label with Tooltip Trigger on InfoIcon */}
+                               <Label className="font-medium flex items-center">
+                                   Mixture of Experts (MoE)
+                                   <ShadTooltip>
+                                       <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger>
+                                       <TooltipContent><p className="max-w-xs">Replaces dense MLP layers with sparse MoE layers. Increases total parameters but keeps active parameters/token low.</p></TooltipContent>
+                                   </ShadTooltip>
+                               </Label>
+                               <Switch id="enableMoE" checked={!!memoryFlags.moe} onCheckedChange={(checked) => handleFlagChange('moe', checked)} aria-label="Enable Mixture of Experts"/>
+                           </div>
+                           {memoryFlags.moe && ( <div className="grid grid-cols-2 gap-4"> <div> <Label htmlFor="moeExperts" className="text-sm">Total Experts (E)</Label> <Input id="moeExperts" type="number" min="2" step="1" value={memoryFlags.moe.experts} onChange={(e) => handleFlagChange('moe', { ...memoryFlags.moe, experts: parseInt(e.target.value) || 2 })} className="h-8 text-sm"/> </div> <div> <Label htmlFor="moeTopK" className="text-sm">Activated Experts (K)</Label> <Input id="moeTopK" type="number" min="1" step="1" max={memoryFlags.moe.experts} value={memoryFlags.moe.topK} onChange={(e) => handleFlagChange('moe', { ...memoryFlags.moe, topK: Math.min(parseInt(e.target.value) || 1, memoryFlags.moe?.experts || 1) })} className="h-8 text-sm"/> </div> </div> )}
+                       </div>
+                       {/* LoRA / QLoRA */}
+                       <div className="border-b pb-4">
+                           <div className="flex items-center justify-between mb-3">
+                               {/* Label with Tooltip Trigger on InfoIcon */}
+                               <Label className="font-medium flex items-center">
+                                   LoRA (Low-Rank Adaptation)
+                                   <ShadTooltip>
+                                       <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1.5 text-muted-foreground cursor-help"/></TooltipTrigger>
+                                       <TooltipContent><p className="max-w-xs">Parameter-Efficient Fine-Tuning (PEFT) method. Freezes base model, trains small adapter matrices. Drastically reduces trainable params & optimizer memory.</p></TooltipContent>
+                                   </ShadTooltip>
+                               </Label>
+                               <Switch id="enableLora" checked={!!memoryFlags.lora} onCheckedChange={(checked) => handleFlagChange('lora', checked)} aria-label="Enable LoRA"/>
+                           </div>
+                           {memoryFlags.lora && (
+                               <div className="mt-2">
+                                   <Label htmlFor="loraRank" className="text-sm">LoRA Rank (r)</Label>
+                                   {/* Tooltip on Label */}
+                                   <ShadTooltip>
+                                        <TooltipTrigger asChild>
+                                            {/* Wrap Select in span for Tooltip Trigger */}
+                                            <span>
+                                                <Select value={String(memoryFlags.lora.rank)} onValueChange={(v) => handleFlagChange('lora', { ...memoryFlags.lora, rank: parseInt(v) || 4 })}>
+                                                    <SelectTrigger id="loraRank" className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                                                    <SelectContent> {[4, 8, 16, 32, 64, 128, 256].map(r => <SelectItem key={r} value={String(r)}>{r}</SelectItem>)} </SelectContent>
+                                                </Select>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent> <p>LoRA rank 'r'. Higher rank means more trainable parameters (≈ 2*L*2*H*r) but potentially better adaptation. Common values: 4-64.</p> </TooltipContent>
+                                   </ShadTooltip>
+                               </div>
+                           )}
+                       </div>
                        {/* Future Tunables Placeholder */} <div className="pt-4 space-y-2 text-sm text-muted-foreground"> <p className="font-medium text-foreground">Future Tunables (Placeholders):</p> <div className="flex items-center justify-between"><span>Sequence Parallelism</span> <Switch disabled /></div> <div className="flex items-center justify-between"><span>KV Cache INT8</span> <Switch disabled /></div> <div className="flex items-center justify-between"><span>2:4 Sparsity</span> <Switch disabled /></div> </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -604,32 +629,22 @@ const MemoryCalculator = () => {
                <Card>
                  <CardHeader className="pb-2"><CardTitle className="text-lg">Parameter & Training Summary</CardTitle></CardHeader>
                  <CardContent className="grid grid-cols-2 gap-x-4 gap-y-3 text-center">
-                      {/* Parameter Counts */}
                       <div> <Label className="text-xs text-muted-foreground block mb-0.5">Total Parameters</Label> <div className="text-xl font-bold"> {formatNumber(parameterDetails.totalParamsRaw, 2)} {parameterDetails.isMoE && <span className="text-xs font-normal text-emerald-600">(MoE)</span>} </div> <div className="text-xs text-muted-foreground">({(parameterDetails.totalParamsRaw / 1e9).toFixed(2)} B)</div> </div>
                       <div> <Label className="text-xs text-muted-foreground block mb-0.5">Trainable Parameters</Label> <div className="text-xl font-bold"> {formatNumber(parameterDetails.trainableParamsRaw, 2)} {parameterDetails.isLora && <span className="text-xs font-normal text-blue-600">(LoRA)</span>} </div> <div className="text-xs text-muted-foreground">({(parameterDetails.trainableParamsRaw / (parameterDetails.totalParamsRaw || 1) * 100).toFixed(2)}% of total)</div> </div>
                       {parameterDetails.isMoE && ( <div className="col-span-2"> <Label className="text-xs text-muted-foreground block mb-0.5">Active Parameters / Token (MoE)</Label> <div className="text-lg font-semibold"> {formatNumber(parameterDetails.activeParamsRaw, 2)} </div> <div className="text-xs text-muted-foreground">({(parameterDetails.activeParamsRaw / (parameterDetails.totalParamsRaw || 1) * 100).toFixed(2)}% of total)</div> </div> )}
-                      {/* Grad Accum */}
-                      <div className="col-span-2 border-t pt-3 mt-1">
-                          <Label className="text-xs text-muted-foreground block mb-0.5">Gradient Accumulation Steps</Label>
-                          <div className="text-xl font-bold">{derivedParams.gradientAccumulationSteps}</div>
-                          <p className="text-xs text-muted-foreground">Needed to reach Global Batch Size of {parameters.batchSize} with {parameters.microBatchSizePerGPU} micro-batch / GPU across {numGpus} GPU(s).</p>
-                      </div>
-                      {/* Chinchilla Optimal Tokens */}
-                      <div className="col-span-2 border-t pt-3 mt-1">
-                          <Label className="text-xs text-muted-foreground block mb-0.5 flex items-center justify-center">Chinchilla Optimal Tokens (Approx) <ShadTooltip> <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1 text-muted-foreground cursor-help"/></TooltipTrigger> <TooltipContent><p>Rule of thumb (~20 tokens/param) for compute-optimal training dataset size.</p></TooltipContent> </ShadTooltip> </Label>
-                          <div className="text-lg font-semibold">{formatNumber(chinchillaOptimalTokens, 2)}</div>
-                      </div>
+                      <div className="col-span-2 border-t pt-3 mt-1"> <Label className="text-xs text-muted-foreground block mb-0.5">Gradient Accumulation Steps</Label> <div className="text-xl font-bold">{derivedParams.gradientAccumulationSteps}</div> <p className="text-xs text-muted-foreground">Needed to reach Global Batch Size of {parameters.batchSize} with {parameters.microBatchSizePerGPU} micro-batch / GPU across {numGpus} GPU(s).</p> </div>
+                      <div className="col-span-2 border-t pt-3 mt-1"> <Label className="text-xs text-muted-foreground block mb-0.5 flex items-center justify-center">Chinchilla Optimal Tokens (Approx) <ShadTooltip> <TooltipTrigger asChild><InfoIcon className="w-3 h-3 ml-1 text-muted-foreground cursor-help"/></TooltipTrigger> <TooltipContent><p>Rule of thumb (~20 tokens/param) for compute-optimal training dataset size.</p></TooltipContent> </ShadTooltip> </Label> <div className="text-lg font-semibold">{formatNumber(chinchillaOptimalTokens, 2)}</div> </div>
                  </CardContent>
                </Card>
               {/* --- Memory Requirements --- */}
               <Card>
                   <CardHeader className="pb-4"><CardTitle className="text-lg">Estimated Memory Requirements</CardTitle></CardHeader>
                   <CardContent>
-                     {/* VRAM Heat Bar */} <div className="mb-6"> <div className="flex justify-between items-center mb-1 text-sm"> <Label>Est. Training VRAM / GPU</Label> <span className={`font-bold ${vramUsagePercent > 100 ? 'text-red-600' : ''}`}> {memoryRequirementsGB.totalTrainingGB.toFixed(2)} GB {selectedHardware && ` / ${selectedHardware.vramGB} GB`} {selectedHardware && ` (${vramUsagePercent.toFixed(0)}%)`} </span> </div> <div className={`w-full h-3 ${getVramBarColor(0)} rounded-full overflow-hidden bg-opacity-50`}> <div className={`h-full ${getVramBarColor(vramUsagePercent)} transition-all duration-300 ease-out rounded-full`} style={{ width: `${Math.min(100, Math.max(0, vramUsagePercent))}%` }} /> </div> {memoryRequirementsGB.cpuSwapGB > 0 && ( <p className="text-xs text-muted-foreground mt-1 text-center"> (+ {memoryRequirementsGB.cpuSwapGB.toFixed(2)} GB offloaded to CPU RAM per GPU via ZeRO Offload) </p> )} {vramUsagePercent > 100 && ( <p className="text-xs text-red-600 font-semibold mt-1 text-center"> Warning: Estimated VRAM exceeds target GPU capacity! </p> )} {!selectedHardware && ( <p className="text-xs text-muted-foreground mt-1 text-center"> Select hardware to compare usage against VRAM limit. </p> )} </div>
+                     <div className="mb-6"> <div className="flex justify-between items-center mb-1 text-sm"> <Label>Est. Training VRAM / GPU</Label> <span className={`font-bold ${vramUsagePercent > 100 ? 'text-red-600' : ''}`}> {memoryRequirementsGB.totalTrainingGB.toFixed(2)} GB {selectedHardware && ` / ${selectedHardware.vramGB} GB`} {selectedHardware && ` (${vramUsagePercent.toFixed(0)}%)`} </span> </div> <div className={`w-full h-3 ${getVramBarColor(0)} rounded-full overflow-hidden bg-opacity-50`}> <div className={`h-full ${getVramBarColor(vramUsagePercent)} transition-all duration-300 ease-out rounded-full`} style={{ width: `${Math.min(100, Math.max(0, vramUsagePercent))}%` }} /> </div> {memoryRequirementsGB.cpuSwapGB > 0 && ( <p className="text-xs text-muted-foreground mt-1 text-center"> (+ {memoryRequirementsGB.cpuSwapGB.toFixed(2)} GB offloaded to CPU RAM per GPU via ZeRO Offload) </p> )} {vramUsagePercent > 100 && ( <p className="text-xs text-red-600 font-semibold mt-1 text-center"> Warning: Estimated VRAM exceeds target GPU capacity! </p> )} {!selectedHardware && ( <p className="text-xs text-muted-foreground mt-1 text-center"> Select hardware to compare usage against VRAM limit. </p> )} </div>
                     <Tabs defaultValue="training">
                       <TabsList className="grid w-full grid-cols-2"> <TabsTrigger value="training">Training Breakdown</TabsTrigger> <TabsTrigger value="inference">Inference Estimate</TabsTrigger> </TabsList>
-                      {/* Training Tab */} <TabsContent value="training" className="mt-4 space-y-4"> <div className="grid grid-cols-2 gap-3 text-center"> <div className="bg-secondary/50 p-2 rounded-lg"> <div className="text-xs text-muted-foreground">Total / GPU</div> <div className="text-lg font-bold">{memoryRequirementsGB.totalTrainingGB.toFixed(2)} GB</div> </div> <div className="bg-secondary/50 p-2 rounded-lg"> <div className="text-xs text-muted-foreground">Model Weights / GPU</div> <div className="text-lg font-bold"> {memoryRequirementsGB.modelWeightsGB.toFixed(2)} GB </div> <div className="text-[10px] text-muted-foreground leading-tight"> {memoryFlags.zeroStage === 3 ? "(ZeRO-3 Sharded)" : (parameterDetails.isLora ? "(Base + LoRA)" : "")} </div> </div> </div> <div className="h-60 w-full"> <ResponsiveContainer width="100%" height="100%"> <PieChart margin={{ top: 5, right: 5, bottom: 5, left: 5 }}> <Pie data={trainingMemoryBreakdownData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" innerRadius="35%" fill="#8884d8" labelLine={false} label={({ cx, cy, midAngle, outerRadius, percent, index, name, value }) => { const RADIAN = Math.PI / 180; const radius = outerRadius * 1.1; const x = cx + radius * Math.cos(-midAngle * RADIAN); const y = cy + radius * Math.sin(-midAngle * RADIAN); return ( percent > 0.03 ? <text x={x} y={y} fill={COLORS[index % COLORS.length]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize="10" fontWeight="medium"> {`${name}: ${value.toFixed(1)}GB`} </text> : null ); }} > {trainingMemoryBreakdownData.map((entry, index) => ( <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={COLORS[index % COLORS.length]}/> ))} </Pie> <RechartsTooltip formatter={(value: number, name: string, props) => [`${value.toFixed(2)} GB (${(props.payload.percent * 100).toFixed(1)}%)`, name]} contentStyle={{background: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(2px)', border: 'none', borderRadius: '4px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', padding: '8px'}} /> </PieChart> </ResponsiveContainer> </div> </TabsContent>
-                       {/* Inference Tab */} <TabsContent value="inference" className="mt-4 space-y-4"> <div className="grid grid-cols-1 gap-4 text-center"> <div className="bg-secondary/50 p-3 rounded-lg"> <div className="text-sm text-muted-foreground">Est. Inference Memory / GPU ({selectedQuantization.name})</div> <div className="text-xl font-bold">{memoryRequirementsGB.totalInferenceGB.toFixed(2)} GB</div> <p className="text-xs text-muted-foreground">(Excl. Optimizer/Gradients; Activations vary by arch)</p> </div> </div> <div className="h-60 w-full"> <ResponsiveContainer width="100%" height="100%"> <BarChart data={inferenceMemoryBreakdownData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}> <CartesianGrid strokeDasharray="3 3" horizontal={false}/> <XAxis type="number" unit=" GB" fontSize={10} /> <YAxis type="category" dataKey="name" width={80} fontSize={10}/> <RechartsTooltip formatter={(value: number) => `${value.toFixed(2)} GB`} /> <Bar dataKey="value" name="Memory (GB)" barSize={20}> {inferenceMemoryBreakdownData.map((entry, index) => ( <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> ))} </Bar> </BarChart> </ResponsiveContainer> </div> </TabsContent>
+                      <TabsContent value="training" className="mt-4 space-y-4"> <div className="grid grid-cols-2 gap-3 text-center"> <div className="bg-secondary/50 p-2 rounded-lg"> <div className="text-xs text-muted-foreground">Total / GPU</div> <div className="text-lg font-bold">{memoryRequirementsGB.totalTrainingGB.toFixed(2)} GB</div> </div> <div className="bg-secondary/50 p-2 rounded-lg"> <div className="text-xs text-muted-foreground">Model Weights / GPU</div> <div className="text-lg font-bold"> {memoryRequirementsGB.modelWeightsGB.toFixed(2)} GB </div> <div className="text-[10px] text-muted-foreground leading-tight"> {memoryFlags.zeroStage === 3 ? "(ZeRO-3 Sharded)" : (parameterDetails.isLora ? "(Base + LoRA)" : "")} </div> </div> </div> <div className="h-60 w-full"> <ResponsiveContainer width="100%" height="100%"> <PieChart margin={{ top: 5, right: 5, bottom: 5, left: 5 }}> <Pie data={trainingMemoryBreakdownData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" innerRadius="35%" fill="#8884d8" labelLine={false} label={({ cx, cy, midAngle, outerRadius, percent, index, name, value }) => { const RADIAN = Math.PI / 180; const radius = outerRadius * 1.1; const x = cx + radius * Math.cos(-midAngle * RADIAN); const y = cy + radius * Math.sin(-midAngle * RADIAN); return ( percent > 0.03 ? <text x={x} y={y} fill={COLORS[index % COLORS.length]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize="10" fontWeight="medium"> {`${name}: ${value.toFixed(1)}GB`} </text> : null ); }} > {trainingMemoryBreakdownData.map((entry, index) => ( <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={COLORS[index % COLORS.length]}/> ))} </Pie> <RechartsTooltip formatter={(value: number, name: string, props) => [`${value.toFixed(2)} GB (${(props.payload.percent * 100).toFixed(1)}%)`, name]} contentStyle={{background: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(2px)', border: 'none', borderRadius: '4px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', padding: '8px'}} /> </PieChart> </ResponsiveContainer> </div> </TabsContent>
+                       <TabsContent value="inference" className="mt-4 space-y-4"> <div className="grid grid-cols-1 gap-4 text-center"> <div className="bg-secondary/50 p-3 rounded-lg"> <div className="text-sm text-muted-foreground">Est. Inference Memory / GPU ({selectedQuantization.name})</div> <div className="text-xl font-bold">{memoryRequirementsGB.totalInferenceGB.toFixed(2)} GB</div> <p className="text-xs text-muted-foreground">(Excl. Optimizer/Gradients; Activations vary by arch)</p> </div> </div> <div className="h-60 w-full"> <ResponsiveContainer width="100%" height="100%"> <BarChart data={inferenceMemoryBreakdownData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}> <CartesianGrid strokeDasharray="3 3" horizontal={false}/> <XAxis type="number" unit=" GB" fontSize={10} /> <YAxis type="category" dataKey="name" width={80} fontSize={10}/> <RechartsTooltip formatter={(value: number) => `${value.toFixed(2)} GB`} /> <Bar dataKey="value" name="Memory (GB)" barSize={20}> {inferenceMemoryBreakdownData.map((entry, index) => ( <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> ))} </Bar> </BarChart> </ResponsiveContainer> </div> </TabsContent>
                     </Tabs>
                   </CardContent>
               </Card>

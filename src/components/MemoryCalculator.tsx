@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Tooltip as ShadTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner"; // Using sonner for toast notifications
 
 // Recharts for Charts
@@ -206,7 +206,7 @@ const AppStateSchema = z.object({
 type AppState = z.infer<typeof AppStateSchema>;
 
 // --- Main Component ---
-const MemoryCalculator: React.FC = () => {
+export const MemoryCalculator: React.FC = () => {
   // --- State Definitions ---
   const [architectureId, setArchitectureId] = useState<string>(modelPresets[0].archId);
   const [parameters, setParameters] = useState<ModelParameters>(() => ({
@@ -274,42 +274,93 @@ const MemoryCalculator: React.FC = () => {
 
   const deserializeState = useCallback((encodedState: string) => {
     try {
-        const jsonString = atob(encodedState); const parsedState = JSON.parse(jsonString);
-        const validationResult = AppStateSchema.safeParse(parsedState);
-        if (!validationResult.success) { console.error("URL state validation failed:", validationResult.error.errors); toast.error("Failed to load configuration from link: Invalid data."); window.location.hash = ""; return false; } // Return false on failure
-        const state = validationResult.data;
-        setArchitectureId(architectureTypes.some(a => a.id === state.arch) ? state.arch : architectureTypes[0].id);
-        setParameters(state.p); setMemoryFlags(state.f); setPrecision(state.prec);
-        setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id); // Default to H100 80GB SXM on error
-        setNumGpus(state.ng); setCostParams(state.cost);
-        toast.success("Configuration loaded from link.");
-        return true; // Return true on success
-    } catch (error) { console.error("Error deserializing state:", error); toast.error("Failed to load configuration from link: Invalid format."); window.location.hash = ""; return false; } // Return false on failure
+      const jsonString = atob(encodedState);
+      const parsedState = JSON.parse(jsonString);
+      const validationResult = AppStateSchema.safeParse(parsedState);
+      
+      if (!validationResult.success) { 
+        console.error("URL state validation failed:", validationResult.error.errors); 
+        toast.error("Failed to load configuration from link: Invalid data."); 
+        window.location.hash = ""; 
+        return false; 
+      }
+      
+      const state = validationResult.data;
+      
+      // Ensure we're setting all required fields for each state update
+      setArchitectureId(architectureTypes.some(a => a.id === state.arch) ? state.arch : architectureTypes[0].id);
+      
+      // Set ModelParameters with all required fields
+      setParameters({
+        hiddenSize: state.p.hiddenSize,
+        numLayers: state.p.numLayers,
+        numHeads: state.p.numHeads,
+        vocabSize: state.p.vocabSize,
+        sequenceLength: state.p.sequenceLength,
+        batchSize: state.p.batchSize,
+        microBatchSizePerGPU: state.p.microBatchSizePerGPU
+      });
+      
+      // Set MemoryFlags with all required fields
+      setMemoryFlags({
+        flashAttention: state.f.flashAttention,
+        gradientCheckpointFactor: state.f.gradientCheckpointFactor,
+        zeroStage: state.f.zeroStage,
+        cpuOffloadPct: state.f.cpuOffloadPct,
+        // Optional fields
+        moe: state.f.moe,
+        lora: state.f.lora,
+        sequenceParallelism: state.f.sequenceParallelism,
+        kvCachePrecision: state.f.kvCachePrecision,
+        sparsity24: state.f.sparsity24
+      });
+      
+      setPrecision(state.prec);
+      
+      setSelectedHardwareId(gpuProfiles.some(g => g.id === state.hw) ? state.hw : gpuProfiles[6].id);
+      
+      setNumGpus(state.ng);
+      
+      // Set CostEnergyParams with all required fields
+      setCostParams({
+        trainingSteps: state.cost.trainingSteps,
+        tokensPerSecondPerGPU: state.cost.tokensPerSecondPerGPU,
+        gridCarbonIntensity: state.cost.gridCarbonIntensity
+      });
+      
+      toast.success("Configuration loaded from link.");
+      return true;
+    } catch (error) { 
+      console.error("Error deserializing state:", error); 
+      toast.error("Failed to load configuration from link: Invalid format."); 
+      window.location.hash = ""; 
+      return false; 
+    }
   }, []); // Removed setters from deps
 
-   // Effect to load state from URL hash on initial mount (Modified)
-   useEffect(() => {
-       let loaded = false;
-       if (window.location.hash && window.location.hash.length > 1) {
-           const encodedState = window.location.hash.substring(1);
-           loaded = deserializeState(encodedState);
-       }
-       setIsInitializedFromUrl(true); // Mark initialization attempt complete
-       // If loading failed or no hash, apply preset 0 explicitly
-       if (!loaded) {
-            handleApplyPreset(modelPresets[0]);
-       }
-   }, [deserializeState]); // Run only once on mount
+  // Effect to load state from URL hash on initial mount (Modified)
+  useEffect(() => {
+    let loaded = false;
+    if (window.location.hash && window.location.hash.length > 1) {
+      const encodedState = window.location.hash.substring(1);
+      loaded = deserializeState(encodedState);
+    }
+    setIsInitializedFromUrl(true); // Mark initialization attempt complete
+    // If loading failed or no hash, apply preset 0 explicitly
+    if (!loaded) {
+      handleApplyPreset(modelPresets[0]);
+    }
+  }, [deserializeState]); // Run only once on mount
 
-   // Effect to update URL hash when state changes
-   useEffect(() => {
-       if (!isInitializedFromUrl) return; // Don't update URL during initial load/deserialization
-       const handler = setTimeout(() => {
-           const encodedState = serializeState();
-           window.history.replaceState(null, '', `#${encodedState}`);
-       }, 500); // Debounce update
-       return () => clearTimeout(handler);
-   }, [serializeState, isInitializedFromUrl]);
+  // Effect to update URL hash when state changes
+  useEffect(() => {
+    if (!isInitializedFromUrl) return; // Don't update URL during initial load/deserialization
+    const handler = setTimeout(() => {
+      const encodedState = serializeState();
+      window.history.replaceState(null, '', `#${encodedState}`);
+    }, 500); // Debounce update
+    return () => clearTimeout(handler);
+  }, [serializeState, isInitializedFromUrl]);
 
   // --- Derived State and Calculations ---
   const selectedQuantization = useMemo(() => quantizationTypes.find(q => q.id === precision) || quantizationTypes.find(q=>q.id === 'fp32')!, [precision]);
@@ -382,16 +433,38 @@ const MemoryCalculator: React.FC = () => {
     setArchitectureId(preset.archId);
     
     // Set parameters, ensuring all required fields exist
-    setParameters(prev => ({
-        ...prev, // Keep defaults
-        ...preset.params, // Apply preset params
-    }));
+    setParameters(prev => {
+        const updatedParams: ModelParameters = {
+            // Start with full defaults
+            hiddenSize: prev.hiddenSize, 
+            numLayers: prev.numLayers,
+            numHeads: prev.numHeads,
+            vocabSize: prev.vocabSize,
+            sequenceLength: prev.sequenceLength,
+            batchSize: prev.batchSize,
+            microBatchSizePerGPU: prev.microBatchSizePerGPU,
+            
+            // Override with preset values
+            ...(preset.params.hiddenSize !== undefined ? { hiddenSize: preset.params.hiddenSize } : {}),
+            ...(preset.params.numLayers !== undefined ? { numLayers: preset.params.numLayers } : {}),
+            ...(preset.params.numHeads !== undefined ? { numHeads: preset.params.numHeads } : {}),
+            ...(preset.params.vocabSize !== undefined ? { vocabSize: preset.params.vocabSize } : {}),
+            ...(preset.params.sequenceLength !== undefined ? { sequenceLength: preset.params.sequenceLength } : {}),
+            ...(preset.params.batchSize !== undefined ? { batchSize: preset.params.batchSize } : {}),
+            ...(preset.params.microBatchSizePerGPU !== undefined ? { microBatchSizePerGPU: preset.params.microBatchSizePerGPU } : {})
+        };
+        
+        return updatedParams;
+    });
     
     // Ensure all required fields exist in memoryFlags
     setMemoryFlags(prev => {
-        // Start with current flags
+        // Start with current flags for defaults
         const newFlags: MemoryFlags = {
-            ...prev, // Keep defaults
+            flashAttention: prev.flashAttention,
+            gradientCheckpointFactor: prev.gradientCheckpointFactor,
+            zeroStage: prev.zeroStage,
+            cpuOffloadPct: prev.cpuOffloadPct,
             // Reset MoE and LoRA to undefined when changing presets
             moe: undefined,
             lora: undefined
@@ -420,14 +493,85 @@ const MemoryCalculator: React.FC = () => {
     toast.success(`Applied ${preset.name} preset`);
   }, []);
 
-  // ... add remaining component code here ...
+  // --- Placeholder UI ---
   return (
-    <div className="memory-calculator">
-      <h1>Memory Calculator Component</h1>
-      <p>This is a placeholder for the Memory Calculator component. The full UI implementation is in progress.</p>
+    <div className="memory-calculator w-full max-w-6xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">LLM Memory Calculator</h1>
+      <p className="text-gray-600 mb-8 text-center">
+        This is a placeholder for the Memory Calculator component. Full implementation coming soon.
+      </p>
+      
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Model Architecture</CardTitle>
+          <CardDescription>Select a model architecture and preset to explore memory requirements</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="architecture">Architecture Type</Label>
+              <Select value={architectureId} onValueChange={setArchitectureId}>
+                <SelectTrigger id="architecture">
+                  <SelectValue placeholder="Select architecture" />
+                </SelectTrigger>
+                <SelectContent>
+                  {architectureTypes.map(arch => (
+                    <SelectItem key={arch.id} value={arch.id}>
+                      {arch.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="preset">Model Preset</Label>
+              <Select value={modelPresets[0].name} onValueChange={() => {}}>
+                <SelectTrigger id="preset">
+                  <SelectValue placeholder="Select preset" />
+                </SelectTrigger>
+                <SelectContent>
+                  {modelPresets.map(preset => (
+                    <SelectItem key={preset.name} value={preset.name}>
+                      {preset.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Parameter Statistics</CardTitle>
+          <CardDescription>Estimated model parameters and memory requirements</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-4 border rounded-md bg-blue-50 text-center">
+              <p className="text-sm text-gray-500">Total Parameters</p>
+              <p className="text-3xl font-bold text-blue-700">{formatNumber(parameterDetails.totalParams)}</p>
+            </div>
+            <div className="p-4 border rounded-md bg-green-50 text-center">
+              <p className="text-sm text-gray-500">Memory Required</p>
+              <p className="text-3xl font-bold text-green-700">-</p>
+            </div>
+            <div className="p-4 border rounded-md bg-purple-50 text-center">
+              <p className="text-sm text-gray-500">GPUs Needed</p>
+              <p className="text-3xl font-bold text-purple-700">-</p>
+            </div>
+          </div>
+          <div className="mt-6 text-center">
+            <Button className="bg-indigo-600 hover:bg-indigo-700">
+              <DownloadIcon className="mr-2 h-4 w-4" /> Download Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
-// Export the component as default
+// Export as default for compatibility with existing import statements
 export default MemoryCalculator;

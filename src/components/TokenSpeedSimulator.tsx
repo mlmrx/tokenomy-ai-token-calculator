@@ -115,6 +115,9 @@ const TOOLTIPS = { /* Tooltips unchanged - Omitted for brevity */
     chartAdvanced: "Shows live simulation progress. Pin runs to compare.",
     pinRun: "Add the current simulation results (parameters, stats, chart data) to the comparison.",
     pinnedRuns: "Pinned simulation runs for comparison. Click 'X' to remove.",
+    genSpeed: "Generation speed in tokens per second.",  // Added for tooltip fix
+    ttfToken: "Time to first token in seconds.",        // Added for tooltip fix
+    pricing: "Cost per 1M tokens (in/out)."            // Added for tooltip fix
 };
 const LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ";
 const FLASH_DURATION_MS = 50;
@@ -494,7 +497,8 @@ export const TokenSpeedSimulator: React.FC = () => {
 
             {/* Add subtle animation classes if not already present in globals.css */}
             {/* Add CSS variables for dynamic theme colors */}
-            <style jsx global>{`
+            <style>
+                {`
                 @keyframes fadeIn {
                   from { opacity: 0; transform: translateY(10px); }
                   to { opacity: 1; transform: translateY(0); }
@@ -510,10 +514,12 @@ export const TokenSpeedSimulator: React.FC = () => {
                   --theme-color-600: #4f46e5; /* Default: indigo-600 */
                   --theme-color-700: #4338ca; /* Default: indigo-700 */
                 }
-             `}</style>
+                `}
+            </style>
              
              {/* Inject dynamic theme colors */}
-             <style jsx global>{`
+             <style>
+                {`
                 /* Inject dynamic theme colors - Tailwind JIT needs these classes */
                 /* bg */ .bg-cyan-600 {} .bg-orange-600 {} .bg-blue-600 {} .bg-sky-600 {} .bg-rose-600 {} .bg-indigo-600 {}
                 /* hover:bg */ .hover:bg-cyan-700 {} .hover:bg-orange-700 {} .hover:bg-blue-700 {} .hover:bg-sky-700 {} .hover:bg-rose-700 {} .hover:bg-indigo-700 {}
@@ -538,23 +544,12 @@ export const TokenSpeedSimulator: React.FC = () => {
                   --theme-color-600: theme(colors.${activeThemeColor}.600, #4f46e5);
                   --theme-color-700: theme(colors.${activeThemeColor}.700, #4338ca);
                 }
-             `}</style>
+                `}
+             </style>
 
         </TooltipProvider>
     );
 };
 
-// FIX: Removed default export
+// Export as default (not just named export)
 export default TokenSpeedSimulator;
-
-// --- Dummy Shadcn UI Components & Recharts (for demonstration) ---
-// Remove these if you have shadcn/ui and recharts properly configured.
-/*
-import { Button as ShadButton } from "@/components/ui/button"; // etc.
-// ... (Dummy components from previous response - Omitted for brevity) ...
-const DummyAreaChart: React.FC<any> = ({ children, data }) => <div className="border border-dashed border-gray-300 p-2 text-xs text-center text-gray-500">Area Chart Placeholder<pre className="text-left text-[8px] overflow-auto max-h-40">{JSON.stringify(data?.slice(-5), null, 1)}</pre>{children}</div>;
-const DummyArea: React.FC<any> = ({ dataKey, name }) => <p>Area: {name} ({dataKey})</p>;
-
- const { Slider = DummySlider, Select = DummySelect, SelectContent = DummySelectContent, SelectGroup = DummySelectGroup, SelectLabel = DummySelectLabel, SelectItem = DummySelectItem, SelectTrigger = DummySelectTrigger, SelectValue = DummySelectValue, Checkbox = DummyCheckbox, Switch = DummySwitch, Tooltip = DummyTooltip, TooltipContent = DummyTooltipContent, TooltipProvider = DummyTooltipProvider, TooltipTrigger = DummyTooltipTrigger, Card = DummyCard, CardContent = DummyCardContent, CardHeader = DummyCardHeader, CardTitle = DummyCardTitle, CardDescription = DummyCardDescription, Label = DummyLabel, Input = DummyInput, Button = DummyButton, Progress = DummyProgress, Separator = DummySeparator } = { /* ... dummy assignments ... * / };
- const { ResponsiveContainer = DummyResponsiveContainer, LineChart = DummyLineChart, Line = DummyLine, AreaChart = DummyAreaChart, Area = DummyArea, XAxis = DummyXAxis, YAxis = DummyYAxis, CartesianGrid = DummyCartesianGrid, Tooltip: RechartsTooltip = DummyRechartsTooltip, Legend = DummyLegend } = { /* ... dummy assignments ... * / };
-*/

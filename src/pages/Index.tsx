@@ -315,7 +315,7 @@ const Index = () => {
     // Simulate analysis time
     setTimeout(() => {
       try {
-        // Update: Use the enhanced estimateTokens function with model parameter
+        // Use the enhanced estimateTokens function with model parameter
         const tokens = estimateTokens(contentToAnalyze || "", selectedModel);
         const inputCost = calculateCost(tokens, selectedModel);
         const outputCost = calculateCost(tokens, selectedModel, true);
@@ -554,9 +554,10 @@ const Index = () => {
                         value={selectedModel}
                         onChange={(e) => {
                           setSelectedModel(e.target.value);
-                          // Re-analyze with new model if we have text
-                          if (analyzeResult && analyzeResult.text) {
-                            setTimeout(() => handleAnalyze(analyzeResult.text), 100);
+                          // Automatically analyze with new model if we have text
+                          if (text && text.trim()) {
+                            // Use a slight timeout to ensure state updates first
+                            setTimeout(() => handleAnalyze(text), 50);
                           }
                         }}
                         style={{borderColor: modelTheme.border}}
@@ -734,11 +735,7 @@ const Index = () => {
         )}
 
         {activeTab === "speed" && (
-          //<div className="speed-bg-gradient p-6 rounded-lg mb-6">
-           // <div className="bg-gradient-to-br from-purple-900/70 to-indigo-800/60 backdrop-blur-sm p-6 rounded-lg shadow-xl">
-              <TokenSpeedSimulator />
-           // </div>
-          //</div>
+          <TokenSpeedSimulator />
         )}
         
         {activeTab === "memory" && (
@@ -749,7 +746,7 @@ const Index = () => {
           </div>
         )}
 
-      {activeTab === "energy" && (
+        {activeTab === "energy" && (
           <div className="memory-bg-gradient p-6 rounded-lg mb-6">
             <div className="bg-gradient-to-br from-green-800/60 to-green-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <EnergyUsageEstimator />

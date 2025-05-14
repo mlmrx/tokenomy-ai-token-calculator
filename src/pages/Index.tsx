@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -316,7 +315,8 @@ const Index = () => {
     // Simulate analysis time
     setTimeout(() => {
       try {
-        const tokens = estimateTokens(contentToAnalyze || "");
+        // Update: Use the enhanced estimateTokens function with model parameter
+        const tokens = estimateTokens(contentToAnalyze || "", selectedModel);
         const inputCost = calculateCost(tokens, selectedModel);
         const outputCost = calculateCost(tokens, selectedModel, true);
         const tokenInfo = getTokenizationInfo(selectedModel);
@@ -344,7 +344,7 @@ const Index = () => {
         
         toast({
           title: "Analysis Complete",
-          description: `${tokens} tokens analyzed for ${selectedModel}`,
+          description: `${tokens.toLocaleString()} tokens analyzed for ${selectedModel}`,
         });
       } catch (error) {
         toast({
@@ -352,6 +352,7 @@ const Index = () => {
           description: "An error occurred during analysis.",
           variant: "destructive"
         });
+        console.error("Token Analysis Error:", error);
       } finally {
         setAnalyzing(false);
       }

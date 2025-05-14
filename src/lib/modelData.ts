@@ -1,4 +1,3 @@
-
 // Prices are USD per 1 K tokens (input vs. output)
 export const modelPricing: Record<string, { input: number; output: number; tokenScheme?: string; overhead?: number }> = {
   // OpenAI
@@ -169,38 +168,83 @@ export const tokensPerSecond: Record<string, number> = {
   "ernie-lite": 40
 };
 
-// Better token estimator function
-export const estimateTokens = (text: string): number => {
+// Enhanced token estimator function that considers model-specific tokenization
+import { detectLanguageMultiplier, getTokenizationParams, patternsByLanguage } from "./utils";
+
+/**
+ * Enhanced token estimation function that considers:
+ * 1. Model-specific tokenization schemes
+ * 2. Language detection
+ * 3. Special character handling
+ * 4. Model-specific overhead
+ * 
+ * @param text The text to estimate tokens for
+ * @param model The model to estimate tokens for (default: gpt-4)
+ * @returns Estimated token count
+ */
+export const estimateTokens = (text: string, model: string = "gpt-4o"): number => {
   if (!text) return 0;
   
-  // More accurate tokenization estimation:
-  // 1. Average English word is about 4-5 characters
-  // 2. Most tokenizers split by subwords
-  // 3. Special characters and punctuation often count as separate tokens
-  // 4. Numbers are often tokenized digit by digit
+  // Get model-specific tokenization parameters
+  const { charsPerToken, tokenMultiplier, overhead } = getTokenizationParams(model);
   
-  // Count words
-  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+  // Detect language and adjust token estimation
+  const languageMultiplier = detectLanguageMultiplier(text);
   
-  // Count non-alphanumeric characters that are likely to be separate tokens
-  const specialChars = text.replace(/[a-zA-Z0-9\s]/g, '').length;
+  // Base estimation for generic tokenization
+  const trimmedText = text.trim();
   
-  // Count numeric digits (often tokenized separately)
-  const numDigits = text.replace(/[^0-9]/g, '').length;
+  // Count words, taking into account that most common words are single tokens
+  const words = trimmedText.split(/\s+/).filter(w => w.length > 0);
   
-  // Base estimate: words + special characters + some digits
-  // Word tokens: Most English words are 1-2 tokens
+  // Count punctuation
+  const punctuationMatches = trimmedText.match(patternsByLanguage.english.punctuation) || [];
+  
+  // Count special characters (emojis, mathematical symbols, etc)
+  const specialCharMatches = trimmedText.match(patternsByLanguage.english.specialChars) || [];
+  
+  // Count numbers (often tokenized digit by digit)
+  const numericMatches = trimmedText.match(patternsByLanguage.english.numbers) || [];
+  const numericChars = numericMatches.join('').length;
+  
+  // Calculate word tokens with more accurate algorithm:
+  // - Short words (1-2 chars): typically 1 token
+  // - Medium words (3-6 chars): typically 1 token
+  // - Longer words: may be split into multiple tokens
   const wordTokens = words.reduce((sum, word) => {
-    if (word.length <= 2) return sum + 1;  // Short words are usually 1 token
-    if (word.length <= 6) return sum + 1;  // Medium words are usually 1 token
-    return sum + Math.ceil(word.length / 5); // Longer words may be multiple tokens
+    // Very short words (1-2 chars) are usually 1 token
+    if (word.length <= 2) return sum + 1;
+    
+    // Medium words (3-6 chars) are usually 1 token, unless they have unusual characters
+    if (word.length <= 6) {
+      const hasSpecialChars = /[^a-zA-Z0-9]/.test(word);
+      return sum + (hasSpecialChars ? Math.ceil(word.length / 3) : 1);
+    }
+    
+    // Longer words are often split into subword tokens, roughly 1 token per 4-5 chars
+    return sum + Math.ceil(word.length / charsPerToken);
   }, 0);
   
-  // Add special character tokens and numeric tokens
-  const totalEstimate = wordTokens + specialChars * 0.5 + numDigits * 0.5;
+  // Special characters often get their own tokens
+  const specialCharTokens = specialCharMatches.length;
   
-  // Round up and ensure minimum of 1 token for non-empty text
-  return Math.max(1, Math.ceil(totalEstimate));
+  // Punctuation usually gets its own token
+  const punctuationTokens = punctuationMatches.length;
+  
+  // Numbers are typically tokenized per digit or in small groups
+  const numericTokens = Math.ceil(numericChars / 2);
+  
+  // Sum all token components and apply model-specific multiplier
+  let totalTokens = (wordTokens + specialCharTokens + punctuationTokens + numericTokens) * tokenMultiplier;
+  
+  // Apply language-specific multiplier
+  totalTokens = totalTokens * languageMultiplier;
+  
+  // Add overhead for special tokens
+  totalTokens += overhead;
+  
+  // Round up and ensure at least 1 token for non-empty text
+  return Math.max(1, Math.ceil(totalTokens));
 };
 
 // Calculate cost based on token count and model

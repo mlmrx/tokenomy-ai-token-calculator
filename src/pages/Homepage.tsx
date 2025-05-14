@@ -22,7 +22,7 @@ const Homepage = () => {
           <div className="flex flex-col items-center text-center space-y-8 md:space-y-12">
             <div className="space-y-4 max-w-3xl">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
-                Master AI Token Economy with Confidence
+                Master LLM AI Token Utlization with Confidence using TOKENOMY.AI
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
                 Unlock the full potential of your AI investments with tools that maximize performance while optimizing costs.

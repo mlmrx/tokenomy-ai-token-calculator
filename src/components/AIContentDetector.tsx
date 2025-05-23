@@ -8,6 +8,23 @@ import { Search } from 'lucide-react';
 
 interface DetectionResult { score: number; label: string; }
 
+// Simplified SynthID watermark detector inspired by the open-source
+// synthid-text project. This is **not** the official algorithm but
+// provides a heuristic indication of possible watermark patterns.
+const detectSynthIDWatermark = (text: string): number => {
+  const tokens = text.trim().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return 0;
+  const hashed = tokens.map((t) =>
+    t
+      .split("")
+      .reduce((acc, c) => acc + c.charCodeAt(0), 0) % 2,
+  );
+  const ones = hashed.filter((h) => h === 1).length;
+  const zeros = hashed.length - ones;
+  const ratio = Math.max(ones, zeros) / hashed.length;
+  return ratio;
+};
+
 const analyzeText = (text: string): DetectionResult => {
   const words = text.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return { score: 0, label: 'No text provided' };
@@ -16,6 +33,8 @@ const analyzeText = (text: string): DetectionResult => {
   if (uniqueRatio < 0.5 || uniqueRatio > 0.95) score += 0.3;
   if (/as an ai language model/i.test(text)) score += 0.7;
   if (/(\b\w{3,}\b)(\s+\1){2,}/i.test(text)) score += 0.3;
+  const synthScore = detectSynthIDWatermark(text);
+  score += synthScore * 0.5;
   if (score > 1) score = 1;
   const label = score > 0.7 ? 'Likely AI-generated' : score > 0.4 ? 'Possibly AI-generated' : 'Likely Human-written';
   return { score, label };

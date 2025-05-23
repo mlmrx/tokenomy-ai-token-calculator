@@ -9,33 +9,36 @@ interface NewsItem {
 }
 
 const AINewsMarquee = () => {
-  const [news, setNews] = useState<NewsItem[]>([
-    { title: "OpenAI introduces ChatGPT-5 with advanced reasoning capabilities", url: "#", source: "OpenAI Blog" },
-    { title: "New research shows LLMs can perform complex mathematical reasoning", url: "#", source: "AI Research Weekly" },
-    { title: "Google DeepMind announces breakthrough in multimodal understanding", url: "#", source: "Google AI Blog" },
-    { title: "AI models achieve human-level performance in medical diagnostics", url: "#", source: "Nature AI" },
-    { title: "Companies report 40% productivity increase with AI assistants", url: "#", source: "Tech Review" },
-    { title: "Anthropic releases new Claude model with improved coding abilities", url: "#", source: "Anthropic" },
-    { title: "Researchers develop new method to reduce hallucinations in LLMs", url: "#", source: "arXiv" },
-  ]);
-  
-  // In a real app, this would fetch news from an API
-  // useEffect(() => {
-  //   const fetchNews = async () => {
-  //     try {
-  //       const response = await fetch('https://api.example.com/ai-news');
-  //       const data = await response.json();
-  //       setNews(data.news);
-  //     } catch (error) {
-  //       console.error('Error fetching news:', error);
-  //     }
-  //   };
-  //   
-  //   fetchNews();
-  //   const interval = setInterval(fetchNews, 3600000); // Refresh every hour
-  //   
-  //   return () => clearInterval(interval);
-  // }, []);
+  const [news, setNews] = useState<NewsItem[]>([]);
+
+  const apiUrl = import.meta.env.VITE_NEWS_API_URL ?? "/ai-news.json";
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        const items: NewsItem[] = Array.isArray(data)
+          ? data
+          : Array.isArray(data.news)
+            ? data.news
+            : [];
+        if (items.length > 0) {
+          setNews(items);
+        }
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+
+    fetchNews();
+    const interval = setInterval(fetchNews, 3600000);
+
+    return () => clearInterval(interval);
+  }, [apiUrl]);
 
   return (
     <div className="w-full bg-gradient-to-r from-purple-900/90 via-indigo-800/80 to-purple-900/90 text-white py-1 overflow-hidden">

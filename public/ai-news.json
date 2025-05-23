@@ -1,0 +1,14 @@
+{
+  "news": [
+    {
+      "title": "Open-source LLMs gain ground against proprietary models",
+      "url": "https://example.com/open-source-llms",
+      "source": "AI Times"
+    },
+    {
+      "title": "AI regulation frameworks emerge worldwide",
+      "url": "https://example.com/ai-regulation",
+      "source": "Tech Daily"
+    }
+  ]
+}

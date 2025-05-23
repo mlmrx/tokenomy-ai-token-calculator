@@ -24,6 +24,10 @@ Tokenomy provides a suite of interactive tools for analyzing and optimizing larg
    ```
 4. Visit `http://localhost:8080` to view the app.
 
+The AI news ticker fetches updates from `/ai-news.json` by default. You can
+provide your own API endpoint by setting the `VITE_NEWS_API_URL` environment
+variable when starting the dev server or building the project.
+
 ### Other Scripts
 
 - `npm run build` – create an optimized production build

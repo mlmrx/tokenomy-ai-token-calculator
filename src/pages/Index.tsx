@@ -39,6 +39,7 @@ import VisualizationTab from "@/components/VisualizationTab";
 import ProcessFlowEnhanced from "@/components/ProcessFlowEnhanced";
 import EnergyConsumptionTab from "@/components/EnergyConsumptionTab";
 import AINewsMarquee from "@/components/AINewsMarquee";
+import AIContentDetector from "@/components/AIContentDetector";
 
 // Import utility components
 import LoginDialog from "@/components/LoginDialog";
@@ -750,6 +751,14 @@ const Index = () => {
           <div className="memory-bg-gradient p-6 rounded-lg mb-6">
             <div className="bg-gradient-to-br from-green-800/60 to-green-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
               <EnergyUsageEstimator />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "detector" && (
+          <div className="content-detector-bg-gradient p-6 rounded-lg mb-6">
+            <div className="bg-gradient-to-br from-cyan-800/60 to-blue-700/50 backdrop-blur-sm p-6 rounded-lg shadow-xl">
+              <AIContentDetector />
             </div>
           </div>
         )}

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 
@@ -129,6 +129,23 @@ const Homepage = () => {
                   </p>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/tools">Try Energy Estimator</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-cyan-200 dark:hover:border-cyan-900 transition-colors">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-full">
+                    <Search className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">AI Content Detector</h3>
+                  <p className="text-muted-foreground">
+                    Detect AI-generated text and verify original content
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/tools">Try Detector</Link>
                   </Button>
                 </div>
               </CardContent>

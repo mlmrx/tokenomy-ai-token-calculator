@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart, Leaf } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart, Leaf, Search } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -45,6 +45,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <Leaf className="h-5 w-5" />,
       gradientFrom: "from-green-500",
       gradientTo: "to-emerald-600",
+    },
+    {
+      id: "detector",
+      label: "Content Detector",
+      icon: <Search className="h-5 w-5" />,
+      gradientFrom: "from-cyan-500",
+      gradientTo: "to-blue-500",
     },
   ];
 

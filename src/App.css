@@ -97,6 +97,11 @@
   color: white;
 }
 
+.content-detector-bg-gradient {
+  background: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  color: white;
+}
+
 /* Control buttons styling */
 .control-button {
   background-color: transparent;

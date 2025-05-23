@@ -1,6 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { BarChart4, Zap, Database, Shield, FileText, Rocket } from "lucide-react";
+import { Search } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const features = [
@@ -45,6 +46,13 @@ const features = [
     icon: <Rocket className="h-12 w-12 text-indigo-500" />,
     color: "bg-indigo-100",
     animation: { delay: 0.6 }
+  },
+  {
+    title: "AI Content Detector",
+    description: "Identify AI-generated text to verify authenticity and originality.",
+    icon: <Search className="h-12 w-12 text-cyan-500" />,
+    color: "bg-cyan-100",
+    animation: { delay: 0.7 }
   }
 ];
 

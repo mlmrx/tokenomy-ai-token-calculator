@@ -45,3 +45,10 @@ Tokenomy provides a suite of interactive tools for analyzing and optimizing larg
 - `vite.config.ts` – Vite configuration
 
 Feel free to open issues or pull requests to improve the toolkit.
+
+## Data Notes
+
+Model pricing and performance data are approximate. The values in this
+repository reflect public information available around **May&nbsp;2025**. If newer
+pricing or model statistics become available, update `src/lib/modelData.ts` to
+keep calculations current.

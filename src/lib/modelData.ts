@@ -1,11 +1,12 @@
 // Prices are USD per 1 K tokens (input vs. output)
+// Data last reviewed May 2025
 export const modelPricing: Record<string, { input: number; output: number; tokenScheme?: string; overhead?: number }> = {
   // OpenAI
-  "gpt-4o-2": { input: 0.005, output: 0.015, tokenScheme: "cl100k_base", overhead: 3 },
-  "gpt-4o": { input: 0.005, output: 0.020, tokenScheme: "cl100k_base", overhead: 3 },
-  "gpt-4o-mini": { input: 0.0006, output: 0.0024, tokenScheme: "cl100k_base", overhead: 3 },
-  "gpt-4-turbo": { input: 0.0004, output: 0.0016, tokenScheme: "cl100k_base", overhead: 3 },
-  "gpt-4": { input: 0.002, output: 0.008, tokenScheme: "cl100k_base", overhead: 3 },
+  "gpt-4o-2": { input: 0.004, output: 0.012, tokenScheme: "cl100k_base", overhead: 3 },
+  "gpt-4o": { input: 0.005, output: 0.015, tokenScheme: "cl100k_base", overhead: 3 },
+  "gpt-4o-mini": { input: 0.0005, output: 0.0015, tokenScheme: "cl100k_base", overhead: 3 },
+  "gpt-4-turbo": { input: 0.01, output: 0.03, tokenScheme: "cl100k_base", overhead: 3 },
+  "gpt-4": { input: 0.03, output: 0.06, tokenScheme: "cl100k_base", overhead: 3 },
   "gpt-3.5-turbo": { input: 0.0005, output: 0.0015, tokenScheme: "cl100k_base", overhead: 3 },
 
   // Anthropic
@@ -14,30 +15,30 @@ export const modelPricing: Record<string, { input: number; output: number; token
   "claude-3-haiku": { input: 0.00025, output: 0.00125, tokenScheme: "Claude", overhead: 5 },
 
   // Meta (Llama 3)
-  "llama-3-70b": { input: 0.00072, output: 0.00072, tokenScheme: "Llama", overhead: 2 },
-  "llama-3-8b": { input: 0.00006, output: 0.00014, tokenScheme: "Llama", overhead: 2 },
+  "llama-3-70b": { input: 0.0008, output: 0.0008, tokenScheme: "Llama", overhead: 2 },
+  "llama-3-8b": { input: 0.0001, output: 0.0002, tokenScheme: "Llama", overhead: 2 },
 
   // Google (Gemini)
-  "gemini-1.5-pro": { input: 0.0003125, output: 0.00125, tokenScheme: "SentencePiece", overhead: 4 },
-  "gemini-1.5-flash": { input: 0.0000188, output: 0.000075, tokenScheme: "SentencePiece", overhead: 4 },
-  "gemini-ultra-2": { input: 0.00125, output: 0.01000, tokenScheme: "SentencePiece", overhead: 4 },
+  "gemini-1.5-pro": { input: 0.0025, output: 0.0075, tokenScheme: "SentencePiece", overhead: 4 },
+  "gemini-1.5-flash": { input: 0.00035, output: 0.001, tokenScheme: "SentencePiece", overhead: 4 },
+  "gemini-ultra-2": { input: 0.007, output: 0.021, tokenScheme: "SentencePiece", overhead: 4 },
 
   // Microsoft (Azure OpenAI + Phi-3)
   "azure-gpt-4o": { input: 0.005, output: 0.015, tokenScheme: "cl100k_base", overhead: 3 },
   "azure-embedding-ada": { input: 0.00002, output: 0.00002, tokenScheme: "cl100k_base", overhead: 0 },
-  "phi-3-mini": { input: 0.00013, output: 0.00052, tokenScheme: "phi3", overhead: 2 },
-  "phi-3-medium": { input: 0.00017, output: 0.00068, tokenScheme: "phi3", overhead: 2 },
+  "phi-3-mini": { input: 0.0003, output: 0.0006, tokenScheme: "phi3", overhead: 2 },
+  "phi-3-medium": { input: 0.0004, output: 0.0008, tokenScheme: "phi3", overhead: 2 },
 
   // Amazon (Bedrock)
   "titan-text-express": { input: 0.0002, output: 0.0006, tokenScheme: "Amazon", overhead: 2 },
   "titan-text-lite": { input: 0.0003, output: 0.0004, tokenScheme: "Amazon", overhead: 2 },
   "titan-embedding": { input: 0.0001, output: 0.0001, tokenScheme: "Amazon", overhead: 0 },
-  "claude-3-5-sonnet": { input: 0.003, output: 0.015, tokenScheme: "Claude", overhead: 5 },
+  "claude-3-5-sonnet": { input: 0.005, output: 0.015, tokenScheme: "Claude", overhead: 5 },
 
   // Mistral
   "mistral-large": { input: 0.002, output: 0.006, tokenScheme: "Mistral", overhead: 3 },
-  "mistral-medium": { input: 0.00027, output: 0.00081, tokenScheme: "Mistral", overhead: 3 },
-  "mistral-small": { input: 0.00010, output: 0.00030, tokenScheme: "Mistral", overhead: 3 },
+  "mistral-medium": { input: 0.0004, output: 0.0012, tokenScheme: "Mistral", overhead: 3 },
+  "mistral-small": { input: 0.0002, output: 0.0006, tokenScheme: "Mistral", overhead: 3 },
   
   // X.AI (Grok)
   "grok-1": { input: 0.0002, output: 0.0006, tokenScheme: "Grok", overhead: 3 },
@@ -59,113 +60,113 @@ export const modelPricing: Record<string, { input: number; output: number; token
 // First token latency in milliseconds (approximate values)
 export const firstTokenLatency: Record<string, number> = {
   // OpenAI
-  "gpt-4o-2": 250,
-  "gpt-4o": 350,
-  "gpt-4o-mini": 200,
-  "gpt-4-turbo": 380,
-  "gpt-4": 750,
-  "gpt-3.5-turbo": 230,
+  "gpt-4o-2": 220,
+  "gpt-4o": 300,
+  "gpt-4o-mini": 180,
+  "gpt-4-turbo": 350,
+  "gpt-4": 700,
+  "gpt-3.5-turbo": 200,
   
   // Anthropic
-  "claude-3-opus": 600,
-  "claude-3-sonnet": 300,
-  "claude-3-haiku": 200,
-  "claude-3-5-sonnet": 220,
+  "claude-3-opus": 550,
+  "claude-3-sonnet": 270,
+  "claude-3-haiku": 160,
+  "claude-3-5-sonnet": 200,
   
   // Meta
-  "llama-3-70b": 550,
-  "llama-3-8b": 220,
+  "llama-3-70b": 500,
+  "llama-3-8b": 200,
   
   // Google
-  "gemini-1.5-pro": 350,
-  "gemini-1.5-flash": 180,
-  "gemini-ultra-2": 450,
+  "gemini-1.5-pro": 320,
+  "gemini-1.5-flash": 150,
+  "gemini-ultra-2": 420,
   
   // Microsoft
-  "azure-gpt-4o": 380,
-  "phi-3-mini": 150,
-  "phi-3-medium": 180,
+  "azure-gpt-4o": 320,
+  "phi-3-mini": 130,
+  "phi-3-medium": 160,
   
   // Amazon
-  "titan-text-express": 280,
-  "titan-text-lite": 200,
+  "titan-text-express": 250,
+  "titan-text-lite": 180,
   
   // Mistral
-  "mistral-large": 400,
-  "mistral-medium": 300,
-  "mistral-small": 180,
+  "mistral-large": 360,
+  "mistral-medium": 270,
+  "mistral-small": 160,
   
   // X.AI
-  "grok-1": 300,
-  "grok-1-mini": 180,
+  "grok-1": 270,
+  "grok-1-mini": 160,
   
   // DeepSeek
-  "deepseek-coder": 280,
-  "deepseek-llm": 320,
+  "deepseek-coder": 250,
+  "deepseek-llm": 280,
   
   // Alibaba
-  "qwen-max": 500,
-  "qwen-plus": 280,
+  "qwen-max": 460,
+  "qwen-plus": 250,
   
   // Baidu
-  "ernie-bot": 400,
-  "ernie-lite": 250
+  "ernie-bot": 380,
+  "ernie-lite": 240
 };
 
 // Tokens per second (approximate values)
 export const tokensPerSecond: Record<string, number> = {
   // OpenAI
-  "gpt-4o-2": 120,
-  "gpt-4o": 90,
-  "gpt-4o-mini": 60,
-  "gpt-4-turbo": 27,
-  "gpt-4": 15,
-  "gpt-3.5-turbo": 40,
+  "gpt-4o-2": 150,
+  "gpt-4o": 120,
+  "gpt-4o-mini": 80,
+  "gpt-4-turbo": 40,
+  "gpt-4": 20,
+  "gpt-3.5-turbo": 45,
   
   // Anthropic
-  "claude-3-opus": 20,
-  "claude-3-sonnet": 32,
-  "claude-3-haiku": 45,
-  "claude-3-5-sonnet": 50,
+  "claude-3-opus": 25,
+  "claude-3-sonnet": 40,
+  "claude-3-haiku": 55,
+  "claude-3-5-sonnet": 60,
   
   // Meta
-  "llama-3-70b": 28,
-  "llama-3-8b": 42,
+  "llama-3-70b": 30,
+  "llama-3-8b": 45,
   
   // Google
-  "gemini-1.5-pro": 30,
-  "gemini-1.5-flash": 60,
-  "gemini-ultra-2": 25,
+  "gemini-1.5-pro": 35,
+  "gemini-1.5-flash": 70,
+  "gemini-ultra-2": 28,
   
   // Microsoft
-  "azure-gpt-4o": 85,
-  "phi-3-mini": 70,
-  "phi-3-medium": 50,
+  "azure-gpt-4o": 100,
+  "phi-3-mini": 80,
+  "phi-3-medium": 60,
   
   // Amazon
-  "titan-text-express": 30,
-  "titan-text-lite": 40,
+  "titan-text-express": 35,
+  "titan-text-lite": 45,
   
   // Mistral
-  "mistral-large": 40,
-  "mistral-medium": 50,
-  "mistral-small": 60,
+  "mistral-large": 45,
+  "mistral-medium": 60,
+  "mistral-small": 70,
   
   // X.AI
-  "grok-1": 33,
-  "grok-1-mini": 45,
+  "grok-1": 40,
+  "grok-1-mini": 50,
   
   // DeepSeek
-  "deepseek-coder": 38,
-  "deepseek-llm": 30,
+  "deepseek-coder": 42,
+  "deepseek-llm": 35,
   
   // Alibaba
-  "qwen-max": 22,
-  "qwen-plus": 40,
+  "qwen-max": 26,
+  "qwen-plus": 42,
   
   // Baidu
-  "ernie-bot": 28,
-  "ernie-lite": 40
+  "ernie-bot": 32,
+  "ernie-lite": 45
 };
 
 // Enhanced token estimator function that considers model-specific tokenization

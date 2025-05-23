@@ -1065,7 +1065,7 @@ export const TokenSpeedSimulator: React.FC = () => {
                                     <Label className="flex items-center justify-center text-sm font-medium text-slate-700 mb-3">Live Completion Progress</Label>
                                     <ResponsiveContainer width="100%" height="calc(100% - 28px)">
                                         {/* Using LineChart for advanced mode */}
-                                        <LineChart margin={{ top: 5, right: 30, left: 10, bottom: 20 }}>
+                                        <LineChart data={chartDisplayData} margin={{ top: 5, right: 30, left: 10, bottom: 20 }}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                                             <XAxis dataKey="t" type="number" label={{ value: 'Time (s)', position: 'insideBottom', dy: 15 }} stroke="#64748b" tickFormatter={(tick) => tick.toFixed(1)} domain={[0, maxTime]} allowDataOverflow tick={{ fontSize: 11 }} />
                                             <YAxis label={{ value: 'Tokens', angle: -90, position: 'insideLeft', dx: -5 }} stroke="#64748b" domain={[0, maxTokens]} allowDataOverflow tick={{ fontSize: 11 }} />

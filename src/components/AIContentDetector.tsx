@@ -51,6 +51,17 @@ const AIContentDetector = () => {
     toast({ title: 'Detection complete', description: res.label });
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setText(content);
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -66,6 +77,11 @@ const AIContentDetector = () => {
           onChange={(e) => setText(e.target.value)}
           placeholder="Paste text here"
           className="min-h-[150px]"
+        />
+        <input
+          type="file"
+          accept=".txt,.md,.json,.csv,.log,.html,.js,.ts,.tsx,.py,.java,.pdf,.docx"
+          onChange={handleFileUpload}
         />
         <Button onClick={handleAnalyze}>Analyze</Button>
         {result && (

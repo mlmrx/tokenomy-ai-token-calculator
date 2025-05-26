@@ -674,7 +674,6 @@ const MemoryCalculator: React.FC = () => {
                             <Label className="text-sm">Experts</Label>
                             <Input
                               type="number"
-                              size="sm"
                               value={optimizationFlags.moe.experts}
                               onChange={(e) => setOptimizationFlags(prev => ({
                                 ...prev,
@@ -686,7 +685,6 @@ const MemoryCalculator: React.FC = () => {
                             <Label className="text-sm">Top-K</Label>
                             <Input
                               type="number"
-                              size="sm"
                               value={optimizationFlags.moe.topK}
                               onChange={(e) => setOptimizationFlags(prev => ({
                                 ...prev,
@@ -719,7 +717,6 @@ const MemoryCalculator: React.FC = () => {
                             <Label className="text-sm">Rank</Label>
                             <Input
                               type="number"
-                              size="sm"
                               value={optimizationFlags.lora.rank}
                               onChange={(e) => setOptimizationFlags(prev => ({
                                 ...prev,
@@ -731,7 +728,6 @@ const MemoryCalculator: React.FC = () => {
                             <Label className="text-sm">Alpha</Label>
                             <Input
                               type="number"
-                              size="sm"
                               value={optimizationFlags.lora.alpha}
                               onChange={(e) => setOptimizationFlags(prev => ({
                                 ...prev,
@@ -771,7 +767,7 @@ const MemoryCalculator: React.FC = () => {
                                 }))
                               }
                             >
-                              <SelectTrigger size="sm">
+                              <SelectTrigger>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -792,7 +788,7 @@ const MemoryCalculator: React.FC = () => {
                                 }))
                               }
                             >
-                              <SelectTrigger size="sm">
+                              <SelectTrigger>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>

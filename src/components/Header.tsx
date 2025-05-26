@@ -7,7 +7,7 @@ import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, Cpu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import NewsletterPopup from "@/components/NewsletterPopup";
@@ -36,13 +36,27 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <div className="grid gap-4 py-4">
-                <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
-                <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
-                <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
-                <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
-                <Link to="/gpu-monitoring" className="px-4 py-2 hover:bg-accent rounded-md">GPU Monitor</Link>
-                <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
-                <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
+                <SheetClose asChild>
+                  <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/gpu-monitoring" className="px-4 py-2 hover:bg-accent rounded-md">GPU Monitor</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
+                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>

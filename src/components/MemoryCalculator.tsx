@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -72,14 +73,14 @@ const MemoryCalculator: React.FC = () => {
   
   // Enhanced state with defaults matching live version
   const [modelParams, setModelParams] = useState<ModelParameters>({
-    architecture: "TX-DEC",
+    architecture: "Transformer Decoder",
     hiddenSize: 4096,
     numLayers: 32,
     numHeads: 32,
     vocabSize: 128256,
     sequenceLength: 8192,
-    batchSize: 64,
-    microBatchSizePerGPU: 4,
+    batchSize: 32,
+    microBatchSizePerGPU: 2,
     numGPUs: 8
   });
 
@@ -126,65 +127,6 @@ const MemoryCalculator: React.FC = () => {
 
   const [selectedPreset, setSelectedPreset] = useState("custom");
 
-  // Hardware options
-  const hardwareOptions = {
-    "H100-80-SXM": { memory: 80, power: 700, cost: 4.00 },
-    "H100-80-PCIe": { memory: 80, power: 700, cost: 3.50 },
-    "A100-80-SXM": { memory: 80, power: 400, cost: 2.50 },
-    "A100-40-SXM": { memory: 40, power: 400, cost: 2.00 },
-    "V100-32": { memory: 32, power: 300, cost: 1.50 },
-    "RTX4090": { memory: 24, power: 450, cost: 1.20 },
-    "A6000": { memory: 48, power: 300, cost: 1.80 }
-  };
-
-  // Model presets matching live version
-  const modelPresets = {
-    "llama-7b": {
-      architecture: "TX-DEC",
-      hiddenSize: 4096,
-      numLayers: 32,
-      numHeads: 32,
-      vocabSize: 32000,
-      sequenceLength: 4096,
-      batchSize: 32,
-      microBatchSizePerGPU: 4,
-      numGPUs: 4
-    },
-    "llama-13b": {
-      architecture: "TX-DEC",
-      hiddenSize: 5120,
-      numLayers: 40,
-      numHeads: 40,
-      vocabSize: 32000,
-      sequenceLength: 4096,
-      batchSize: 32,
-      microBatchSizePerGPU: 2,
-      numGPUs: 8
-    },
-    "llama-70b": {
-      architecture: "TX-DEC",
-      hiddenSize: 8192,
-      numLayers: 80,
-      numHeads: 64,
-      vocabSize: 32000,
-      sequenceLength: 4096,
-      batchSize: 16,
-      microBatchSizePerGPU: 1,
-      numGPUs: 16
-    },
-    "gpt-4-scale": {
-      architecture: "TX-DEC",
-      hiddenSize: 12288,
-      numLayers: 96,
-      numHeads: 96,
-      vocabSize: 100000,
-      sequenceLength: 8192,
-      batchSize: 8,
-      microBatchSizePerGPU: 1,
-      numGPUs: 32
-    }
-  };
-
   // URL state management
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -211,41 +153,22 @@ const MemoryCalculator: React.FC = () => {
       costEnergyParams
     };
     const encoded = btoa(JSON.stringify(config));
-    const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
     window.location.hash = `config=${encoded}`;
   };
 
   const shareConfiguration = () => {
-    updateURL();
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Configuration Shared",
-      description: "URL copied to clipboard",
-    });
-  };
-
-  const exportData = () => {
-    const data = {
+    const config = {
       modelParams,
       optimizationFlags,
       hardwareConfig,
-      costEnergyParams,
-      results: memoryCalculations,
-      costEnergy,
-      timestamp: new Date().toISOString()
+      costEnergyParams
     };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'memory-calculator-config.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    
+    const encoded = btoa(JSON.stringify(config));
+    const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
+    navigator.clipboard.writeText(url);
     toast({
-      title: "Data Exported",
-      description: "Configuration saved as JSON file",
+      title: "Configuration Shared",
+      description: "Shareable link copied to clipboard",
     });
   };
 
@@ -361,72 +284,6 @@ const MemoryCalculator: React.FC = () => {
     }
   };
 
-  const shareConfiguration = () => {
-    const config = {
-      modelParams,
-      optimizationFlags,
-      hardwareConfig,
-      costEnergyParams
-    };
-    const encoded = btoa(JSON.stringify(config));
-    const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
-    navigator.clipboard.writeText(url);
-    toast({
-      title: "Configuration Shared",
-      description: "Shareable link copied to clipboard",
-    });
-  };
-
-  const exportData = () => {
-    const data = {
-      modelParams,
-      optimizationFlags,
-      hardwareConfig,
-      costEnergyParams,
-      results: memoryCalculations,
-      costEnergy,
-      timestamp: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'memory-calculator-config.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Data Exported",
-      description: "Configuration saved as JSON file",
-    });
-  };
-
-  const handleHardwareChange = (gpuType: string) => {
-    const hardware = hardwareOptions[gpuType as keyof typeof hardwareOptions];
-    if (hardware) {
-      setHardwareConfig(prev => ({
-        ...prev,
-        gpuType,
-        memoryPerGPU: hardware.memory
-      }));
-      setCostEnergyParams(prev => ({
-        ...prev,
-        powerPerGPU: hardware.power,
-        costPerGPUHour: hardware.cost
-      }));
-    }
-  };
-
-  // Training breakdown pie chart data
-  const trainingBreakdownData = [
-    { name: 'Model Weights', value: memoryCalculations.modelSizeGB, color: '#8884d8' },
-    { name: 'Activations', value: memoryCalculations.activationMemoryGB, color: '#82ca9d' },
-    { name: 'Gradients', value: memoryCalculations.gradientMemoryGB, color: '#ffc658' },
-    { name: 'Optimizer', value: memoryCalculations.optimizerMemoryGB, color: '#ff7300' },
-    { name: 'KV Cache', value: memoryCalculations.kvCacheMemoryGB, color: '#8dd1e1' }
-  ];
-
   return (
     <div className="space-y-6">
       <Card>
@@ -461,7 +318,7 @@ const MemoryCalculator: React.FC = () => {
                       <div className="font-medium">{modelParams.architecture}</div>
                       {modelParams.architecture.includes("MoE") && (
                         <div className="text-sm text-muted-foreground mt-1">
-                          Sparse MLP layers. Total params >> Active params.
+                          Sparse MLP layers. Total params {'>'}{'>'} Active params.
                         </div>
                       )}
                     </div>

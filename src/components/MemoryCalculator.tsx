@@ -13,6 +13,7 @@ import HardwareConfiguration, { gpuOptions } from "./memory-calculator/HardwareC
 import ResultsPanel from "./memory-calculator/ResultsPanel";
 import MemoryBreakdownChart from "./memory-calculator/MemoryBreakdownChart";
 import InferenceMemoryChart from "./memory-calculator/InferenceMemoryChart";
+import EstimatedMemoryRequirements from "./memory-calculator/EstimatedMemoryRequirements";
 import QuantizationTable from "./memory-calculator/QuantizationTable";
 import ActionButtons from "./memory-calculator/ActionButtons";
 
@@ -353,7 +354,18 @@ const MemoryCalculator: React.FC = () => {
                 modelParams={modelParams}
                 optimizationFlags={optimizationFlags}
               />
-              
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-6">
+            {/* New Estimated Memory Requirements Section */}
+            <EstimatedMemoryRequirements
+              calculations={memoryCalculations}
+              hardwareConfig={hardwareConfig}
+              modelParams={modelParams}
+            />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <MemoryBreakdownChart data={memoryCalculations} />
               
               <InferenceMemoryChart 
@@ -364,9 +376,7 @@ const MemoryCalculator: React.FC = () => {
                 }}
               />
             </div>
-          </div>
 
-          <div className="mt-8 space-y-6">
             <QuantizationTable />
             
             <Card>

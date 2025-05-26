@@ -15,8 +15,11 @@ class TPSResponse(BaseModel):
 
 @app.get("/gpu/{uuid}/tps", response_model=TPSResponse)
 async def get_tps(uuid: str, range: str = "1h"):
-    # simplified query; production would parameterize and sanitize
-    result = client.query(f"SELECT avg(tps) FROM gpu_metrics WHERE gpu='{uuid}' AND ts > now() - interval {range}")
+    # use parameterized query with placeholders to avoid sql injection
+    result = client.query(
+        "SELECT avg(tps) FROM gpu_metrics WHERE gpu=%(uuid)s AND ts > now() - interval %(range)s",
+        {"uuid": uuid, "range": range},
+    )
     if not result.result_rows:
         raise HTTPException(status_code=404, detail="gpu not found")
     avg_tps = result.result_rows[0][0]
@@ -29,7 +32,9 @@ class LeaderboardEntry(BaseModel):
 
 @app.get("/gpu/leaderboard", response_model=list[LeaderboardEntry])
 async def leaderboard(metric: str = "tokens_total", limit: int = 20):
-    result = client.query(
-        f"SELECT gpu, sum({metric}) as value FROM gpu_metrics GROUP BY gpu ORDER BY value DESC LIMIT {limit}"
+    query = (
+        f"SELECT gpu, sum({metric}) as value FROM gpu_metrics "
+        "GROUP BY gpu ORDER BY value DESC LIMIT %(limit)s"
     )
+    result = client.query(query, {"limit": limit})
     return [LeaderboardEntry(gpu_uuid=row[0], tokens_total=row[1]) for row in result.result_rows]

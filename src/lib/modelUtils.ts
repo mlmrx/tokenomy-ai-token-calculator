@@ -1,4 +1,3 @@
-
 // Helper functions for model data and utilities
 
 // Get categories for different models
@@ -108,4 +107,12 @@ export function getTokenizationInfo(model: string) {
   };
   
   return tokenizationSchemes[model] || tokenizationSchemes['default'];
+}
+
+// Make sure we export the function that the Index.tsx is looking for
+export { estimateTokens, calculateCost, getTokenizationInfo };
+
+// Add any missing model data functions that might be needed
+export function getModelData() {
+  return getModelCategories();
 }

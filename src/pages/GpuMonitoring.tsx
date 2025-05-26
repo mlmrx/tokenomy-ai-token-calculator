@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { GpuGrid } from "../../gpu-monitor/ui/GpuGrid";
 import { GpuLeaderboard } from "../../gpu-monitor/ui/GpuLeaderboard";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/contexts/AuthContext";
-import { useGpuConfigurations } from "@/hooks/useGpuConfigurations";
-import { AlertTriangle, Activity, Zap, DollarSign, Leaf, RefreshCw, Settings } from "lucide-react";
-import { Link } from "react-router-dom";
+import { AlertTriangle, Activity, Zap, DollarSign, Leaf, RefreshCw } from "lucide-react";
 
 interface SystemAlert {
   id: string;
@@ -20,59 +18,46 @@ interface SystemAlert {
 }
 
 const GpuMonitoring = () => {
-  const { user } = useAuth();
-  const { configurations } = useGpuConfigurations();
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    // Generate alerts based on actual configurations
+    // Simulate system alerts
     const generateAlerts = () => {
-      const alerts: SystemAlert[] = [];
-      
-      if (configurations.length > 0) {
-        // Generate realistic alerts based on configured GPUs
-        const criticalGpu = configurations.find(config => !config.is_active);
-        if (criticalGpu) {
-          alerts.push({
-            id: '1',
-            type: 'critical',
-            message: `${criticalGpu.display_name || criticalGpu.gpu_uuid} is offline - requires immediate attention`,
-            timestamp: Date.now() - 120000,
-            gpu_uuid: criticalGpu.gpu_uuid
-          });
+      const alerts: SystemAlert[] = [
+        {
+          id: '1',
+          type: 'warning',
+          message: 'GPU-003 performance degraded by 15% - investigating thermal throttling',
+          timestamp: Date.now() - 300000,
+          gpu_uuid: 'gpu-003-abc123'
+        },
+        {
+          id: '2',
+          type: 'critical',
+          message: 'GPU-017 offline - requires immediate attention',
+          timestamp: Date.now() - 120000,
+          gpu_uuid: 'gpu-017-def456'
+        },
+        {
+          id: '3',
+          type: 'info',
+          message: 'Scheduled maintenance window: GPU cluster maintenance on Sunday 2:00 AM UTC',
+          timestamp: Date.now() - 3600000
         }
-
-        const warningGpu = configurations.find(config => config.efficiency_threshold && config.efficiency_threshold < 75);
-        if (warningGpu) {
-          alerts.push({
-            id: '2',
-            type: 'warning',
-            message: `${warningGpu.display_name || warningGpu.gpu_uuid} performance degraded - investigating thermal throttling`,
-            timestamp: Date.now() - 300000,
-            gpu_uuid: warningGpu.gpu_uuid
-          });
-        }
-      }
-
-      alerts.push({
-        id: '3',
-        type: 'info',
-        message: 'Scheduled maintenance window: GPU cluster maintenance on Sunday 2:00 AM UTC',
-        timestamp: Date.now() - 3600000
-      });
-
+      ];
       setSystemAlerts(alerts);
     };
 
     generateAlerts();
-    const interval = setInterval(generateAlerts, 60000);
+    const interval = setInterval(generateAlerts, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [configurations]);
+  }, []);
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    // Simulate refresh delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     setRefreshing(false);
   };
@@ -93,17 +78,6 @@ const GpuMonitoring = () => {
     }
   };
 
-  // Calculate metrics based on configured GPUs
-  const activeGpus = configurations.filter(config => config.is_active);
-  const totalGpus = configurations.length;
-  const avgCost = configurations.reduce((sum, config) => {
-    const cost = typeof config.hourly_cost_usd === 'string' 
-      ? parseFloat(config.hourly_cost_usd) 
-      : config.hourly_cost_usd || 0;
-    return sum + cost;
-  }, 0) / Math.max(totalGpus, 1);
-  const healthyGpus = configurations.filter(config => config.is_active && (config.efficiency_threshold || 80) > 70);
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -120,14 +94,6 @@ const GpuMonitoring = () => {
               <Activity className="h-3 w-3 mr-1" />
               Live
             </Badge>
-            {user && (
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/configuration">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Configure
-                </Link>
-              </Button>
-            )}
             <Button 
               variant="outline" 
               size="sm" 
@@ -139,19 +105,6 @@ const GpuMonitoring = () => {
             </Button>
           </div>
         </div>
-
-        {/* Configuration Status */}
-        {user && totalGpus === 0 && (
-          <Alert className="mb-6">
-            <Settings className="h-4 w-4" />
-            <AlertDescription>
-              No GPU configurations found. 
-              <Link to="/configuration" className="ml-1 text-primary hover:underline">
-                Configure your GPUs
-              </Link> to start monitoring.
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* System Alerts */}
         {systemAlerts.length > 0 && (
@@ -215,7 +168,7 @@ const GpuMonitoring = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${avgCost.toFixed(2)}</div>
+              <div className="text-2xl font-bold">$3.42</div>
               <p className="text-xs text-red-600">+$0.15 from last hour</p>
             </CardContent>
           </Card>
@@ -250,7 +203,7 @@ const GpuMonitoring = () => {
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                      <span>{totalGpus - healthyGpus.length} GPUs running below 80% efficiency - consider workload rebalancing</span>
+                      <span>3 GPUs running below 80% efficiency - consider workload rebalancing</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
@@ -268,27 +221,19 @@ const GpuMonitoring = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Healthy GPUs</span>
-                      <Badge variant="default" className="bg-green-100 text-green-800">
-                        {healthyGpus.length}/{totalGpus}
-                      </Badge>
+                      <Badge variant="default" className="bg-green-100 text-green-800">18/24</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Performance Warnings</span>
-                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                        {Math.max(0, totalGpus - healthyGpus.length - 1)}/{totalGpus}
-                      </Badge>
+                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">5/24</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Critical Issues</span>
-                      <Badge variant="destructive">
-                        {configurations.filter(config => !config.is_active).length}/{totalGpus}
-                      </Badge>
+                      <Badge variant="destructive">1/24</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Cluster Efficiency</span>
-                      <span className="text-sm font-medium">
-                        {totalGpus > 0 ? ((healthyGpus.length / totalGpus) * 100).toFixed(1) : 0}%
-                      </span>
+                      <span className="text-sm font-medium">87.3%</span>
                     </div>
                   </div>
                 </div>

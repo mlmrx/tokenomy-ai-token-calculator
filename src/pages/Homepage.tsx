@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 
@@ -146,6 +146,23 @@ const Homepage = () => {
                   </p>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/tools">Try Detector</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-rose-200 dark:hover:border-rose-900 transition-colors">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-3 bg-rose-100 dark:bg-rose-900/30 rounded-full">
+                    <Cpu className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">GPU Token Monitor</h3>
+                  <p className="text-muted-foreground">
+                    View token throughput statistics for individual GPUs
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/gpu-monitoring">View Monitor</Link>
                   </Button>
                 </div>
               </CardContent>

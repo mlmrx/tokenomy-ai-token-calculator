@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, Cpu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -40,6 +40,7 @@ const Header = () => {
                 <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
                 <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
+                <Link to="/gpu-monitoring" className="px-4 py-2 hover:bg-accent rounded-md">GPU Monitor</Link>
                 <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
                 <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
               </div>
@@ -69,6 +70,10 @@ const Header = () => {
             <Link to="/pricing" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <CreditCard size={16} />
               Pricing
+            </Link>
+            <Link to="/gpu-monitoring" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Cpu size={16} />
+              GPU Monitor
             </Link>
             <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Users size={16} />

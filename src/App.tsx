@@ -13,6 +13,7 @@ import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import GpuMonitoring from "./pages/GpuMonitoring";
 import NotFound from "./pages/NotFound";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import { useState, useEffect } from "react";
@@ -66,6 +67,7 @@ const App = () => {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/gpu-monitoring" element={<GpuMonitoring />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

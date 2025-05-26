@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Homepage from "./pages/Homepage";
 import Index from "./pages/Index";
+import GpuMonitoring from "./pages/GpuMonitoring";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import About from "./pages/About";

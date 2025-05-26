@@ -14,8 +14,10 @@ interface LeaderboardEntry {
   percentage: number; // Percentage of total
 }
 
+type MetricType = 'tokens_total' | 'avg_tps' | 'efficiency' | 'cost_effectiveness';
+
 interface GpuLeaderboardProps {
-  metric?: 'tokens_total' | 'avg_tps' | 'efficiency' | 'cost_effectiveness';
+  metric?: MetricType;
   limit?: number;
   showShareButton?: boolean;
   embedMode?: boolean;
@@ -28,7 +30,7 @@ export function GpuLeaderboard({
   embedMode = false
 }: GpuLeaderboardProps) {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
-  const [selectedMetric, setSelectedMetric] = useState(metric);
+  const [selectedMetric, setSelectedMetric] = useState<MetricType>(metric);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export function GpuLeaderboard({
           cost_effectiveness: 850
         };
         
-        const baseValue = baseValues[selectedMetric as keyof typeof baseValues];
+        const baseValue = baseValues[selectedMetric];
         
         for (let i = 0; i < limit; i++) {
           const variance = Math.random() * 0.4 + 0.8; // 0.8 to 1.2
@@ -121,6 +123,10 @@ export function GpuLeaderboard({
     console.log('Embed URL copied to clipboard');
   };
 
+  const handleMetricChange = (value: string) => {
+    setSelectedMetric(value as MetricType);
+  };
+
   if (!embedMode) {
     return (
       <Card>
@@ -131,7 +137,7 @@ export function GpuLeaderboard({
               GPU Leaderboard
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Select value={selectedMetric} onValueChange={setSelectedMetric}>
+              <Select value={selectedMetric} onValueChange={handleMetricChange}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>

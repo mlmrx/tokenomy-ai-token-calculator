@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 export type GpuConfiguration = Tables<'gpu_configurations'>;
@@ -9,11 +10,17 @@ export type GpuConfigurationInsert = TablesInsert<'gpu_configurations'>;
 export type GpuConfigurationUpdate = TablesUpdate<'gpu_configurations'>;
 
 export function useGpuConfigurations() {
+  const { user } = useAuth();
   const [configurations, setConfigurations] = useState<GpuConfiguration[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchConfigurations = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('gpu_configurations')
@@ -35,10 +42,19 @@ export function useGpuConfigurations() {
   };
 
   const createConfiguration = async (config: GpuConfigurationInsert) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create configurations",
+        variant: "destructive",
+      });
+      throw new Error('User not authenticated');
+    }
+
     try {
       const { data, error } = await supabase
         .from('gpu_configurations')
-        .insert(config)
+        .insert({ ...config, user_id: user.id })
         .select()
         .single();
 
@@ -118,7 +134,7 @@ export function useGpuConfigurations() {
 
   useEffect(() => {
     fetchConfigurations();
-  }, []);
+  }, [user]);
 
   return {
     configurations,

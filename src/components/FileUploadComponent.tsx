@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { Upload, FileCheck, AlertTriangle, X } from 'lucide-react';
 
 interface FileUploadProps {
@@ -23,6 +23,7 @@ interface UploadedFile {
 }
 
 export function FileUploadComponent({ onUploadComplete }: FileUploadProps) {
+  const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -86,6 +87,15 @@ export function FileUploadComponent({ onUploadComplete }: FileUploadProps) {
   };
 
   const processFile = async (file: File) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to upload files",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     setUploadProgress(0);
 
@@ -125,6 +135,7 @@ export function FileUploadComponent({ onUploadComplete }: FileUploadProps) {
       const { data: uploadedFile, error } = await supabase
         .from('file_configurations')
         .insert({
+          user_id: user.id,
           filename: file.name,
           file_hash: fileHash,
           file_size_bytes: file.size,
@@ -200,6 +211,24 @@ export function FileUploadComponent({ onUploadComplete }: FileUploadProps) {
         return <Badge variant="outline">Unknown</Badge>;
     }
   };
+
+  if (!user) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Configuration File Upload</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Please sign in to upload configuration files.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">

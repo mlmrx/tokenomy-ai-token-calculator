@@ -10,10 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useGpuConfigurations } from '@/hooks/useGpuConfigurations';
 import { useApiKeys } from '@/hooks/useApiKeys';
+import { FileUploadComponent } from '@/components/FileUploadComponent';
+import { useAuth } from '@/contexts/AuthContext';
 import { Settings, Plus, Key, Upload, Trash2, Eye, EyeOff } from 'lucide-react';
 import type { GpuConfigurationInsert } from '@/hooks/useGpuConfigurations';
 
 export function ConfigurationManager() {
+  const { user } = useAuth();
   const { configurations, loading, createConfiguration, deleteConfiguration } = useGpuConfigurations();
   const { apiKeys, createApiKey, revokeApiKey, deleteApiKey } = useApiKeys();
   const [showDialog, setShowDialog] = useState(false);
@@ -24,7 +27,7 @@ export function ConfigurationManager() {
     gpu_uuid: '',
     gpu_sku: 'A100',
     display_name: '',
-    hourly_cost_usd: '2.50',
+    hourly_cost_usd: 2.50,
     max_power_draw_watts: 400,
     max_temperature_c: 83,
     max_memory_mb: 81920,
@@ -33,17 +36,19 @@ export function ConfigurationManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     try {
       await createConfiguration({
         ...formData,
-        hourly_cost_usd: formData.hourly_cost_usd?.toString(),
+        user_id: user.id,
       } as GpuConfigurationInsert);
       setShowDialog(false);
       setFormData({
         gpu_uuid: '',
         gpu_sku: 'A100',
         display_name: '',
-        hourly_cost_usd: '2.50',
+        hourly_cost_usd: 2.50,
         max_power_draw_watts: 400,
         max_temperature_c: 83,
         max_memory_mb: 81920,
@@ -55,11 +60,14 @@ export function ConfigurationManager() {
   };
 
   const handleCreateApiKey = async (keyName: string) => {
+    if (!user) return;
+    
     try {
       const result = await createApiKey({
         key_name: keyName,
         permissions: ['read', 'write'],
         rate_limit_per_hour: 1000,
+        user_id: user.id,
       });
       setNewApiKey(result?.api_key || null);
     } catch (error) {
@@ -163,7 +171,7 @@ export function ConfigurationManager() {
                             type="number"
                             step="0.01"
                             value={formData.hourly_cost_usd}
-                            onChange={(e) => setFormData(prev => ({ ...prev, hourly_cost_usd: e.target.value }))}
+                            onChange={(e) => setFormData(prev => ({ ...prev, hourly_cost_usd: parseFloat(e.target.value) || 0 }))}
                           />
                         </div>
                         <div>
@@ -172,7 +180,7 @@ export function ConfigurationManager() {
                             id="efficiency_threshold"
                             type="number"
                             value={formData.efficiency_threshold}
-                            onChange={(e) => setFormData(prev => ({ ...prev, efficiency_threshold: parseFloat(e.target.value) }))}
+                            onChange={(e) => setFormData(prev => ({ ...prev, efficiency_threshold: parseFloat(e.target.value) || 0 }))}
                           />
                         </div>
                       </div>
@@ -316,23 +324,7 @@ export function ConfigurationManager() {
         </TabsContent>
 
         <TabsContent value="file-upload">
-          <Card>
-            <CardHeader>
-              <CardTitle>Configuration File Upload</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
-                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Upload Configuration File</h3>
-                <p className="text-muted-foreground mb-4">
-                  Upload JSON or YAML files containing GPU configurations, pricing models, or alert thresholds
-                </p>
-                <Button>
-                  Select File
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <FileUploadComponent />
         </TabsContent>
       </Tabs>
     </div>

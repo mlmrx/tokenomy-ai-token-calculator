@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -97,7 +96,12 @@ const GpuMonitoring = () => {
   // Calculate metrics based on configured GPUs
   const activeGpus = configurations.filter(config => config.is_active);
   const totalGpus = configurations.length;
-  const avgCost = configurations.reduce((sum, config) => sum + (parseFloat(config.hourly_cost_usd || '0')), 0) / Math.max(totalGpus, 1);
+  const avgCost = configurations.reduce((sum, config) => {
+    const cost = typeof config.hourly_cost_usd === 'string' 
+      ? parseFloat(config.hourly_cost_usd) 
+      : config.hourly_cost_usd || 0;
+    return sum + cost;
+  }, 0) / Math.max(totalGpus, 1);
   const healthyGpus = configurations.filter(config => config.is_active && (config.efficiency_threshold || 80) > 70);
 
   return (

@@ -2,17 +2,24 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Tables, TablesInsert } from '@/integrations/supabase/types';
 
 export type ApiKey = Tables<'api_keys'>;
 export type ApiKeyInsert = TablesInsert<'api_keys'>;
 
 export function useApiKeys() {
+  const { user } = useAuth();
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchApiKeys = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('api_keys')
@@ -34,6 +41,15 @@ export function useApiKeys() {
   };
 
   const createApiKey = async (keyData: Omit<ApiKeyInsert, 'api_key_hash' | 'api_key_prefix'>) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create API keys",
+        variant: "destructive",
+      });
+      throw new Error('User not authenticated');
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('create-api-key', {
         body: keyData
@@ -112,7 +128,7 @@ export function useApiKeys() {
 
   useEffect(() => {
     fetchApiKeys();
-  }, []);
+  }, [user]);
 
   return {
     apiKeys,

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,9 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 
 // Import new components
 import ModelPresets, { modelPresets } from "./memory-calculator/ModelPresets";
-import AdvancedOptimizations from "./memory-calculator/AdvancedOptimizations";
+import EnhancedModelConfig from "./memory-calculator/EnhancedModelConfig";
+import EnhancedAdvancedOptimizations from "./memory-calculator/EnhancedAdvancedOptimizations";
 import HardwareConfiguration, { gpuOptions } from "./memory-calculator/HardwareConfiguration";
 import ResultsPanel from "./memory-calculator/ResultsPanel";
+import MemoryBreakdownChart from "./memory-calculator/MemoryBreakdownChart";
+import InferenceMemoryChart from "./memory-calculator/InferenceMemoryChart";
 import QuantizationTable from "./memory-calculator/QuantizationTable";
 import ActionButtons from "./memory-calculator/ActionButtons";
 
@@ -300,127 +302,32 @@ const MemoryCalculator: React.FC = () => {
           <ModelPresets
             selectedPreset={selectedPreset}
             onPresetChange={handlePresetChange}
-            onShareConfiguration={shareConfiguration}
+            onShareConfiguration={() => {
+              const config = {
+                modelParams,
+                optimizationFlags,
+                hardwareConfig,
+                costEnergyParams
+              };
+              const encoded = btoa(JSON.stringify(config));
+              const url = `${window.location.origin}${window.location.pathname}#config=${encoded}`;
+              navigator.clipboard.writeText(url);
+              toast({
+                title: "Configuration Shared",
+                description: "Shareable link copied to clipboard",
+              });
+            }}
           />
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column - Configuration */}
-            <div className="space-y-6">
-              {/* Model Configuration */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">1. Model Configuration</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label>Architecture</Label>
-                    <div className="mt-2 p-3 bg-muted/50 rounded-lg">
-                      <div className="font-medium">{modelParams.architecture}</div>
-                      {modelParams.architecture.includes("MoE") && (
-                        <div className="text-sm text-muted-foreground mt-1">
-                          Sparse MLP layers. Total params {'>'}{'>'} Active params.
-                        </div>
-                      )}
-                    </div>
-                  </div>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Left Column - Configuration (2/3 width) */}
+            <div className="xl:col-span-2 space-y-6">
+              <EnhancedModelConfig
+                modelParams={modelParams}
+                setModelParams={setModelParams}
+              />
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Hidden Size (d_model)</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.hiddenSize}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          hiddenSize: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Number of Layers (L)</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.numLayers}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          numLayers: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Attention Heads</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.numHeads}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          numHeads: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Vocabulary Size (V)</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.vocabSize}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          vocabSize: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Sequence Length (S) (tokens)</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.sequenceLength}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          sequenceLength: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Target Global Batch Size (B)</Label>
-                      <Input
-                        type="number"
-                        value={modelParams.batchSize}
-                        onChange={(e) => setModelParams(prev => ({
-                          ...prev,
-                          batchSize: parseInt(e.target.value) || 0
-                        }))}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>Micro Batch Size / GPU</Label>
-                    <Input
-                      type="number"
-                      value={modelParams.microBatchSizePerGPU}
-                      onChange={(e) => setModelParams(prev => ({
-                        ...prev,
-                        microBatchSizePerGPU: parseInt(e.target.value) || 0
-                      }))}
-                      className="mt-2"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <AdvancedOptimizations
+              <EnhancedAdvancedOptimizations
                 optimizationFlags={optimizationFlags}
                 setOptimizationFlags={setOptimizationFlags}
                 precision={hardwareConfig.precision}
@@ -437,7 +344,7 @@ const MemoryCalculator: React.FC = () => {
               />
             </div>
 
-            {/* Right Column - Results */}
+            {/* Right Column - Results & Visualizations (1/3 width) */}
             <div className="space-y-6">
               <ResultsPanel
                 calculations={memoryCalculations}
@@ -445,6 +352,16 @@ const MemoryCalculator: React.FC = () => {
                 hardwareConfig={hardwareConfig}
                 modelParams={modelParams}
                 optimizationFlags={optimizationFlags}
+              />
+              
+              <MemoryBreakdownChart data={memoryCalculations} />
+              
+              <InferenceMemoryChart 
+                data={{
+                  modelSizeGB: memoryCalculations.modelSizeGB,
+                  kvCacheMemoryGB: memoryCalculations.kvCacheMemoryGB,
+                  totalAvailableGB: hardwareConfig.memoryPerGPU
+                }}
               />
             </div>
           </div>
@@ -454,7 +371,7 @@ const MemoryCalculator: React.FC = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Actions</CardTitle>
+                <CardTitle className="text-lg">Export & Share</CardTitle>
               </CardHeader>
               <CardContent>
                 <ActionButtons 

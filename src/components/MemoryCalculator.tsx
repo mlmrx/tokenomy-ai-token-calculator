@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { AlertCircle, Info, Zap, Cpu, HardDrive, DollarSign, Share2, Copy } from "lucide-react";
+import { AlertCircle, Info, Zap, Cpu, HardDrive, DollarSign, Share2, Download, BarChart3 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 // Enhanced type definitions
 interface ModelParameters {
@@ -46,6 +47,11 @@ interface OptimizationFlags {
   kvCachePrecision: "fp16" | "int8" | "int4";
   sparsity24: boolean;
   activationCheckpointing: boolean;
+  quantization: {
+    enabled: boolean;
+    bits: 4 | 8 | 16;
+    type: "int" | "float";
+  };
 }
 
 interface HardwareConfig {
@@ -97,7 +103,12 @@ const MemoryCalculator: React.FC = () => {
     sequenceParallelism: 1,
     kvCachePrecision: "fp16",
     sparsity24: false,
-    activationCheckpointing: false
+    activationCheckpointing: false,
+    quantization: {
+      enabled: false,
+      bits: 8,
+      type: "int"
+    }
   });
 
   const [hardwareConfig, setHardwareConfig] = useState<HardwareConfig>({
@@ -213,6 +224,31 @@ const MemoryCalculator: React.FC = () => {
     });
   };
 
+  const exportData = () => {
+    const data = {
+      modelParams,
+      optimizationFlags,
+      hardwareConfig,
+      costEnergyParams,
+      results: memoryCalculations,
+      costEnergy,
+      timestamp: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'memory-calculator-config.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Data Exported",
+      description: "Configuration saved as JSON file",
+    });
+  };
+
   // Enhanced memory calculations
   const memoryCalculations = useMemo(() => {
     const { hiddenSize, numLayers, vocabSize, sequenceLength, batchSize, numGPUs } = modelParams;
@@ -237,6 +273,12 @@ const MemoryCalculator: React.FC = () => {
     if (optimizationFlags.moe.enabled) {
       const expertParams = (8 * hiddenSize * hiddenSize) * optimizationFlags.moe.experts;
       parameterCount += expertParams;
+    }
+
+    // LoRA adjustment
+    if (optimizationFlags.lora.enabled) {
+      const loraParams = numLayers * hiddenSize * optimizationFlags.lora.rank * 2;
+      parameterCount += loraParams;
     }
 
     const modelSizeGB = (parameterCount * bytesPerParam) / (1024 ** 3);
@@ -265,6 +307,13 @@ const MemoryCalculator: React.FC = () => {
     const totalMemoryPerGPU = (modelSizeGB + adjustedActivationMemory + gradientMemoryGB + optimizerMemoryGB + kvCacheMemoryGB) / numGPUs;
     const totalMemoryGB = totalMemoryPerGPU * numGPUs;
 
+    // Disk size calculation
+    const diskSizeGB = modelSizeGB * 2.5; // Account for checkpoints, logs, etc.
+
+    // Quantization impact
+    const quantizationReduction = optimizationFlags.quantization.enabled ? 
+      (16 / optimizationFlags.quantization.bits) : 1;
+
     return {
       parameterCount,
       modelSizeGB,
@@ -274,7 +323,9 @@ const MemoryCalculator: React.FC = () => {
       kvCacheMemoryGB,
       totalMemoryPerGPU,
       totalMemoryGB,
-      memoryEfficiency: (totalMemoryPerGPU / hardwareConfig.memoryPerGPU) * 100
+      diskSizeGB,
+      memoryEfficiency: (totalMemoryPerGPU / hardwareConfig.memoryPerGPU) * 100,
+      quantizationReduction
     };
   }, [modelParams, optimizationFlags, hardwareConfig]);
 
@@ -290,7 +341,8 @@ const MemoryCalculator: React.FC = () => {
       trainingTimeHours,
       totalCost,
       energyKWh,
-      carbonKg
+      carbonKg,
+      totalTokens
     };
   }, [costEnergyParams, modelParams]);
 
@@ -320,442 +372,630 @@ const MemoryCalculator: React.FC = () => {
     }
   };
 
+  // Training breakdown pie chart data
+  const trainingBreakdownData = [
+    { name: 'Model Weights', value: memoryCalculations.modelSizeGB, color: '#8884d8' },
+    { name: 'Activations', value: memoryCalculations.activationMemoryGB, color: '#82ca9d' },
+    { name: 'Gradients', value: memoryCalculations.gradientMemoryGB, color: '#ffc658' },
+    { name: 'Optimizer', value: memoryCalculations.optimizerMemoryGB, color: '#ff7300' },
+    { name: 'KV Cache', value: memoryCalculations.kvCacheMemoryGB, color: '#8dd1e1' }
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Cpu className="h-5 w-5" />
-              Advanced Memory Requirements Calculator
-            </span>
-            <Button variant="outline" size="sm" onClick={shareConfiguration}>
-              <Share2 className="h-4 w-4 mr-2" />
-              Share Config
-            </Button>
+            <div className="flex flex-col">
+              <span className="flex items-center gap-2">
+                <Cpu className="h-5 w-5" />
+                Enhanced LLM Memory & Capacity Planner
+              </span>
+              <p className="text-sm text-muted-foreground font-normal mt-1">
+                Estimate VRAM, training time, cost, and environmental impact with advanced optimizations.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={exportData}>
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              <Button variant="outline" size="sm" onClick={shareConfiguration}>
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="model" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="model">Model</TabsTrigger>
-              <TabsTrigger value="hardware">Hardware</TabsTrigger>
-              <TabsTrigger value="optimization">Optimization</TabsTrigger>
-              <TabsTrigger value="results">Results</TabsTrigger>
-              <TabsTrigger value="cost">Cost & Energy</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="model" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="model-preset">Model Preset</Label>
-                  <Select value={selectedPreset} onValueChange={handlePresetChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a preset" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="llama-7b">LLaMA 7B</SelectItem>
-                      <SelectItem value="llama-13b">LLaMA 13B</SelectItem>
-                      <SelectItem value="llama-70b">LLaMA 70B</SelectItem>
-                      <SelectItem value="gpt-4-scale">GPT-4 Scale</SelectItem>
-                      <SelectItem value="custom">Custom</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="architecture">Architecture</Label>
-                  <Select value={modelParams.architecture} onValueChange={(value) => 
-                    setModelParams(prev => ({ ...prev, architecture: value }))}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="TX-DEC">Transformer Decoder</SelectItem>
-                      <SelectItem value="TX-ENC-DEC">Encoder-Decoder</SelectItem>
-                      <SelectItem value="TX-ENC">Encoder Only</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="hidden-size">Hidden Size</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.hiddenSize}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      hiddenSize: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="num-layers">Number of Layers</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.numLayers}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      numLayers: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="num-heads">Attention Heads</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.numHeads}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      numHeads: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="vocab-size">Vocabulary Size</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.vocabSize}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      vocabSize: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="sequence-length">Sequence Length</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.sequenceLength}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      sequenceLength: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="batch-size">Global Batch Size</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.batchSize}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      batchSize: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="hardware" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="gpu-type">GPU Type</Label>
-                  <Select value={hardwareConfig.gpuType} onValueChange={handleHardwareChange}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.keys(hardwareOptions).map(gpu => (
-                        <SelectItem key={gpu} value={gpu}>{gpu}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="num-gpus">Number of GPUs</Label>
-                  <Input
-                    type="number"
-                    value={modelParams.numGPUs}
-                    onChange={(e) => setModelParams(prev => ({
-                      ...prev,
-                      numGPUs: parseInt(e.target.value) || 1
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="precision">Precision</Label>
-                  <Select value={hardwareConfig.precision} onValueChange={(value: any) =>
-                    setHardwareConfig(prev => ({ ...prev, precision: value }))}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fp32">FP32</SelectItem>
-                      <SelectItem value="fp16">FP16</SelectItem>
-                      <SelectItem value="bf16">BF16</SelectItem>
-                      <SelectItem value="int8">INT8</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="memory-per-gpu">Memory per GPU (GB)</Label>
-                  <Input
-                    type="number"
-                    value={hardwareConfig.memoryPerGPU}
-                    onChange={(e) => setHardwareConfig(prev => ({
-                      ...prev,
-                      memoryPerGPU: parseFloat(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="optimization" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={optimizationFlags.flashAttention}
-                    onCheckedChange={(checked) => 
-                      setOptimizationFlags(prev => ({ ...prev, flashAttention: checked }))
-                    }
-                  />
-                  <Label>Flash Attention</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={optimizationFlags.activationCheckpointing}
-                    onCheckedChange={(checked) => 
-                      setOptimizationFlags(prev => ({ ...prev, activationCheckpointing: checked }))
-                    }
-                  />
-                  <Label>Activation Checkpointing</Label>
-                </div>
-                <div>
-                  <Label>ZeRO Stage</Label>
-                  <Select 
-                    value={optimizationFlags.zeroStage.toString()} 
-                    onValueChange={(value) => 
-                      setOptimizationFlags(prev => ({ 
-                        ...prev, 
-                        zeroStage: parseInt(value) as 0 | 1 | 2 | 3 
-                      }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">Stage 0</SelectItem>
-                      <SelectItem value="1">Stage 1</SelectItem>
-                      <SelectItem value="2">Stage 2</SelectItem>
-                      <SelectItem value="3">Stage 3</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>KV Cache Precision</Label>
-                  <Select 
-                    value={optimizationFlags.kvCachePrecision}
-                    onValueChange={(value: any) => 
-                      setOptimizationFlags(prev => ({ ...prev, kvCachePrecision: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fp16">FP16</SelectItem>
-                      <SelectItem value="int8">INT8</SelectItem>
-                      <SelectItem value="int4">INT4</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={optimizationFlags.moe.enabled}
-                    onCheckedChange={(checked) => 
-                      setOptimizationFlags(prev => ({ 
-                        ...prev, 
-                        moe: { ...prev.moe, enabled: checked }
-                      }))
-                    }
-                  />
-                  <Label>Mixture of Experts (MoE)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={optimizationFlags.lora.enabled}
-                    onCheckedChange={(checked) => 
-                      setOptimizationFlags(prev => ({ 
-                        ...prev, 
-                        lora: { ...prev.lora, enabled: checked }
-                      }))
-                    }
-                  />
-                  <Label>LoRA Fine-tuning</Label>
-                </div>
-                {optimizationFlags.moe.enabled && (
-                  <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Panel - Configuration */}
+            <div className="space-y-6">
+              {/* Model Configuration */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Model Configuration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label>Number of Experts</Label>
+                      <Label>Model Preset</Label>
+                      <Select value={selectedPreset} onValueChange={handlePresetChange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="llama-7b">LLaMA 7B</SelectItem>
+                          <SelectItem value="llama-13b">LLaMA 13B</SelectItem>
+                          <SelectItem value="llama-70b">LLaMA 70B</SelectItem>
+                          <SelectItem value="gpt-4-scale">GPT-4 Scale</SelectItem>
+                          <SelectItem value="custom">Custom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Architecture</Label>
+                      <Select value={modelParams.architecture} onValueChange={(value) => 
+                        setModelParams(prev => ({ ...prev, architecture: value }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="TX-DEC">Transformer Decoder</SelectItem>
+                          <SelectItem value="TX-ENC-DEC">Encoder-Decoder</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Hidden Size</Label>
                       <Input
                         type="number"
-                        value={optimizationFlags.moe.experts}
-                        onChange={(e) => setOptimizationFlags(prev => ({
+                        value={modelParams.hiddenSize}
+                        onChange={(e) => setModelParams(prev => ({
                           ...prev,
-                          moe: { ...prev.moe, experts: parseInt(e.target.value) || 8 }
+                          hiddenSize: parseInt(e.target.value) || 0
                         }))}
                       />
                     </div>
                     <div>
-                      <Label>Top-K Experts</Label>
+                      <Label>Number of Layers</Label>
                       <Input
                         type="number"
-                        value={optimizationFlags.moe.topK}
-                        onChange={(e) => setOptimizationFlags(prev => ({
+                        value={modelParams.numLayers}
+                        onChange={(e) => setModelParams(prev => ({
                           ...prev,
-                          moe: { ...prev.moe, topK: parseInt(e.target.value) || 2 }
+                          numLayers: parseInt(e.target.value) || 0
                         }))}
                       />
                     </div>
-                  </>
-                )}
-                {optimizationFlags.lora.enabled && (
-                  <>
-                    <div>
-                      <Label>LoRA Rank</Label>
-                      <Input
-                        type="number"
-                        value={optimizationFlags.lora.rank}
-                        onChange={(e) => setOptimizationFlags(prev => ({
-                          ...prev,
-                          lora: { ...prev.lora, rank: parseInt(e.target.value) || 64 }
-                        }))}
-                      />
-                    </div>
-                    <div>
-                      <Label>LoRA Alpha</Label>
-                      <Input
-                        type="number"
-                        value={optimizationFlags.lora.alpha}
-                        onChange={(e) => setOptimizationFlags(prev => ({
-                          ...prev,
-                          lora: { ...prev.lora, alpha: parseInt(e.target.value) || 128 }
-                        }))}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            </TabsContent>
+                  </div>
 
-            <TabsContent value="results" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{memoryCalculations.totalMemoryGB.toFixed(2)} GB</div>
-                    <p className="text-xs text-muted-foreground">Total Memory Required</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{(memoryCalculations.parameterCount / 1e9).toFixed(2)}B</div>
-                    <p className="text-xs text-muted-foreground">Parameters</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{memoryCalculations.totalMemoryPerGPU.toFixed(2)} GB</div>
-                    <p className="text-xs text-muted-foreground">Memory per GPU</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{memoryCalculations.memoryEfficiency.toFixed(1)}%</div>
-                    <p className="text-xs text-muted-foreground">Memory Efficiency</p>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Model Weights</span>
-                  <span>{memoryCalculations.modelSizeGB.toFixed(2)} GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Activations</span>
-                  <span>{memoryCalculations.activationMemoryGB.toFixed(2)} GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Gradients</span>
-                  <span>{memoryCalculations.gradientMemoryGB.toFixed(2)} GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Optimizer States</span>
-                  <span>{memoryCalculations.optimizerMemoryGB.toFixed(2)} GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>KV Cache</span>
-                  <span>{memoryCalculations.kvCacheMemoryGB.toFixed(2)} GB</span>
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Attention Heads</Label>
+                      <Input
+                        type="number"
+                        value={modelParams.numHeads}
+                        onChange={(e) => setModelParams(prev => ({
+                          ...prev,
+                          numHeads: parseInt(e.target.value) || 0
+                        }))}
+                      />
+                    </div>
+                    <div>
+                      <Label>Vocabulary Size</Label>
+                      <Input
+                        type="number"
+                        value={modelParams.vocabSize}
+                        onChange={(e) => setModelParams(prev => ({
+                          ...prev,
+                          vocabSize: parseInt(e.target.value) || 0
+                        }))}
+                      />
+                    </div>
+                  </div>
 
-              <Progress value={memoryCalculations.memoryEfficiency} className="w-full" />
-              
-              {memoryCalculations.memoryEfficiency > 95 && (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Memory usage is very high. Consider reducing batch size or enabling more optimizations.
-                  </AlertDescription>
-                </Alert>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Sequence Length</Label>
+                      <Input
+                        type="number"
+                        value={modelParams.sequenceLength}
+                        onChange={(e) => setModelParams(prev => ({
+                          ...prev,
+                          sequenceLength: parseInt(e.target.value) || 0
+                        }))}
+                      />
+                    </div>
+                    <div>
+                      <Label>Global Batch Size</Label>
+                      <Input
+                        type="number"
+                        value={modelParams.batchSize}
+                        onChange={(e) => setModelParams(prev => ({
+                          ...prev,
+                          batchSize: parseInt(e.target.value) || 0
+                        }))}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Hardware Configuration */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Hardware Configuration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>GPU Type</Label>
+                      <Select value={hardwareConfig.gpuType} onValueChange={handleHardwareChange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.keys(hardwareOptions).map(gpu => (
+                            <SelectItem key={gpu} value={gpu}>{gpu}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Number of GPUs</Label>
+                      <Input
+                        type="number"
+                        value={modelParams.numGPUs}
+                        onChange={(e) => setModelParams(prev => ({
+                          ...prev,
+                          numGPUs: parseInt(e.target.value) || 1
+                        }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Precision</Label>
+                      <Select value={hardwareConfig.precision} onValueChange={(value: any) =>
+                        setHardwareConfig(prev => ({ ...prev, precision: value }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="fp32">FP32</SelectItem>
+                          <SelectItem value="fp16">FP16</SelectItem>
+                          <SelectItem value="bf16">BF16</SelectItem>
+                          <SelectItem value="int8">INT8</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Memory per GPU (GB)</Label>
+                      <Input
+                        type="number"
+                        value={hardwareConfig.memoryPerGPU}
+                        onChange={(e) => setHardwareConfig(prev => ({
+                          ...prev,
+                          memoryPerGPU: parseFloat(e.target.value) || 0
+                        }))}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Optimization Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Optimization Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label>Flash Attention</Label>
+                      <Switch
+                        checked={optimizationFlags.flashAttention}
+                        onCheckedChange={(checked) => 
+                          setOptimizationFlags(prev => ({ ...prev, flashAttention: checked }))
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label>Activation Checkpointing</Label>
+                      <Switch
+                        checked={optimizationFlags.activationCheckpointing}
+                        onCheckedChange={(checked) => 
+                          setOptimizationFlags(prev => ({ ...prev, activationCheckpointing: checked }))
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Gradient Checkpointing Factor: {optimizationFlags.gradientCheckpointFactor}</Label>
+                      <Slider
+                        value={[optimizationFlags.gradientCheckpointFactor]}
+                        onValueChange={([value]) => 
+                          setOptimizationFlags(prev => ({ ...prev, gradientCheckpointFactor: value }))
+                        }
+                        min={0.1}
+                        max={2.0}
+                        step={0.1}
+                        className="mt-2"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>ZeRO Stage</Label>
+                      <Select 
+                        value={optimizationFlags.zeroStage.toString()} 
+                        onValueChange={(value) => 
+                          setOptimizationFlags(prev => ({ 
+                            ...prev, 
+                            zeroStage: parseInt(value) as 0 | 1 | 2 | 3 
+                          }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">Stage 0 - No sharding</SelectItem>
+                          <SelectItem value="1">Stage 1 - Optimizer sharding</SelectItem>
+                          <SelectItem value="2">Stage 2 - Optimizer + gradient sharding</SelectItem>
+                          <SelectItem value="3">Stage 3 - Full parameter sharding</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* MoE Settings */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>Mixture of Experts (MoE)</Label>
+                        <Switch
+                          checked={optimizationFlags.moe.enabled}
+                          onCheckedChange={(checked) => 
+                            setOptimizationFlags(prev => ({ 
+                              ...prev, 
+                              moe: { ...prev.moe, enabled: checked }
+                            }))
+                          }
+                        />
+                      </div>
+                      
+                      {optimizationFlags.moe.enabled && (
+                        <div className="grid grid-cols-2 gap-2 ml-4">
+                          <div>
+                            <Label className="text-sm">Experts</Label>
+                            <Input
+                              type="number"
+                              size="sm"
+                              value={optimizationFlags.moe.experts}
+                              onChange={(e) => setOptimizationFlags(prev => ({
+                                ...prev,
+                                moe: { ...prev.moe, experts: parseInt(e.target.value) || 8 }
+                              }))}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">Top-K</Label>
+                            <Input
+                              type="number"
+                              size="sm"
+                              value={optimizationFlags.moe.topK}
+                              onChange={(e) => setOptimizationFlags(prev => ({
+                                ...prev,
+                                moe: { ...prev.moe, topK: parseInt(e.target.value) || 2 }
+                              }))}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* LoRA Settings */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>LoRA Fine-tuning</Label>
+                        <Switch
+                          checked={optimizationFlags.lora.enabled}
+                          onCheckedChange={(checked) => 
+                            setOptimizationFlags(prev => ({ 
+                              ...prev, 
+                              lora: { ...prev.lora, enabled: checked }
+                            }))
+                          }
+                        />
+                      </div>
+                      
+                      {optimizationFlags.lora.enabled && (
+                        <div className="grid grid-cols-2 gap-2 ml-4">
+                          <div>
+                            <Label className="text-sm">Rank</Label>
+                            <Input
+                              type="number"
+                              size="sm"
+                              value={optimizationFlags.lora.rank}
+                              onChange={(e) => setOptimizationFlags(prev => ({
+                                ...prev,
+                                lora: { ...prev.lora, rank: parseInt(e.target.value) || 64 }
+                              }))}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">Alpha</Label>
+                            <Input
+                              type="number"
+                              size="sm"
+                              value={optimizationFlags.lora.alpha}
+                              onChange={(e) => setOptimizationFlags(prev => ({
+                                ...prev,
+                                lora: { ...prev.lora, alpha: parseInt(e.target.value) || 128 }
+                              }))}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Quantization Settings */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>Quantization</Label>
+                        <Switch
+                          checked={optimizationFlags.quantization.enabled}
+                          onCheckedChange={(checked) => 
+                            setOptimizationFlags(prev => ({ 
+                              ...prev, 
+                              quantization: { ...prev.quantization, enabled: checked }
+                            }))
+                          }
+                        />
+                      </div>
+                      
+                      {optimizationFlags.quantization.enabled && (
+                        <div className="grid grid-cols-2 gap-2 ml-4">
+                          <div>
+                            <Label className="text-sm">Bits</Label>
+                            <Select 
+                              value={optimizationFlags.quantization.bits.toString()}
+                              onValueChange={(value) => 
+                                setOptimizationFlags(prev => ({ 
+                                  ...prev, 
+                                  quantization: { ...prev.quantization, bits: parseInt(value) as 4 | 8 | 16 }
+                                }))
+                              }
+                            >
+                              <SelectTrigger size="sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="4">4-bit</SelectItem>
+                                <SelectItem value="8">8-bit</SelectItem>
+                                <SelectItem value="16">16-bit</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm">Type</Label>
+                            <Select 
+                              value={optimizationFlags.quantization.type}
+                              onValueChange={(value: "int" | "float") => 
+                                setOptimizationFlags(prev => ({ 
+                                  ...prev, 
+                                  quantization: { ...prev.quantization, type: value }
+                                }))
+                              }
+                            >
+                              <SelectTrigger size="sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="int">Integer</SelectItem>
+                                <SelectItem value="float">Float</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Panel - Results */}
+            <div className="space-y-6">
+              {/* Parameter & Training Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Parameter & Training Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {(memoryCalculations.parameterCount / 1e9).toFixed(2)}B
+                      </div>
+                      <div className="text-sm text-muted-foreground">Parameters</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {memoryCalculations.totalMemoryGB.toFixed(1)} GB
+                      </div>
+                      <div className="text-sm text-muted-foreground">Total Memory</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600">
+                        ${costEnergy.totalCost.toFixed(0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Training Cost</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {costEnergy.trainingTimeHours.toFixed(1)}h
+                      </div>
+                      <div className="text-sm text-muted-foreground">Training Time</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Memory Breakdown */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Memory Breakdown</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex justify-between">
+                        <span>Model Weights:</span>
+                        <span className="font-medium">{memoryCalculations.modelSizeGB.toFixed(2)} GB</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Activations:</span>
+                        <span className="font-medium">{memoryCalculations.activationMemoryGB.toFixed(2)} GB</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Gradients:</span>
+                        <span className="font-medium">{memoryCalculations.gradientMemoryGB.toFixed(2)} GB</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Optimizer:</span>
+                        <span className="font-medium">{memoryCalculations.optimizerMemoryGB.toFixed(2)} GB</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>KV Cache:</span>
+                        <span className="font-medium">{memoryCalculations.kvCacheMemoryGB.toFixed(2)} GB</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Per GPU:</span>
+                        <span className="font-medium">{memoryCalculations.totalMemoryPerGPU.toFixed(2)} GB</span>
+                      </div>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium">Memory Efficiency</span>
+                        <span className="text-sm">{memoryCalculations.memoryEfficiency.toFixed(1)}%</span>
+                      </div>
+                      <Progress value={memoryCalculations.memoryEfficiency} className="h-2" />
+                    </div>
+                    
+                    {memoryCalculations.memoryEfficiency > 95 && (
+                      <Alert>
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          Memory usage is very high. Consider reducing batch size or enabling more optimizations.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Training Breakdown Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Training Memory Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={trainingBreakdownData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={40}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {trainingBreakdownData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value: number) => `${value.toFixed(2)} GB`} />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Storage & Environment */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Storage & Environment</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <HardDrive className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                      <div className="text-lg font-bold">{memoryCalculations.diskSizeGB.toFixed(1)} GB</div>
+                      <div className="text-sm text-muted-foreground">Disk Size</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <Zap className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
+                      <div className="text-lg font-bold">{costEnergy.energyKWh.toFixed(0)} kWh</div>
+                      <div className="text-sm text-muted-foreground">Energy Usage</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-lg font-bold">{costEnergy.carbonKg.toFixed(1)} kg</div>
+                      <div className="text-sm text-muted-foreground">CO₂ Emissions</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-lg font-bold">{(costEnergy.totalTokens / 1e9).toFixed(2)}B</div>
+                      <div className="text-sm text-muted-foreground">Total Tokens</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quantization Impact (if enabled) */}
+              {optimizationFlags.quantization.enabled && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quantization Impact</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span>Memory Reduction:</span>
+                        <Badge variant="secondary">
+                          {((1 - 1/memoryCalculations.quantizationReduction) * 100).toFixed(0)}%
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Quantized Size:</span>
+                        <span className="font-medium">
+                          {(memoryCalculations.modelSizeGB / memoryCalculations.quantizationReduction).toFixed(2)} GB
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Precision:</span>
+                        <span className="font-medium">
+                          {optimizationFlags.quantization.bits}-bit {optimizationFlags.quantization.type}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
-            </TabsContent>
-
-            <TabsContent value="cost" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Training Steps</Label>
-                  <Input
-                    type="number"
-                    value={costEnergyParams.trainingSteps}
-                    onChange={(e) => setCostEnergyParams(prev => ({
-                      ...prev,
-                      trainingSteps: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-                <div>
-                  <Label>Tokens/sec/GPU</Label>
-                  <Input
-                    type="number"
-                    value={costEnergyParams.tokensPerSecondPerGPU}
-                    onChange={(e) => setCostEnergyParams(prev => ({
-                      ...prev,
-                      tokensPerSecondPerGPU: parseInt(e.target.value) || 0
-                    }))}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">${costEnergy.totalCost.toFixed(0)}</div>
-                    <p className="text-xs text-muted-foreground">Total Training Cost</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{costEnergy.trainingTimeHours.toFixed(1)} hrs</div>
-                    <p className="text-xs text-muted-foreground">Training Time</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{costEnergy.energyKWh.toFixed(0)} kWh</div>
-                    <p className="text-xs text-muted-foreground">Energy Consumption</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-2xl font-bold">{costEnergy.carbonKg.toFixed(1)} kg</div>
-                    <p className="text-xs text-muted-foreground">CO₂ Emissions</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -53,6 +53,7 @@ const EstimatedMemoryRequirements: React.FC<MemoryRequirementsProps> = ({
 
   // Prepare bar chart data for inference estimate
   const inferenceData = [
+    { name: "Model Weights", value: calculations.modelSizeGB, color: COLORS.model },
     { name: "Activations", value: calculations.activationMemoryGB, color: COLORS.activations },
     { name: "Temp/Overhead", value: calculations.kvCacheMemoryGB, color: COLORS.tempOverhead }
   ];
@@ -175,11 +176,7 @@ const EstimatedMemoryRequirements: React.FC<MemoryRequirementsProps> = ({
                     tickFormatter={(value) => `${value} GB`}
                   />
                   <YAxis type="category" dataKey="name" width={100} />
-                  <Bar 
-                    dataKey="value" 
-                    fill={(entry: any) => entry.color}
-                    radius={[0, 4, 4, 0]}
-                  >
+                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {inferenceData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}

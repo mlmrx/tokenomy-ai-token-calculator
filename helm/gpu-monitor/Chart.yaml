@@ -1,0 +1,4 @@
+apiVersion: v2
+name: gpu-monitor
+version: 0.1.0
+description: GPU Token Throughput Monitor

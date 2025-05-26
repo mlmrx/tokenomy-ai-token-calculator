@@ -58,3 +58,22 @@ Model pricing and performance data are approximate. The values in this
 repository reflect public information available around **May&nbsp;2025**. If newer
 pricing or model statistics become available, update `src/lib/modelData.ts` to
 keep calculations current.
+
+## GPU Monitoring
+
+This repository also contains a lightweight GPU throughput monitor.
+
+- **Exporter** – run the Go metrics exporter:
+
+  ```sh
+  go run ./gpu-monitor/exporter
+  ```
+
+- **API** – start the FastAPI service:
+
+  ```sh
+  uvicorn gpu-monitor.api.app:app
+  ```
+
+The React UI is served from `/gpu-monitoring`. For a complete deployment,
+see the Helm chart under `helm/gpu-monitor`.

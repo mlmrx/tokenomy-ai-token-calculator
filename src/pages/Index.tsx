@@ -7,9 +7,11 @@ import MemoryCalculator from "../components/MemoryCalculator";
 import EnergyUsageEstimator from "../components/EnergyUsageEstimator";
 import AIContentDetector from "../components/AIContentDetector";
 import GpuMonitoring from "./GpuMonitoring";
+import TokenLeaderboard from "./TokenLeaderboard";
 import MainNavigation from "../components/MainNavigation";
 import LearnMoreSidebar from "../components/LearnMoreSidebar";
 import NewsletterPopup from "@/components/NewsletterPopup";
+
 
 const Index = () => {
   const location = useLocation();
@@ -22,7 +24,7 @@ const Index = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam && ['calculator', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor'].includes(tabParam)) {
+    if (tabParam && ['calculator', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor','token-leaderboard'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [location]);
@@ -50,6 +52,10 @@ const Index = () => {
         return <AIContentDetector />;
       case "gpu-monitor":
         return <GpuMonitoring />;
+      case "gpu-monitor":
+        return <GpuMonitoring />;
+      case "token-leaderboard":
+        return <TokenLeaderboard />;
       default:
         return <TokenCalculator />;
     }

@@ -255,7 +255,7 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 -z-10"></div>
         
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="max-w-3xl mx-auto text-center text-white space-y-6">
+          <div className="max-w-3xl mx-auto text-center  space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">Ready to Optimize Your AI Token Usage?</h2>
             <p className="text-xl opacity-90">
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.

@@ -204,9 +204,15 @@ const Contact = () => {
                 Connect with us and other users to share ideas, get help, and stay updated on the latest features.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button size="sm" variant="outline" className="bg-background">Twitter</Button>
-                <Button size="sm" variant="outline" className="bg-background">GitHub</Button>
-                <Button size="sm" variant="outline" className="bg-background">LinkedIn</Button>
+          <Button size="sm" variant="outline" className="bg-background" asChild>
+  <a href="https://x.com/Tokenomy_AI" target="_blank" rel="noopener noreferrer">Twitter</a>
+</Button>
+<Button size="sm" variant="outline" className="bg-background" asChild>
+  <a href="https://www.linkedin.com/company/tokenomy-ai" target="_blank" rel="noopener noreferrer">GitHub</a>
+</Button>
+<Button size="sm" variant="outline" className="bg-background" asChild>
+  <a href="https://www.linkedin.com/company/tokenomy-ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+</Button>
               </div>
             </div>
           </div>

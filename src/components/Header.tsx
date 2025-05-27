@@ -40,11 +40,8 @@ const Header = () => {
                   <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link to="/token-leaderboard" className="px-4 py-2 hover:bg-accent rounded-md">Token Leaderboard</Link>
-                </SheetClose>
+                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Products</Link>
+                </SheetClose>              
                 <SheetClose asChild>
                   <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 </SheetClose>

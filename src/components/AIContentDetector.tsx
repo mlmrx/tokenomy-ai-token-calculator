@@ -23,20 +23,13 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
-// import Tesseract from 'tesseract.js'; // Removed direct import
 
 // Add type definition for Tesseract on the window object
 declare global {
   interface Window {
-    Tesseract: any; // You can replace 'any' with a more specific type if you have one
+    Tesseract?: any; // Tesseract might not be loaded, so it's optional. Replace 'any' with a more specific type if available.
   }
 }
-
-// IMPORTANT: For OCR functionality to work, you MUST include Tesseract.js from a CDN
-// in your main HTML file (e.g., public/index.html or similar).
-// Add this script tag to the <head> or before the closing </body> tag:
-// <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
-
 
 interface DetectionResult {
   overallScore: number;
@@ -93,7 +86,10 @@ const calculatePerplexity = (text: string): number => {
     bigrams[bigram] = (bigrams[bigram] || 0) + 1;
     unigrams[words[i]] = (unigrams[words[i]] || 0) + 1;
   }
-  unigrams[words[words.length - 1]] = (unigrams[words[words.length - 1]] || 0) + 1; // Account for the last word for unigram counts
+  if (words.length > 0) { // Ensure words array is not empty
+    unigrams[words[words.length - 1]] = (unigrams[words[words.length - 1]] || 0) + 1;
+  }
+
 
   let logProb = 0;
   let count = 0;
@@ -200,7 +196,8 @@ const analyzeVocabulary = (text: string): number => {
   if (words.length < 10) return 0;
 
   const uniqueWords = new Set(words);
-  const lexicalDiversity = uniqueWords.size / words.length;
+  const lexicalDiversity = uniqueWords.size > 0 && words.length > 0 ? uniqueWords.size / words.length : 0;
+
 
   // Common vs uncommon words ratio
   const commonWords = new Set([
@@ -357,13 +354,28 @@ const analyzeText = (text: string): DetectionResult => {
 };
 
 
-const AIContentDetector: React.FC = () => {
+const EnhancedAIContentDetector: React.FC = () => {
   const [text, setText] = useState<string>('');
   const [result, setResult] = useState<DetectionResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadMessage, setUploadMessage] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
+  const [tesseractReady, setTesseractReady] = useState<boolean>(false);
+  const [tesseractWarning, setTesseractWarning] = useState<string>('');
+
+  // Check for Tesseract.js on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.Tesseract) {
+      setTesseractReady(true);
+      setTesseractWarning(''); // Clear warning if found
+    } else {
+      const warningMsg = "Tesseract.js (for image OCR) is NOT LOADED. Image analysis will be disabled. To enable it, YOU MUST ADD the following script tag to your main HTML file (e.g., public/index.html): <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>";
+      console.error("CRITICAL SETUP REQUIRED: " + warningMsg); // More prominent console message
+      setTesseractWarning(warningMsg);
+      setTesseractReady(false);
+    }
+  }, []);
 
 
   const handleAnalyze = () => {
@@ -404,7 +416,6 @@ const AIContentDetector: React.FC = () => {
       setUploadProgress(100);
       setTimeout(() => {
         setUploadProgress(0);
-        // setUploadMessage(''); // Keep success message or clear it
       }, 1500);
     };
 
@@ -418,9 +429,10 @@ const AIContentDetector: React.FC = () => {
       reader.readAsText(file);
     } else if (file.type.startsWith('image/')) {
       setUploadMessage(`Extracting text from image: ${file.name}`);
-      if (!window.Tesseract) {
-        setUploadMessage('Tesseract.js is not loaded. Please ensure the CDN script is in your HTML.');
-        console.error('Tesseract.js is not loaded. Please ensure the CDN script is in your HTML.');
+      if (!tesseractReady || !window.Tesseract) { // Double check Tesseract readiness
+        const errorMsg = tesseractWarning || "Tesseract.js is not loaded, so image OCR cannot proceed. Please add the Tesseract.js CDN script to your application's main HTML file.";
+        setUploadMessage(errorMsg);
+        console.error(errorMsg);
         setUploadProgress(0);
         return;
       }
@@ -429,7 +441,7 @@ const AIContentDetector: React.FC = () => {
           file,
           'eng', // Language
           {
-            logger: (m: any) => { // Use 'any' for logger message type if specific type is unknown
+            logger: (m: any) => { 
               if (m.status === 'recognizing text') {
                 setUploadProgress(m.progress * 100);
               }
@@ -441,22 +453,11 @@ const AIContentDetector: React.FC = () => {
         setUploadProgress(100);
       } catch (error) {
         console.error("Error during OCR:", error);
-        setUploadMessage(`Failed to extract text from ${file.name}. Ensure Tesseract.js is loaded correctly.`);
+        setUploadMessage(`Failed to extract text from ${file.name}. ${error instanceof Error ? error.message : 'Unknown OCR error.'}. Ensure Tesseract.js is correctly loaded from CDN.`);
         setUploadProgress(0);
       }
     } else if (file.type.startsWith('audio/') || file.type.startsWith('video/')) {
       setUploadMessage(`Processing ${file.type}: ${file.name}`);
-      // Placeholder for a speech-to-text API call
-      // For a real implementation, you would use a service like AssemblyAI, Google Speech-to-Text, etc.
-      // Example:
-      // try {
-      //   const transcript = await speechToTextAPI(file); // This is a hypothetical function
-      //   setText(transcript);
-      //   setUploadMessage(`Transcription for ${file.name} complete.`);
-      // } catch (error) {
-      //   console.error("Speech-to-text error:", error);
-      //   setUploadMessage(`Failed to transcribe ${file.name}.`);
-      // }
       setText(`[Automated transcription for audio/video files like '${file.name}' would be implemented here using a speech-to-text service. This feature is currently a placeholder.]`);
       setUploadProgress(100);
       setTimeout(() => setUploadProgress(0), 1500);
@@ -465,7 +466,7 @@ const AIContentDetector: React.FC = () => {
       setUploadProgress(0);
       setFileName('');
     }
-     e.target.value = ''; // Reset file input to allow re-uploading the same file
+     e.target.value = ''; 
   };
 
   const getScoreColor = (score: number) => {
@@ -502,6 +503,15 @@ const AIContentDetector: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {tesseractWarning && (
+            <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-500">
+              <AlertTriangle className="h-5 w-5" />
+              <AlertDescription>
+                <strong className="font-semibold">Setup Required for Image OCR:</strong>
+                <p className="mt-1">{tesseractWarning}</p>
+              </AlertDescription>
+            </Alert>
+          )}
           <div className="space-y-4">
             <Textarea
               value={text}
@@ -520,9 +530,11 @@ const AIContentDetector: React.FC = () => {
                   id="file-upload-input"
                 />
                 <label htmlFor="file-upload-input" className="w-full sm:w-auto">
-                  <Button variant="outline" className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                    <Upload className="h-5 w-5" />
-                    Upload File
+                  <Button variant="outline" asChild className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <span> 
+                      <Upload className="h-5 w-5" />
+                       Upload File
+                    </span>
                   </Button>
                 </label>
               </div>
@@ -740,4 +752,4 @@ const AIContentDetector: React.FC = () => {
   );
 };
 
-export default AIContentDetector;
+export default EnhancedAIContentDetector;

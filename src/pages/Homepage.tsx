@@ -159,7 +159,7 @@ const Homepage = () => {
                     View token throughput statistics for individual GPUs
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools?tab=gpu-monitoring">View Monitor</Link>
+                    <Link to="/tools?tab=gpu-monitor">View Monitor</Link>
                   </Button>
                 </div>
               </CardContent>

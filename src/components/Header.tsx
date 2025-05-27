@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, Trophy } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -43,6 +43,9 @@ const Header = () => {
                   <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Product</Link>
                 </SheetClose>
                 <SheetClose asChild>
+                  <Link to="/token-leaderboard" className="px-4 py-2 hover:bg-accent rounded-md">Token Leaderboard</Link>
+                </SheetClose>
+                <SheetClose asChild>
                   <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 </SheetClose>
                 <SheetClose asChild>
@@ -73,6 +76,10 @@ const Header = () => {
             <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <CreditCard size={16} />
               Products
+            </Link>
+            <Link to="/token-leaderboard" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Trophy size={16} />
+              Leaderboard
             </Link>
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Lightbulb size={16} />

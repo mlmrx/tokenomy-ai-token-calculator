@@ -222,6 +222,146 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboard_token_metrics: {
+        Row: {
+          co2_grams_per_million_tokens: number | null
+          cost_per_million_tokens: number | null
+          created_at: string
+          id: string
+          kwh_per_million_tokens: number | null
+          max_tokens_per_second: number
+          recorded_at: string
+          source_type: string | null
+          source_url: string | null
+          tokens_per_month: number
+          tokens_per_query_avg: number | null
+          vendor_id: string
+        }
+        Insert: {
+          co2_grams_per_million_tokens?: number | null
+          cost_per_million_tokens?: number | null
+          created_at?: string
+          id?: string
+          kwh_per_million_tokens?: number | null
+          max_tokens_per_second: number
+          recorded_at?: string
+          source_type?: string | null
+          source_url?: string | null
+          tokens_per_month: number
+          tokens_per_query_avg?: number | null
+          vendor_id: string
+        }
+        Update: {
+          co2_grams_per_million_tokens?: number | null
+          cost_per_million_tokens?: number | null
+          created_at?: string
+          id?: string
+          kwh_per_million_tokens?: number | null
+          max_tokens_per_second?: number
+          recorded_at?: string
+          source_type?: string | null
+          source_url?: string | null
+          tokens_per_month?: number
+          tokens_per_query_avg?: number | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leaderboard_token_metrics_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "leaderboard_vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leaderboard_user_data: {
+        Row: {
+          app_name: string
+          co2_grams_per_million_tokens: number | null
+          cost_per_million_tokens: number | null
+          created_at: string
+          expires_at: string
+          id: string
+          kwh_per_million_tokens: number | null
+          max_tokens_per_second: number | null
+          session_id: string
+          tokens_per_month: number | null
+          tokens_per_query_avg: number | null
+          user_id: string | null
+        }
+        Insert: {
+          app_name: string
+          co2_grams_per_million_tokens?: number | null
+          cost_per_million_tokens?: number | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          kwh_per_million_tokens?: number | null
+          max_tokens_per_second?: number | null
+          session_id: string
+          tokens_per_month?: number | null
+          tokens_per_query_avg?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          app_name?: string
+          co2_grams_per_million_tokens?: number | null
+          cost_per_million_tokens?: number | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          kwh_per_million_tokens?: number | null
+          max_tokens_per_second?: number | null
+          session_id?: string
+          tokens_per_month?: number | null
+          tokens_per_query_avg?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      leaderboard_vendor_profiles: {
+        Row: {
+          created_at: string
+          description: string | null
+          founded_year: number | null
+          headquarters: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          slug: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          founded_year?: number | null
+          headquarters?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          founded_year?: number | null
+          headquarters?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       pricing_models: {
         Row: {
           cost_per_hour_usd: number | null
@@ -311,7 +451,28 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      leaderboard_daily_aggregates: {
+        Row: {
+          avg_co2_per_million: number | null
+          avg_cost_per_million: number | null
+          avg_kwh_per_million: number | null
+          avg_monthly_tokens: number | null
+          avg_tokens_per_query: number | null
+          data_points: number | null
+          day: string | null
+          peak_tps: number | null
+          vendor_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leaderboard_token_metrics_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "leaderboard_vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       generate_api_key: {
@@ -324,6 +485,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["user_role"]
         }
         Returns: boolean
+      }
+      refresh_leaderboard_aggregates: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

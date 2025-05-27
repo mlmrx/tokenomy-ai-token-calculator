@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart, Leaf, Search, Cpu } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart, Leaf, Search, Cpu, Trophy } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -59,6 +59,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <Cpu className="h-5 w-5" />,
       gradientFrom: "from-rose-500",
       gradientTo: "to-pink-600",
+    },
+    {
+      id: "leaderboard",
+      label: "Token Leaderboard",
+      icon: <Trophy className="h-5 w-5" />,
+      gradientFrom: "from-yellow-500",
+      gradientTo: "to-amber-600",
     },
   ];
 

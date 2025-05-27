@@ -77,3 +77,68 @@ This repository also contains a lightweight GPU throughput monitor.
 
 The React UI is served from `/gpu-monitoring`. For a complete deployment,
 see the Helm chart under `helm/gpu-monitor`.
+
+AI Content Detector:
+🚀 Enhanced Features
+Multi-Algorithm Detection System
+
+SynthID-inspired watermark detection with multi-layer hash analysis
+Perplexity estimation using bigram probability modeling
+Burstiness analysis for sentence length variation patterns
+AI pattern recognition for typical AI language structures
+Repetition analysis for word and phrase redundancy detection
+Vocabulary sophistication analysis for lexical diversity
+Sentiment consistency analysis across the text
+
+Advanced User Interface
+
+Tabbed interface with Overview, Analysis, Metadata, and Insights sections
+Real-time progress indicators for file uploads and analysis
+Gradient design elements for a modern, professional look
+Interactive progress bars and visual indicators
+Detailed scoring system with confidence metrics
+
+Comprehensive Analysis Dashboard
+
+Overall AI probability score with confidence ratings
+Individual metric breakdowns with visual progress bars
+Detection flags highlighting specific AI indicators found
+Document statistics including readability scores and lexical diversity
+Actionable insights and recommendations based on analysis
+
+Enhanced Detection Capabilities
+
+Weighted scoring system combining multiple detection methods
+Confidence assessment based on text length and signal strength
+Multi-layered watermark detection using different hashing algorithms
+Statistical analysis of language patterns and structures
+Contextual pattern recognition for AI-specific phrases and constructions
+
+Professional Features
+
+File upload support with progress tracking for various formats
+Detailed metadata extraction including readability scores
+Export-ready insights with professional formatting
+Real-time analysis feedback with loading states
+Comprehensive documentation of detection methods used
+
+🔍 Detection Methods Explained
+The enhanced detector uses six core algorithms:
+
+SynthID Watermark Detection: Multi-layer hash analysis to detect potential watermark signatures
+Perplexity Analysis: Measures how predictable the text is based on language model probabilities
+Burstiness Detection: Analyzes variation in sentence lengths (AI tends to be more uniform)
+Pattern Recognition: Identifies common AI phrases and structural patterns
+Repetition Analysis: Detects unusual word and phrase repetition patterns
+Vocabulary Analysis: Measures lexical diversity and sophistication levels
+
+🎯 Key Improvements Over Original
+
+Professional UI/UX with modern design patterns
+Multi-tab organization for better information architecture
+Real-time feedback and progress indicators
+Comprehensive scoring with confidence metrics
+Actionable insights and recommendations
+Enhanced file support with upload progress
+Statistical analysis with document metadata
+Visual hierarchy using icons, colors, and typography

@@ -190,7 +190,7 @@ export function GpuGrid() {
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
               GPU Token Throughput Monitor
               <Badge variant="outline" className="text-xs">
                 Last updated: {new Date(lastRefresh).toLocaleTimeString()}

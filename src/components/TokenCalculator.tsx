@@ -318,7 +318,7 @@ const TokenCalculator: React.FC = () => {
         <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" 
           style={{background: `linear-gradient(135deg, ${modelTheme.primary}aa 0%, ${modelTheme.secondary}dd 100%)`}}>
           <div className="flex flex-col items-center">
-            <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">AI Token Analysis</h2>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">AI Token Analysis</h2>
             <p className="text-sm md:text-base text-center text-white opacity-90 mb-6">
               Calculate tokens, costs, and analyze your content across different AI models
             </p>

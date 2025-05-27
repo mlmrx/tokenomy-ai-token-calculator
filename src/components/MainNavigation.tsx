@@ -48,7 +48,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
     },
     {
       id: "detector",
-      label: "Content Detector",
+      label: "AI Content Detector",
       icon: <Search className="h-5 w-5" />,
       gradientFrom: "from-cyan-500",
       gradientTo: "to-blue-500",

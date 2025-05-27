@@ -208,7 +208,7 @@ const Contact = () => {
   <a href="https://x.com/Tokenomy_AI" target="_blank" rel="noopener noreferrer">Twitter</a>
 </Button>
 <Button size="sm" variant="outline" className="bg-background" asChild>
-  <a href="https://www.linkedin.com/company/tokenomy-ai" target="_blank" rel="noopener noreferrer">GitHub</a>
+  <a href="https://github.com/mlmrx" target="_blank" rel="noopener noreferrer">GitHub</a>
 </Button>
 <Button size="sm" variant="outline" className="bg-background" asChild>
   <a href="https://www.linkedin.com/company/tokenomy-ai" target="_blank" rel="noopener noreferrer">LinkedIn</a>

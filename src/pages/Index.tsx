@@ -52,8 +52,6 @@ const Index = () => {
         return <AIContentDetector />;
       case "gpu-monitor":
         return <GpuMonitoring />;
-      case "gpu-monitor":
-        return <GpuMonitoring />;
       case "token-leaderboard":
         return <TokenLeaderboard />;
       default:

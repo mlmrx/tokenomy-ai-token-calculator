@@ -301,7 +301,7 @@ export default function EnergyUsageEstimator() {
          <CardHeader className={`pb-4 ${headerClasses}`}>
             <div className="flex items-center gap-2 mb-1">
                 <Leaf className={`h-6 w-6 ${iconColorClass}`} />
-                <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">Energy Usage Estimator</CardTitle>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">Energy Usage Estimator</CardTitle>
             </div>
             <CardDescription>Estimate AI environmental impact (energy, emissions, water, cost) with advanced options. (Data ~May 2025)</CardDescription>
          </CardHeader>

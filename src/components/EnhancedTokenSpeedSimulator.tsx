@@ -199,7 +199,7 @@ const EnhancedTokenSpeedSimulator: React.FC = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
               <Zap className="h-5 w-5" style={{ color: modelTheme.primary }} />
               Token Speed Simulator
             </CardTitle>

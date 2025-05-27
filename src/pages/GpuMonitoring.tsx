@@ -84,7 +84,7 @@ const GpuMonitoring = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">GPU Token Throughput Monitor</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">GPU Token Throughput Monitor</h1>
             <p className="text-muted-foreground">
               Real-time monitoring of GPU performance, token throughput, and cost efficiency
             </p>

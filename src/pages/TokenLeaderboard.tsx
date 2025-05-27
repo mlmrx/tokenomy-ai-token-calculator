@@ -28,7 +28,7 @@ const TokenLeaderboard = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Trophy className="h-8 w-8 text-yellow-500" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
               AI Token Leaderboard
             </h1>
           </div>

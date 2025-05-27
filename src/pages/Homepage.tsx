@@ -120,7 +120,7 @@ const Homepage = () => {
                   <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
                     <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="text-xl font-semibold">Energy Usage Estimator</h3>
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">Energy Usage Estimator</h3>
                   <p className="text-muted-foreground">
                     Calculate the environmental impact and energy consumption of your AI token usage
                   </p>

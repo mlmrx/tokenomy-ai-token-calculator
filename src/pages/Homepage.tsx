@@ -14,7 +14,7 @@ const Homepage = () => {
       <AINewsMarquee />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 md:py-16">
+      <section className="relative overflow-hidden py-4 md:py-4">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/20 dark:to-indigo-950/20 -z-10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(120,120,255,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(150,100,255,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">

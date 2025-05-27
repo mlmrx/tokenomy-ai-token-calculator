@@ -52,7 +52,7 @@ const Homepage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 md:py-16 bg-white dark:bg-gray-950">
+      <section className="py-4 md:py-4 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold">Powerful Token Management Tools</h2>

@@ -38,11 +38,11 @@ updateFavicon();
 const App = () => {
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
 
-  // Show newsletter popup after 15 seconds
+  // Show newsletter popup after 45 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowNewsletterPopup(true);
-    }, 15000);
+    }, 45000);
     
     return () => clearTimeout(timer);
   }, []);

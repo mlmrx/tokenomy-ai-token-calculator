@@ -76,7 +76,7 @@ const Homepage = () => {
                     Calculate tokens, costs, and analyze your content across different AI models
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools">Try Calculator</Link>
+                    <Link to="/tools?tab=calculator">Try Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -93,7 +93,7 @@ const Homepage = () => {
                     Simulate token processing speeds and optimize for faster AI response times
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools">Try Simulator</Link>
+                    <Link to="/tools?tab=speed">Try Simulator</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -110,7 +110,7 @@ const Homepage = () => {
                     Estimate memory requirements and optimize token usage for complex AI tasks
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools">Try Memory Calculator</Link>
+                    <Link to="/tools?tab=memory">Try Memory Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -128,7 +128,7 @@ const Homepage = () => {
                     Calculate the environmental impact and energy consumption of your AI token usage
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools">Try Energy Estimator</Link>
+                    <Link to="/tools?tab=energy">Try Energy Estimator</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -145,7 +145,7 @@ const Homepage = () => {
                     Detect AI-generated text and verify original content
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/tools">Try Detector</Link>
+                    <Link to="/tools?tab=detector">Try Detector</Link>
                   </Button>
                 </div>
               </CardContent>

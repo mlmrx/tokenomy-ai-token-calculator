@@ -16,7 +16,7 @@ const Footer = () => {
           </div>
           <div className="flex items-center space-x-4">
             <a 
-              href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ml4u" 
+              href="https://www.linkedin.com/company/tokenomy-ai" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-foreground hover:text-primary transition-colors"
@@ -25,11 +25,11 @@ const Footer = () => {
               <Linkedin size={20} />
             </a>
             <a 
-              href="https://twitter.com/Mahesh_Lambe?ref_src=twsrc%5Etfw" 
+              href="https://x.com/Tokenomy_AI" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-foreground hover:text-primary transition-colors"
-              aria-label="Twitter"
+              aria-label="X (Twitter)"
             >
               <Twitter size={20} />
             </a>

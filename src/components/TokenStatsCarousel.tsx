@@ -63,7 +63,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 68 }, { month: 'Jul 24', tokens: 70 },
       { month: 'Aug 24', tokens: 72 }, { month: 'Sep 24', tokens: 74 },
       { month: 'Oct 24', tokens: 76 }, { month: 'Nov 24', tokens: 78 },
-      { month: 'Dec 24', tokens: 620 },
+      { month: 'Apr 25', tokens: 620 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
@@ -89,7 +89,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 21.26 }, { month: 'Jul 24', tokens: 21.86 },
       { month: 'Aug 24', tokens: 22.49 }, { month: 'Sep 24', tokens: 23.11 },
       { month: 'Oct 24', tokens: 23.74 }, { month: 'Nov 24', tokens: 240.37 },
-      { month: 'Dec 24', tokens: 1100.00 },
+      { month: 'Apr 25', tokens: 1100.00 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg',
@@ -115,7 +115,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 23.37 }, { month: 'Jul 24', tokens: 24.11 },
       { month: 'Aug 24', tokens: 24.91 }, { month: 'Sep 24', tokens: 25.69 },
       { month: 'Oct 24', tokens: 26.46 }, { month: 'Nov 24', tokens: 227.23 },
-      { month: 'Dec 24', tokens: 950.00 },
+      { month: 'Apr 25', tokens: 950.00 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
@@ -141,7 +141,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 85.43 }, { month: 'Jul 24', tokens: 87.86 },
       { month: 'Aug 24', tokens: 90.29 }, { month: 'Sep 24', tokens: 92.71 },
       { month: 'Oct 24', tokens: 95.14 }, { month: 'Nov 24', tokens: 97.57 },
-      { month: 'Dec 24', tokens: 480.00 },
+      { month: 'Apr 25', tokens: 480.00 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
@@ -167,7 +167,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 6.8 }, { month: 'Jul 24', tokens: 7.0 },
       { month: 'Aug 24', tokens: 7.2 }, { month: 'Sep 24', tokens: 7.4 },
       { month: 'Oct 24', tokens: 7.6 }, { month: 'Nov 24', tokens: 87.8 },
-      { month: 'Dec 24', tokens: 320.0 },
+      { month: 'Apr 25', tokens: 320.0 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
@@ -192,7 +192,7 @@ const companyStats: CompanyStatType[] = [
       { month: 'Jun 24', tokens: 9.97 }, { month: 'Jul 24', tokens: 10.32 },
       { month: 'Aug 24', tokens: 10.65 }, { month: 'Sep 24', tokens: 10.99 },
       { month: 'Oct 24', tokens: 11.33 }, { month: 'Nov 24', tokens: 111.66 },
-      { month: 'Dec 24', tokens: 450.00 },
+      { month: 'Apr 25', tokens: 450.00 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg',

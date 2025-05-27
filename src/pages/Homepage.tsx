@@ -159,27 +159,28 @@ const Homepage = () => {
                     View token throughput statistics for individual GPUs
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/gpu-monitoring">View Monitor</Link>
+                    <Link to="/tools?tab=gpu-monitoring">View Monitor</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
-             <Card className="border-2 hover:border-rose-200 dark:hover:border-rose-900 transition-colors">
-              <CardContent className="pt-5">
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-rose-100 dark:bg-rose-900/30 rounded-full">
-                    <Cpu className="h-6 w-6 text-rose-600 dark:text-rose-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold">GPU Token Monitor</h3>
-                  <p className="text-muted-foreground">
-                    View token Leaderboard
-                  </p>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to="/token-leaderboard">View Leaderboard</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+
+<Card className="border-2 hover:border-yellow-200 dark:hover:border-yellow-900 transition-colors">
+  <CardContent className="pt-5">
+    <div className="flex flex-col items-center text-center space-y-3">
+      <div className="p-3 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 rounded-full">
+        <Trophy className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+      </div>
+      <h3 className="text-xl font-semibold">Token Leaderboard</h3>
+      <p className="text-muted-foreground">
+        View token Leaderboard
+      </p>
+      <Button variant="outline" size="sm" asChild>
+        <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
+      </Button>
+    </div>
+  </CardContent>
+</Card>
           </div>
         </div>
       </section>

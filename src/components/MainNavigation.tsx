@@ -61,7 +61,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       gradientTo: "to-pink-600",
     },
     {
-      id: "leaderboard",
+      id: "token-leaderboard",
       label: "Token Leaderboard",
       icon: <Trophy className="h-5 w-5" />,
       gradientFrom: "from-yellow-500",

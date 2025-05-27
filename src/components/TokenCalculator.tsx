@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,8 +37,20 @@ import ProcessFlowEnhanced from "./ProcessFlowEnhanced";
 import EnergyConsumptionTab from "./EnergyConsumptionTab";
 import ExportData from "./ExportData";
 
-// Create a TypeScript interface for the Web Speech API
+// Create a comprehensive TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  serviceURI: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  addEventListener(type: 'start', listener: (event: Event) => void): void;
+  addEventListener(type: 'end', listener: (event: Event) => void): void;
+  addEventListener(type: 'result', listener: (event: SpeechRecognitionEvent) => void): void;
+  addEventListener(type: 'error', listener: (event: SpeechRecognitionErrorEvent) => void): void;
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
 }
 
 interface SpeechRecognitionEvent extends Event {
@@ -99,6 +110,7 @@ const examplesData = [
 ];
 
 const TokenCalculator: React.FC = () => {
+  
   const { toast } = useToast();
   const [text, setText] = useState("");
   const [selectedModel, setSelectedModel] = useState("gpt-4o");

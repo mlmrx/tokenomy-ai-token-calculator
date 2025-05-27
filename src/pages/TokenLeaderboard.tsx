@@ -5,13 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LeaderboardGrid from "@/components/leaderboard/LeaderboardGrid";
 import LiveTicker from "@/components/leaderboard/LiveTicker";
-import ComparePanel from "@/components/leaderboard/ComparePanel";
+import EnhancedComparePanel from "@/components/leaderboard/EnhancedComparePanel";
 import UserDataUpload from "@/components/leaderboard/UserDataUpload";
+import TrendsTab from "@/components/leaderboard/TrendsTab";
 import { Trophy, TrendingUp, Zap, DollarSign } from "lucide-react";
 
 const TokenLeaderboard = () => {
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
-  const [showComparePanel, setShowComparePanel] = useState(false);
 
   const handleVendorSelect = (vendorId: string) => {
     if (selectedVendors.includes(vendorId)) {
@@ -19,8 +19,6 @@ const TokenLeaderboard = () => {
     } else if (selectedVendors.length < 3) {
       setSelectedVendors([...selectedVendors, vendorId]);
     }
-    
-    setShowComparePanel(selectedVendors.length > 0);
   };
 
   return (
@@ -57,7 +55,7 @@ const TokenLeaderboard = () => {
                 </TabsTrigger>
                 <TabsTrigger value="trends" className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
-                  Trends
+                  Trends & Analytics
                 </TabsTrigger>
                 <TabsTrigger value="upload" className="flex items-center gap-2">
                   <Zap className="h-4 w-4" />
@@ -73,19 +71,7 @@ const TokenLeaderboard = () => {
               </TabsContent>
 
               <TabsContent value="trends">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Historical Trends</CardTitle>
-                    <CardDescription>
-                      Track token processing trends over time
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64 flex items-center justify-center text-muted-foreground">
-                      Trend charts coming soon...
-                    </div>
-                  </CardContent>
-                </Card>
+                <TrendsTab />
               </TabsContent>
 
               <TabsContent value="upload">
@@ -94,14 +80,11 @@ const TokenLeaderboard = () => {
             </Tabs>
           </div>
 
-          {/* Compare Panel */}
+          {/* Enhanced Compare Panel */}
           <div className="lg:col-span-1">
-            <ComparePanel 
+            <EnhancedComparePanel 
               selectedVendors={selectedVendors}
-              onClearSelection={() => {
-                setSelectedVendors([]);
-                setShowComparePanel(false);
-              }}
+              onClearSelection={() => setSelectedVendors([])}
             />
           </div>
         </div>

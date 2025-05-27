@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 const Homepage = () => {

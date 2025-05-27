@@ -92,7 +92,10 @@ const Index = () => {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <LearnMoreSidebar />
+              <LearnMoreSidebar 
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+              />
             </div>
           </div>
         </div>

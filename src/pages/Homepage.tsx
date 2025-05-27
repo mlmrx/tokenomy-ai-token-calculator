@@ -8,19 +8,18 @@ import Footer from "@/components/Footer";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
-
 const Homepage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AINewsMarquee />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-28">
+      <section className="relative overflow-hidden py-12 md:py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/20 dark:to-indigo-950/20 -z-10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(120,120,255,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(150,100,255,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="flex flex-col items-center text-center space-y-8 md:space-y-12">
-            <div className="space-y-4 max-w-3xl">
+          <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
+            <div className="space-y-3 max-w-3xl">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 1,000,000,000,000,000,000 tokens per month
               </h1>
@@ -29,7 +28,7 @@ const Homepage = () => {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 size="lg" 
                 className="text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
@@ -48,26 +47,24 @@ const Homepage = () => {
 
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />
-
-
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-white dark:bg-gray-950">
+      <section className="py-12 md:py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold">Powerful Token Management Tools</h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Optimize your AI interactions with our comprehensive suite of token analysis tools
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
                     <Calculator className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   </div>
@@ -83,8 +80,8 @@ const Homepage = () => {
             </Card>
             
             <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
                     <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
@@ -100,8 +97,8 @@ const Homepage = () => {
             </Card>
             
             <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full">
                     <BarChart className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                   </div>
@@ -118,8 +115,8 @@ const Homepage = () => {
             
             {/* New Energy Usage Estimator Card */}
             <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
                     <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
@@ -135,8 +132,8 @@ const Homepage = () => {
             </Card>
 
             <Card className="border-2 hover:border-cyan-200 dark:hover:border-cyan-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-full">
                     <Search className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                   </div>
@@ -152,8 +149,8 @@ const Homepage = () => {
             </Card>
 
             <Card className="border-2 hover:border-rose-200 dark:hover:border-rose-900 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
                   <div className="p-3 bg-rose-100 dark:bg-rose-900/30 rounded-full">
                     <Cpu className="h-6 w-6 text-rose-600 dark:text-rose-400" />
                   </div>
@@ -172,24 +169,24 @@ const Homepage = () => {
       </section>
       
       {/* Why Choose Us Section */}
-      <section className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
+      <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold">Why Choose Tokenomy?</h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Our platform offers unique advantages for AI developers and content creators
             </p>
           </div>
           
           <Tabs defaultValue="accuracy" className="max-w-3xl mx-auto">
-            <TabsList className="w-full justify-center mb-8">
+            <TabsList className="w-full justify-center mb-6">
               <TabsTrigger value="accuracy">Accuracy</TabsTrigger>
               <TabsTrigger value="speed">Speed</TabsTrigger>
               <TabsTrigger value="cost">Cost</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="accuracy" className="space-y-4">
+            <TabsContent value="accuracy" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
                   <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -204,7 +201,7 @@ const Homepage = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="speed" className="space-y-4">
+            <TabsContent value="speed" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
                   <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -219,7 +216,7 @@ const Homepage = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="cost" className="space-y-4">
+            <TabsContent value="cost" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
                   <Calculator className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -234,7 +231,7 @@ const Homepage = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="security" className="space-y-4">
+            <TabsContent value="security" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
                   <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
@@ -253,17 +250,17 @@ const Homepage = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 -z-10"></div>
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 -z-10"></div>
         
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="max-w-3xl mx-auto text-center text-white space-y-8">
+          <div className="max-w-3xl mx-auto text-center text-white space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">Ready to Optimize Your AI Token Usage?</h2>
             <p className="text-xl opacity-90">
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button 
                 size="lg"
                 className="bg-white text-indigo-700 hover:bg-gray-100"
@@ -284,7 +281,7 @@ const Homepage = () => {
                 </Link>
               </Button>
             </div>
-            <div className="text-sm opacity-80 pt-4">
+            <div className="text-sm opacity-80 pt-2">
               <p>No sign-up required to try our basic tools</p>
             </div>
           </div>
@@ -292,15 +289,15 @@ const Homepage = () => {
       </section>
       
       {/* Code Example Section */}
-      <section className="py-16 md:py-24 bg-white dark:bg-gray-950">
+      <section className="py-12 md:py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">For Developers, By Developers</h2>
-              <p className="text-lg text-muted-foreground mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">For Developers, By Developers</h2>
+              <p className="text-lg text-muted-foreground mb-4">
                 Tokenomy provides powerful APIs and libraries for integrating token optimization directly into your applications.
               </p>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <Code className="h-5 w-5 text-purple-600 dark:text-purple-400 mt-0.5" />
                   <div>
@@ -323,7 +320,7 @@ const Homepage = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="outline" className="mt-8">View Documentation</Button>
+              <Button variant="outline" className="mt-6">View Documentation</Button>
             </div>
             
             <div className="bg-gray-900 text-gray-50 p-4 rounded-lg shadow-xl">

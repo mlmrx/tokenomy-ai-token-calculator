@@ -260,14 +260,14 @@ const Homepage = () => {
             <p className="text-xl opacity-90">
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-1 justify-center">
               <Button 
                 size="lg"
                 className="bg-white text-indigo-700 hover:bg-gray-100"
                 asChild
               >
                 <Link to="/tools">
-                  Start Now <ArrowRight className="ml-2 h-4 w-4" />
+                  Start Now <ArrowRight className="ml-2 h-2 w-4" />
                 </Link>
               </Button>
               <Button 

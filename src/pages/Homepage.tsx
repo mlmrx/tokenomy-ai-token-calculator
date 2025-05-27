@@ -19,11 +19,11 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(120,120,255,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(150,100,255,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
-            <div className="space-y-3 max-w-3xl">
+            <div className="space-y-4 max-w-3xl">
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
                 1,000,000,000,000,000,000 tokens per month
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
                 Unlock the full potential of your AI investments with tools that maximize performance while optimizing costs.
               </p>
             </div>

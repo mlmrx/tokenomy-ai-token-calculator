@@ -244,7 +244,8 @@ const analyzeSentiment = (text: string): number => {
 // Calculate readability score (Flesch Reading Ease approximation)
 const calculateReadability = (text: string): number => {
   const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-  const words = text.match(/\b\w+\b/g) || [];
+  const wordsMatch = text.match(/\b\w+\b/g);
+  const words: string[] = wordsMatch ? wordsMatch : [];
 
   if (sentences.length === 0 || words.length === 0) return 0;
 

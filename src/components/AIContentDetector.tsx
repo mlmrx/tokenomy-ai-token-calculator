@@ -248,16 +248,15 @@ const calculateReadability = (text: string): number => {
 
   if (sentences.length === 0 || words.length === 0) return 0;
 
-  const syllables = words.reduce((acc, word) => {
+  const syllables = words.reduce((acc: number, word: string) => {
     // Basic syllable counter (can be improved)
-    word = word.toLowerCase();
-    if (word.length <= 3) return acc + 1;
-    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-    word = word.replace(/^y/, '');
-    const vowelMatches = word.match(/[aeiouy]{1,2}/g);
+    let processedWord = word.toLowerCase();
+    if (processedWord.length <= 3) return acc + 1;
+    processedWord = processedWord.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    processedWord = processedWord.replace(/^y/, '');
+    const vowelMatches = processedWord.match(/[aeiouy]{1,2}/g);
     return acc + (vowelMatches ? vowelMatches.length : 0);
   }, 0);
-
 
   const avgSentenceLength = words.length / sentences.length;
   const avgSyllablesPerWord = syllables / words.length;

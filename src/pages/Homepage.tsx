@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 const Homepage = () => {
@@ -165,22 +166,40 @@ const Homepage = () => {
               </CardContent>
             </Card>
 
-<Card className="border-2 hover:border-yellow-200 dark:hover:border-yellow-900 transition-colors">
-  <CardContent className="pt-5">
-    <div className="flex flex-col items-center text-center space-y-3">
-      <div className="p-3 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 rounded-full">
-        <Trophy className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
-      </div>
-      <h3 className="text-xl font-semibold">Token Leaderboard</h3>
-      <p className="text-muted-foreground">
-        View token Leaderboard
-      </p>
-      <Button variant="outline" size="sm" asChild>
-        <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
-      </Button>
-    </div>
-  </CardContent>
-</Card>
+            <Card className="border-2 hover:border-yellow-200 dark:hover:border-yellow-900 transition-colors">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="p-3 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 rounded-full">
+                    <Trophy className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Token Leaderboard</h3>
+                  <p className="text-muted-foreground">
+                    View token Leaderboard
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* New Token Observability Card */}
+            <Card className="border-2 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="p-3 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full">
+                    <Eye className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Token Observability</h3>
+                  <p className="text-muted-foreground">
+                    Real-time monitoring and analytics for AI token usage
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/observability">View Observatory</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

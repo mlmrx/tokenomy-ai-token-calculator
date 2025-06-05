@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles} from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 const Homepage = () => {
@@ -47,6 +47,16 @@ const Homepage = () => {
                 </Link>
               </Button>
             </div>
+
+                  {/* 4. Built for builders logos */}
+      <section className="bg-white py-16">
+        <h2 className="text-center text-xl font-semibold mb-8">Built for builders</h2>
+        <div className="flex flex-wrap justify-center gap-6 text-lg font-medium">
+          {['VS Code', 'LangChain', 'Python', 'JS/TS', 'GitHub Actions'].map(l => (
+            <span key={l} className="px-4 py-2 bg-gray-100 rounded-full">{l}</span>
+          ))}
+        </div>
+      </section>
 
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />

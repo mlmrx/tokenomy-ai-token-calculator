@@ -39,7 +39,11 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-
+  const handleTabChange = (tab: string) => {
+   
+      setActiveTab(tab);
+ 
+  };
 
   const renderActiveComponent = () => {
     switch (activeTab) {

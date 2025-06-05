@@ -48,14 +48,14 @@ const Homepage = () => {
               </Button>
               
                   {/* 4. Built for builders logos */}
-      <section className="bg-white py-16">
+      <div className="flex flex-col sm:flex-row gap-3"></div>
         <h2 className="text-center text-xl font-semibold mb-8">Built for builders</h2>
         <div className="flex flex-wrap justify-center gap-6 text-lg font-medium">
           {['VS Code', 'LangChain', 'Python', 'JS/TS', 'GitHub Actions'].map(l => (
             <span key={l} className="px-4 py-2 bg-gray-100 rounded-full">{l}</span>
           ))}
         </div>
-      </section>
+     </div>
             </div>
 
 

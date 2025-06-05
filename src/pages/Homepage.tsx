@@ -46,8 +46,7 @@ const Homepage = () => {
                   Learn More
                 </Link>
               </Button>
-            </div>
-
+              
                   {/* 4. Built for builders logos */}
       <section className="bg-white py-16">
         <h2 className="text-center text-xl font-semibold mb-8">Built for builders</h2>
@@ -57,6 +56,8 @@ const Homepage = () => {
           ))}
         </div>
       </section>
+            </div>
+
 
             {/* Token Stats Carousel */}
             <TokenStatsCarousel />

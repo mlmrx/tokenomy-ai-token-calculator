@@ -22,13 +22,13 @@ const TokenLeaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700">
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Header Section */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Trophy className="h-8 w-8 text-yellow-500" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
               AI Token Leaderboard
             </h1>
           </div>

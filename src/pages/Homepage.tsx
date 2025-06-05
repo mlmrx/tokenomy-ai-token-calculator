@@ -15,7 +15,7 @@ const Homepage = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden py-4 md:py-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/20 -z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-indigo-950/20 dark:to-purple-950/20 -z-10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(99,102,241,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">

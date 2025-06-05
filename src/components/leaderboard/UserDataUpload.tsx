@@ -187,7 +187,7 @@ const UserDataUpload = () => {
         )}
 
         {ranking && appData.app_name && (
-          <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+          <Card className="bg-gradient-to-r from-blue-50 to-blue-50 border-purple-200">
             <CardContent className="p-4">
               <div className="text-center space-y-2">
                 <Badge variant="default" className="text-lg px-3 py-1">

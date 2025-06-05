@@ -21,7 +21,7 @@ const Pricing = () => {
         <div 
           className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500">
             Simple & Transparent Pricing
           </h1>
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">

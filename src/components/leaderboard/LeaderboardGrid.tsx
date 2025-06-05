@@ -125,7 +125,7 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({ onVendorSelect, selec
                 className="flex items-center gap-4 p-6 border-b last:border-b-0 hover:bg-muted/50 transition-colors"
               >
                 {/* Rank */}
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-sm">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-sm">
                   {index + 1}
                 </div>
 

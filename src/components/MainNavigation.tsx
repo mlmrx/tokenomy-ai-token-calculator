@@ -36,8 +36,8 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       id: "speed",
       label: "Speed Simulator",
       icon: <LineChart className="h-5 w-5" />,
-      gradientFrom: "from-purple-600",
-      gradientTo: "to-pink-500",
+      gradientFrom: "from-blue-600",
+      gradientTo: "to-purple-500",
     },
     {
       id: "memory",
@@ -65,7 +65,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       label: "GPU Monitor",
       icon: <Cpu className="h-5 w-5" />,
       gradientFrom: "from-rose-500",
-      gradientTo: "to-pink-600",
+      gradientTo: "to-purple-600",
     },
     {
       id: "token-leaderboard",

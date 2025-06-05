@@ -179,7 +179,7 @@ const Header = () => {
           ) : (
             <Button 
               onClick={() => setLoginDialogOpen(true)} 
-              className="hover-scale text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
+              className="hover-scale text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-purple-500 hover:from-indigo-600 hover:via-purple-600 hover:to-purple-600 shadow-md"
             >
               Log In / Sign Up
             </Button>

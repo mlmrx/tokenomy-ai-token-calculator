@@ -41,7 +41,7 @@ const AINewsMarquee = () => {
   }, [apiUrl]);
 
   return (
-    <div className="w-full bg-gradient-to-r from-purple-900/90 via-indigo-800/80 to-purple-900/90 text-white py-1 overflow-hidden">
+    <div className="w-full bg-gradient-to-r from-blue-900/90 via-indigo-800/80 to-purple-900/90 text-white py-1 overflow-hidden">
       <div className="flex items-center">
         <div className="flex-shrink-0 px-3 flex items-center border-r border-white/30">
           <Rss className="h-3.5 w-3.5 mr-1.5" />

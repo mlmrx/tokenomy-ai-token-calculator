@@ -35,7 +35,7 @@ const LiveTicker = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white">
+    <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-purple-600 text-white">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">

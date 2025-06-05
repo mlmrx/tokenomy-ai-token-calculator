@@ -279,7 +279,7 @@ const EnhancedMemoryCalculator: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
             <Cpu className="h-6 w-6" />
             Enhanced LLM Memory & Capacity Planner
           </CardTitle>

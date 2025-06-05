@@ -66,14 +66,14 @@ const PROVIDER_THEMES: Record<string, { gradientFrom: string; gradientTo: string
     'Anthropic': { gradientFrom: 'from-orange-100', gradientTo: 'to-amber-100', color: 'text-orange-600 dark:text-orange-400' },
     'Google': { gradientFrom: 'from-blue-100', gradientTo: 'to-sky-100', color: 'text-blue-600 dark:text-blue-400' },
     'Meta': { gradientFrom: 'from-indigo-100', gradientTo: 'to-violet-100', color: 'text-indigo-600 dark:text-indigo-400' },
-    'Mistral': { gradientFrom: 'from-rose-100', gradientTo: 'to-pink-100', color: 'text-rose-600 dark:text-rose-400' },
+    'Mistral': { gradientFrom: 'from-rose-100', gradientTo: 'to-purple-100', color: 'text-rose-600 dark:text-rose-400' },
     'Generic': { gradientFrom: 'from-gray-100', gradientTo: 'to-slate-100', color: 'text-gray-600 dark:text-gray-400' },
     // Dark mode gradients
     'OpenAI_dark': { gradientFrom: 'dark:from-green-900/50', gradientTo: 'dark:to-emerald-900/50', color: 'text-green-600 dark:text-green-400' },
     'Anthropic_dark': { gradientFrom: 'dark:from-orange-900/50', gradientTo: 'dark:to-amber-900/50', color: 'text-orange-600 dark:text-orange-400' },
     'Google_dark': { gradientFrom: 'dark:from-blue-900/50', gradientTo: 'dark:to-sky-900/50', color: 'text-blue-600 dark:text-blue-400' },
     'Meta_dark': { gradientFrom: 'dark:from-indigo-900/50', gradientTo: 'dark:to-violet-900/50', color: 'text-indigo-600 dark:text-indigo-400' },
-    'Mistral_dark': { gradientFrom: 'dark:from-rose-900/50', gradientTo: 'dark:to-pink-900/50', color: 'text-rose-600 dark:text-rose-400' },
+    'Mistral_dark': { gradientFrom: 'dark:from-rose-900/50', gradientTo: 'dark:to-purple-900/50', color: 'text-rose-600 dark:text-rose-400' },
     'Generic_dark': { gradientFrom: 'dark:from-gray-900/50', gradientTo: 'dark:to-slate-900/50', color: 'text-gray-600 dark:text-gray-400' },
 };
 
@@ -301,7 +301,7 @@ export default function EnergyUsageEstimator() {
          <CardHeader className={`pb-4 ${headerClasses}`}>
             <div className="flex items-center gap-2 mb-1">
                 <Leaf className={`h-6 w-6 ${iconColorClass}`} />
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500 bg-clip-text text-transparent">Energy Usage Estimator</CardTitle>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Energy Usage Estimator</CardTitle>
             </div>
             <CardDescription>Estimate AI environmental impact (energy, emissions, water, cost) with advanced options. (Data ~May 2025)</CardDescription>
          </CardHeader>

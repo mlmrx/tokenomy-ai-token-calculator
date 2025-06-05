@@ -88,7 +88,7 @@ const Contact = () => {
         <div
           className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500">
             Contact Us
           </h1>
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
@@ -198,7 +198,7 @@ const Contact = () => {
               </div>
             </Card>
             
-            <div className="bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-pink-500/20 rounded-xl p-6">
+            <div className="bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-500/20 rounded-xl p-6">
               <h3 className="text-xl font-bold mb-4">Join Our Community</h3>
               <p className="text-muted-foreground mb-4">
                 Connect with us and other users to share ideas, get help, and stay updated on the latest features.

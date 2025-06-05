@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -16,12 +15,12 @@ const Homepage = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden py-4 md:py-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/20 dark:to-indigo-950/20 -z-10"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(120,120,255,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(150,100,255,0.15),transparent_45%)] -z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/20 -z-10"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(99,102,241,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
             <div className="space-y-4 max-w-3xl">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
                 1,000,000,000,000,000,000 tokens per month
               </h1>
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
@@ -32,7 +31,7 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 size="lg" 
-                className="text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 shadow-md"
+                className="text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 shadow-md"
                 asChild
               >
                 <Link to="/tools">
@@ -63,11 +62,11 @@ const Homepage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
+            <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                    <Calculator className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                    <Calculator className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Calculator</h3>
                   <p className="text-muted-foreground">
@@ -80,11 +79,28 @@ const Homepage = () => {
               </CardContent>
             </Card>
             
-            <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <Card className="border-2 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                    <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full">
+                    <Eye className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Token Observability</h3>
+                  <p className="text-muted-foreground">
+                    Real-time monitoring and analytics for AI token usage
+                  </p>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/observability">View Observatory</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
+              <CardContent className="pt-5">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                    <LineChart className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Speed Simulator</h3>
                   <p className="text-muted-foreground">
@@ -178,24 +194,6 @@ const Homepage = () => {
                   </p>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* New Token Observability Card */}
-            <Card className="border-2 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
-              <CardContent className="pt-5">
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full">
-                    <Eye className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold">Token Observability</h3>
-                  <p className="text-muted-foreground">
-                    Real-time monitoring and analytics for AI token usage
-                  </p>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to="/observability">View Observatory</Link>
                   </Button>
                 </div>
               </CardContent>

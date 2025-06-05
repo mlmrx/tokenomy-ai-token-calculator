@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart4, LineChart, Calculator, BarChart, Leaf, Search, Cpu, Trophy } from "lucide-react";
+import { BarChart4, LineChart, Calculator, BarChart, Leaf, Search, Cpu, Trophy, Eye } from "lucide-react";
 
 interface MainNavigationProps {
   activeTab: string;
@@ -24,6 +24,13 @@ const MainNavigation: React.FC<MainNavigationProps> = ({
       icon: <Calculator className="h-5 w-5" />,
       gradientFrom: "from-blue-600",
       gradientTo: "to-indigo-500",
+    },
+    {
+      id: "observability",
+      label: "Token Observability",
+      icon: <Eye className="h-5 w-5" />,
+      gradientFrom: "from-indigo-600",
+      gradientTo: "to-purple-500",
     },
     {
       id: "speed",

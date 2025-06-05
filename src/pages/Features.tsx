@@ -1,58 +1,92 @@
 
 import { Card } from "@/components/ui/card";
-import { BarChart4, Zap, Database, Shield, FileText, Rocket } from "lucide-react";
-import { Search } from "lucide-react";
+import { BarChart4, Zap, Database, Shield, FileText, Rocket, Search, Cpu, Trophy, Eye, Leaf, Calculator, LineChart } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const features = [
   {
-    title: "Token Calculation",
+    title: "Token Calculator",
     description: "Precisely calculate tokens for any AI model. Understand and optimize your prompt usage for maximum efficiency.",
-    icon: <BarChart4 className="h-12 w-12 text-blue-500" />,
-    color: "bg-blue-100",
+    icon: <Calculator className="h-12 w-12 text-blue-600" />,
+    color: "bg-blue-50",
     animation: { delay: 0.1 }
+  },
+  {
+    title: "Token Observability",
+    description: "Real-time monitoring and analytics for AI token usage across all your applications and services.",
+    icon: <Eye className="h-12 w-12 text-indigo-600" />,
+    color: "bg-indigo-50",
+    animation: { delay: 0.2 }
   },
   {
     title: "Speed Simulation",
     description: "Visualize model processing speeds. See how different AI models process your content in real-time.",
-    icon: <Zap className="h-12 w-12 text-purple-500" />,
-    color: "bg-purple-100",
-    animation: { delay: 0.2 }
-  },
-  {
-    title: "Cost Estimation",
-    description: "Get accurate cost estimates for all major AI providers. Make informed decisions about your AI investments.",
-    icon: <Database className="h-12 w-12 text-green-500" />,
-    color: "bg-green-100",
+    icon: <LineChart className="h-12 w-12 text-purple-600" />,
+    color: "bg-purple-50",
     animation: { delay: 0.3 }
   },
   {
-    title: "Memory Calculation", 
+    title: "Memory Calculator", 
     description: "Plan your AI system's memory requirements. Understand how tokens translate to computational resources.",
-    icon: <Shield className="h-12 w-12 text-amber-500" />,
-    color: "bg-amber-100",
+    icon: <BarChart4 className="h-12 w-12 text-amber-600" />,
+    color: "bg-amber-50",
     animation: { delay: 0.4 }
+  },
+  {
+    title: "Energy Estimator",
+    description: "Calculate the environmental impact and energy consumption of your AI token usage for sustainable AI.",
+    icon: <Leaf className="h-12 w-12 text-green-600" />,
+    color: "bg-green-50",
+    animation: { delay: 0.5 }
+  },
+  {
+    title: "AI Content Detector",
+    description: "Identify AI-generated text to verify authenticity and originality with advanced detection algorithms.",
+    icon: <Search className="h-12 w-12 text-cyan-600" />,
+    color: "bg-cyan-50",
+    animation: { delay: 0.6 }
+  },
+  {
+    title: "GPU Monitor",
+    description: "Monitor GPU performance and token throughput statistics for optimized hardware utilization.",
+    icon: <Cpu className="h-12 w-12 text-rose-600" />,
+    color: "bg-rose-50",
+    animation: { delay: 0.7 }
+  },
+  {
+    title: "Token Leaderboard",
+    description: "Compare token performance across models and providers with comprehensive leaderboard rankings.",
+    icon: <Trophy className="h-12 w-12 text-yellow-600" />,
+    color: "bg-yellow-50",
+    animation: { delay: 0.8 }
+  },
+  {
+    title: "Cost Optimization",
+    description: "Get accurate cost estimates for all major AI providers. Make informed decisions about your AI investments.",
+    icon: <Database className="h-12 w-12 text-emerald-600" />,
+    color: "bg-emerald-50",
+    animation: { delay: 0.9 }
+  },
+  {
+    title: "Security Analysis",
+    description: "Analyze your prompts for security vulnerabilities and ensure safe AI interactions.",
+    icon: <Shield className="h-12 w-12 text-slate-600" />,
+    color: "bg-slate-50",
+    animation: { delay: 1.0 }
   },
   {
     title: "Tokenization Analysis",
     description: "See how different models tokenize your content. Understand the differences between various encoding schemes.",
-    icon: <FileText className="h-12 w-12 text-rose-500" />,
-    color: "bg-rose-100",
-    animation: { delay: 0.5 }
+    icon: <FileText className="h-12 w-12 text-orange-600" />,
+    color: "bg-orange-50",
+    animation: { delay: 1.1 }
   },
   {
     title: "Model Comparison",
     description: "Compare different AI models side-by-side. Find the perfect balance between performance and cost.",
-    icon: <Rocket className="h-12 w-12 text-indigo-500" />,
-    color: "bg-indigo-100",
-    animation: { delay: 0.6 }
-  },
-  {
-    title: "AI Content Detector",
-    description: "Identify AI-generated text to verify authenticity and originality.",
-    icon: <Search className="h-12 w-12 text-cyan-500" />,
-    color: "bg-cyan-100",
-    animation: { delay: 0.7 }
+    icon: <Rocket className="h-12 w-12 text-violet-600" />,
+    color: "bg-violet-50",
+    animation: { delay: 1.2 }
   }
 ];
 
@@ -63,7 +97,7 @@ const Features = () => {
         <div
           className="text-center mb-16 opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
             Powerful Token Management Features
           </h1>
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
@@ -94,7 +128,7 @@ const Features = () => {
         </div>
 
         <div
-          className="bg-gradient-to-r from-violet-600/20 via-blue-600/20 to-purple-600/20 rounded-2xl p-8 md:p-12 shadow-xl opacity-0 scale-95 animate-[fadeIn_0.5s_0.4s_ease-out_forwards,scaleIn_0.5s_0.4s_ease-out_forwards]"
+          className="bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 rounded-2xl p-8 md:p-12 shadow-xl opacity-0 scale-95 animate-[fadeIn_0.5s_0.4s_ease-out_forwards,scaleIn_0.5s_0.4s_ease-out_forwards]"
         >
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>

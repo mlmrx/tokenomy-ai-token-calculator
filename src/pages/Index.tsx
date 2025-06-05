@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import TokenCalculator from "../components/TokenCalculator";
 import TokenSpeedSimulator from "../components/TokenSpeedSimulator";
 import MemoryCalculator from "../components/MemoryCalculator";
@@ -12,9 +12,9 @@ import MainNavigation from "../components/MainNavigation";
 import LearnMoreSidebar from "../components/LearnMoreSidebar";
 import NewsletterPopup from "@/components/NewsletterPopup";
 
-
 const Index = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("calculator");
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,7 +24,7 @@ const Index = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam && ['calculator', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor','token-leaderboard'].includes(tabParam)) {
+    if (tabParam && ['calculator', 'observability', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor','token-leaderboard'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [location]);
@@ -37,6 +37,14 @@ const Index = () => {
     
     return () => clearTimeout(timer);
   }, []);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === 'observability') {
+      navigate('/observability');
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -80,7 +88,7 @@ const Index = () => {
           <div className="mb-8">
             <MainNavigation
               activeTab={activeTab}
-              onTabChange={setActiveTab}
+              onTabChange={handleTabChange}
               onToggleSidebar={toggleSidebar}
               theme={theme}
               onThemeChange={setTheme}

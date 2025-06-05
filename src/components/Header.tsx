@@ -40,7 +40,7 @@ const Header = () => {
                   <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Products</Link>
+                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Tools</Link>
                 </SheetClose>              
                 <SheetClose asChild>
                   <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
@@ -59,7 +59,7 @@ const Header = () => {
           </Sheet>
           
           <Link to="/" className="flex flex-col items-start">
-            <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500">
+            <h1 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
               TOKENOMY
             </h1>
            
@@ -72,7 +72,7 @@ const Header = () => {
             </Link>
             <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <CreditCard size={16} />
-              Products
+              Tools
             </Link>         
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Lightbulb size={16} />

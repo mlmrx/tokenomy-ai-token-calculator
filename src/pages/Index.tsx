@@ -7,6 +7,7 @@ import MemoryCalculator from "../components/MemoryCalculator";
 import EnergyUsageEstimator from "../components/EnergyUsageEstimator";
 import AIContentDetector from "../components/AIContentDetector";
 import GpuMonitoring from "./GpuMonitoring";
+import TokenObservability from "./TokenObservability";
 import TokenLeaderboard from "./TokenLeaderboard";
 import MainNavigation from "../components/MainNavigation";
 import LearnMoreSidebar from "../components/LearnMoreSidebar";
@@ -38,13 +39,7 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleTabChange = (tab: string) => {
-    if (tab === 'observability') {
-      navigate('/observability');
-    } else {
-      setActiveTab(tab);
-    }
-  };
+
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -62,6 +57,8 @@ const Index = () => {
         return <GpuMonitoring />;
       case "token-leaderboard":
         return <TokenLeaderboard />;
+        case "observability":
+        return <TokenObservability />;
       default:
         return <TokenCalculator />;
     }

@@ -19,12 +19,15 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(99,102,241,0.15),transparent_45%)] -z-10"></div>
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
-            <div className="space-y-4 max-w-3xl">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
-                1,000,000,000,000,000,000 tokens per month
+            <div className="space-y-6 max-w-3xl">
+              <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
+                Trillions of Trillions AI/ML Tokens!
+              </p>
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">                
+                Predict. Optimize. Ship AI with confidence.
               </h1>
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
-                Unlock the full potential of your AI investments with tools that maximize performance while optimizing costs.
+                Tokenomy forecasts token count, dollars, latency & energy before an API call, so your team ships without surprise bills.
               </p>
             </div>
             
@@ -35,7 +38,7 @@ const Homepage = () => {
                 asChild
               >
                 <Link to="/tools">
-                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                  Try our tools - Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>

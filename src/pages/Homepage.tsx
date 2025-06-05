@@ -5,14 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles} from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
 const Homepage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AINewsMarquee />
-      
+
       {/* Hero Section */}
       <section className="relative overflow-hidden py-4 md:py-4">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-indigo-950/20 dark:to-purple-950/20 -z-10"></div>
@@ -23,17 +23,17 @@ const Homepage = () => {
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
                 Trillions of Trillions AI/ML Tokens!
               </p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">                
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
                 Predict. Optimize. Ship AI with confidence.
               </h1>
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
                 Tokenomy forecasts token count, dollars, latency & energy before an API call, so your team ships without surprise bills.
               </p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 shadow-md"
                 asChild
               >
@@ -46,16 +46,15 @@ const Homepage = () => {
                   Learn More
                 </Link>
               </Button>
-              
-                  {/* 4. Built for builders logos */}
-      <div className="flex flex-col sm:flex-row gap-3"></div>
-        <h2 className="text-center text-xl font-semibold mb-8">Built for builders</h2>
-        <div className="flex flex-wrap justify-center gap-6 text-lg font-medium">
-          {['VS Code', 'LangChain', 'Python', 'JS/TS', 'GitHub Actions'].map(l => (
-            <span key={l} className="px-4 py-2 bg-gray-100 rounded-full">{l}</span>
-          ))}
-        </div>
-     </div>
+            </div>
+            {/* 4. Built for builders logos */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <h2 className="text-center text-xl font-semibold mb-8">Built for builders</h2>
+              <div className="flex flex-wrap justify-center gap-6 text-lg font-medium">
+                {['VS Code', 'Cursor', 'Replit', 'Windsurf', 'Lovable', 'Bolt', 'LangChain', 'Python', 'JS/TS', 'GitHub Actions'].map(l => (
+                  <span key={l} className="px-4 py-2 bg-gray-100 rounded-full">{l}</span>
+                ))}
+              </div>
             </div>
 
 
@@ -74,7 +73,7 @@ const Homepage = () => {
               Optimize your AI interactions with our comprehensive suite of token analysis tools
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
               <CardContent className="pt-5">
@@ -92,7 +91,7 @@ const Homepage = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="border-2 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
@@ -109,7 +108,7 @@ const Homepage = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
@@ -126,7 +125,7 @@ const Homepage = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-900 transition-colors">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
@@ -143,7 +142,7 @@ const Homepage = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* New Energy Usage Estimator Card */}
             <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors">
               <CardContent className="pt-5">
@@ -215,7 +214,7 @@ const Homepage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Why Choose Us Section */}
       <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
@@ -225,7 +224,7 @@ const Homepage = () => {
               Our platform offers unique advantages for AI developers and content creators
             </p>
           </div>
-          
+
           <Tabs defaultValue="accuracy" className="max-w-3xl mx-auto">
             <TabsList className="w-full justify-center mb-6">
               <TabsTrigger value="accuracy">Accuracy</TabsTrigger>
@@ -233,7 +232,7 @@ const Homepage = () => {
               <TabsTrigger value="cost">Cost</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="accuracy" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
@@ -242,13 +241,13 @@ const Homepage = () => {
                 <div>
                   <h3 className="text-xl font-semibold">Precise Token Calculations</h3>
                   <p className="mt-2 text-muted-foreground">
-                    Our algorithms provide the most accurate token count estimations across all major AI models, 
+                    Our algorithms provide the most accurate token count estimations across all major AI models,
                     helping you optimize your prompts with confidence.
                   </p>
                 </div>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="speed" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
@@ -257,13 +256,13 @@ const Homepage = () => {
                 <div>
                   <h3 className="text-xl font-semibold">Real-time Analysis</h3>
                   <p className="mt-2 text-muted-foreground">
-                    Get instant feedback on your token usage and processing speeds, allowing you to 
+                    Get instant feedback on your token usage and processing speeds, allowing you to
                     make quick adjustments and optimize for faster AI responses.
                   </p>
                 </div>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="cost" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
@@ -272,13 +271,13 @@ const Homepage = () => {
                 <div>
                   <h3 className="text-xl font-semibold">Cost Optimization</h3>
                   <p className="mt-2 text-muted-foreground">
-                    Reduce your AI expenditure by up to 40% with our intelligent token optimization 
+                    Reduce your AI expenditure by up to 40% with our intelligent token optimization
                     strategies and model comparison tools.
                   </p>
                 </div>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="security" className="space-y-3">
               <div className="flex gap-4 items-start">
                 <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
@@ -287,7 +286,7 @@ const Homepage = () => {
                 <div>
                   <h3 className="text-xl font-semibold">Secure Analysis</h3>
                   <p className="mt-2 text-muted-foreground">
-                    Your data never leaves your browser. All calculations and simulations are performed 
+                    Your data never leaves your browser. All calculations and simulations are performed
                     client-side, ensuring maximum privacy and security.
                   </p>
                 </div>
@@ -296,12 +295,12 @@ const Homepage = () => {
           </Tabs>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 -z-10"></div>
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 -z-10"></div>
-        
+
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center  space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">Ready to Optimize Your AI Token Usage?</h2>
@@ -309,7 +308,7 @@ const Homepage = () => {
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.
             </p>
             <div className="flex flex-col sm:flex-row gap-1 justify-center">
-              <Button 
+              <Button
                 size="lg"
                 className="bg-white text-indigo-700 hover:bg-gray-100"
                 asChild
@@ -318,7 +317,7 @@ const Homepage = () => {
                   Start Now <ArrowRight className="ml-2 h-2 w-4" />
                 </Link>
               </Button>
-              <Button 
+              <Button
                 size="lg"
                 variant="outline"
                 className="bg-transparent border-white text-white hover:bg-white/10"
@@ -335,7 +334,7 @@ const Homepage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Code Example Section */}
       <section className="py-12 md:py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
@@ -370,7 +369,7 @@ const Homepage = () => {
               </div>
               <Button variant="outline" className="mt-6">View Documentation</Button>
             </div>
-            
+
             <div className="bg-gray-900 text-gray-50 p-4 rounded-lg shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1.5">
@@ -384,52 +383,52 @@ const Homepage = () => {
                 <code className="text-blue-400">import</code>
                 <code className="text-gray-50"> {"{"} tokenAnalyzer {"}"} </code>
                 <code className="text-blue-400">from</code>
-                <code className="text-green-400"> 'tokenomy-js'</code>;<br/><br/>
-                
+                <code className="text-green-400"> 'tokenomy-js'</code>;<br /><br />
+
                 <code className="text-purple-400">const</code>
                 <code className="text-gray-50"> analyzer = </code>
                 <code className="text-blue-400">new</code>
                 <code className="text-yellow-400"> tokenAnalyzer</code>
-                <code className="text-gray-50">({"{"}</code><br/>
+                <code className="text-gray-50">({"{"}</code><br />
                 <code className="text-gray-50">  model: </code>
-                <code className="text-green-400">'gpt-4-turbo'</code>,<br/>
+                <code className="text-green-400">'gpt-4-turbo'</code>,<br />
                 <code className="text-gray-50">  options: {"{"} </code>
                 <code className="text-gray-300">precision: </code>
-                <code className="text-blue-400">true</code>,<br/>
+                <code className="text-blue-400">true</code>,<br />
                 <code className="text-gray-50">            debug: </code>
                 <code className="text-blue-400">false</code>
-                <code className="text-gray-50"> {"}"}</code><br/>
-                <code className="text-gray-50">{"}"})</code>;<br/><br/>
-                
-                <code className="text-green-400">// Analyze text and get token information</code><br/>
+                <code className="text-gray-50"> {"}"}</code><br />
+                <code className="text-gray-50">{"}"})</code>;<br /><br />
+
+                <code className="text-green-400">// Analyze text and get token information</code><br />
                 <code className="text-purple-400">async function</code>
                 <code className="text-yellow-300"> analyzePrompt</code>
-                <code className="text-gray-50">(text) {"{"}</code><br/>
+                <code className="text-gray-50">(text) {"{"}</code><br />
                 <code className="text-gray-50">  const result = </code>
                 <code className="text-blue-400">await</code>
-                <code className="text-gray-50"> analyzer.calculate(text);</code><br/><br/>
-                
+                <code className="text-gray-50"> analyzer.calculate(text);</code><br /><br />
+
                 <code className="text-gray-50">  console.log(</code>
                 <code className="text-green-400">`Token count: </code>
                 <code className="text-gray-50">{"${result.tokens}"}</code>
                 <code className="text-green-400">`</code>
-                <code className="text-gray-50">);</code><br/>
+                <code className="text-gray-50">);</code><br />
                 <code className="text-gray-50">  console.log(</code>
                 <code className="text-green-400">`Estimated cost: </code>
                 <code className="text-gray-50">{"${result.cost.toFixed(6)}"}</code>
                 <code className="text-green-400">`</code>
-                <code className="text-gray-50">);</code><br/>
-                <code className="text-gray-50">  </code><br/>
+                <code className="text-gray-50">);</code><br />
+                <code className="text-gray-50">  </code><br />
                 <code className="text-gray-50">  </code>
                 <code className="text-blue-400">return</code>
-                <code className="text-gray-50"> result;</code><br/>
+                <code className="text-gray-50"> result;</code><br />
                 <code className="text-gray-50">{"}"}</code>
               </pre>
             </div>
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );

@@ -50,6 +50,16 @@ export function ThemeProvider({
     } else {
       root.classList.add(theme);
     }
+
+    // Add glassmorphic support detection
+    const supportsBackdropFilter = CSS.supports('backdrop-filter', 'blur(1px)') || 
+                                  CSS.supports('-webkit-backdrop-filter', 'blur(1px)');
+    
+    if (supportsBackdropFilter) {
+      root.classList.add('supports-backdrop-filter');
+    } else {
+      root.classList.add('no-backdrop-filter');
+    }
   }, [theme]);
 
   const value = React.useMemo(

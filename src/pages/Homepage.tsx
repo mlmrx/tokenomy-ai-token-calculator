@@ -13,17 +13,24 @@ const Homepage = () => {
     <div className="flex flex-col min-h-screen bg-background">
       <AINewsMarquee />
 
-      {/* Hero Section */}
+      {/* Hero Section with Glassmorphic Background */}
       <section className="relative overflow-hidden py-4 md:py-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-indigo-950/20 dark:to-purple-950/20 -z-10"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(99,102,241,0.15),transparent_45%)] -z-10"></div>
-        <div className="container px-4 md:px-6 mx-auto">
+        {/* Animated Background */}
+        <div className="absolute inset-0 animated-gradient -z-20"></div>
+        <div className="absolute inset-0 glass-hero -z-10"></div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full floating blur-sm"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-purple-400/20 rounded-full floating-delayed blur-sm"></div>
+        <div className="absolute bottom-20 left-1/3 w-16 h-16 bg-blue-400/15 rounded-full floating blur-sm"></div>
+
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
             <div className="space-y-6 max-w-3xl">
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
                 Trillions of Trillions AI/ML Tokens!
               </p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600">
                 Predict. Optimize. Ship AI with confidence.
               </h1>
               <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
@@ -34,170 +41,170 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 shadow-md"
+                className="glass-button text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
                 <Link to="/tools">
                   Try our tools - Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" className="glass-button bg-white/20 text-gray-800 dark:text-white border-0" asChild>
                 <Link to="/features">
                   Learn More
                 </Link>
               </Button>
             </div>
-           
 
-
-            {/* Token Stats Carousel */}
-            <TokenStatsCarousel />
+            {/* Token Stats Carousel with Glass Effect */}
+            <div className="glass-card p-4 w-full">
+              <TokenStatsCarousel />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-4 md:py-4 bg-white dark:bg-gray-950">
-        <div className="container px-4 md:px-6 mx-auto">
+      <section className="py-4 md:py-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-gray-900/50 dark:via-indigo-950/20 dark:to-purple-950/20"></div>
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">Powerful Token Management Tools</h2>
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Powerful Token Management Tools</h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Optimize your AI interactions with our comprehensive suite of token analysis tools
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-blue-200/30 dark:hover:border-blue-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full glass">
                     <Calculator className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Calculator</h3>
                   <p className="text-muted-foreground">
                     Calculate tokens, costs, and analyze your content across different AI models
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=calculator">Try Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-indigo-200/30 dark:hover:border-indigo-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full glass">
                     <Eye className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Observability</h3>
                   <p className="text-muted-foreground">
                     Real-time monitoring and analytics for AI token usage
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/observability">View Observatory</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-purple-200/30 dark:hover:border-purple-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full glass">
                     <LineChart className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Speed Simulator</h3>
                   <p className="text-muted-foreground">
                     Simulate token processing speeds and optimize for faster AI response times
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=speed">Try Simulator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-amber-200/30 dark:hover:border-amber-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-full glass">
                     <BarChart className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Memory Calculator</h3>
                   <p className="text-muted-foreground">
                     Estimate memory requirements and optimize token usage for complex AI tasks
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=memory">Try Memory Calculator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* New Energy Usage Estimator Card */}
-            <Card className="border-2 hover:border-green-200 dark:hover:border-green-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-green-200/30 dark:hover:border-green-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full glass">
                     <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Energy Usage Estimator</h3>
                   <p className="text-muted-foreground">
                     Calculate the environmental impact and energy consumption of your AI token usage
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=energy">Try Energy Estimator</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-cyan-200 dark:hover:border-cyan-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-cyan-200/30 dark:hover:border-cyan-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full glass">
                     <Search className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <h3 className="text-xl font-semibold">AI Content Detector</h3>
                   <p className="text-muted-foreground">
                     Detect AI-generated text and verify original content
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=detector">Try Detector</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-rose-200 dark:hover:border-rose-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-rose-200/30 dark:hover:border-rose-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-rose-100 dark:bg-rose-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-rose-500/20 to-pink-500/20 rounded-full glass">
                     <Cpu className="h-6 w-6 text-rose-600 dark:text-rose-400" />
                   </div>
                   <h3 className="text-xl font-semibold">GPU Token Monitor</h3>
                   <p className="text-muted-foreground">
                     View token throughput statistics for individual GPUs
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=gpu-monitor">View Monitor</Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-yellow-200 dark:hover:border-yellow-900 transition-colors">
+            <Card className="glass-feature border-0 hover:border-yellow-200/30 dark:hover:border-yellow-900/30 transition-all duration-300">
               <CardContent className="pt-5">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30 rounded-full">
+                  <div className="p-3 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-full glass">
                     <Trophy className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Leaderboard</h3>
                   <p className="text-muted-foreground">
                     View token Leaderboard
                   </p>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
                   </Button>
                 </div>
@@ -208,101 +215,104 @@ const Homepage = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="container px-4 md:px-6 mx-auto">
+      <section className="py-12 md:py-16 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-indigo-50/40 to-purple-50/80 dark:from-gray-900/80 dark:via-indigo-950/40 dark:to-purple-950/80"></div>
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold">Why Choose Tokenomy?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Why Choose Tokenomy?</h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Our platform offers unique advantages for AI developers and content creators
             </p>
           </div>
 
-          <Tabs defaultValue="accuracy" className="max-w-3xl mx-auto">
-            <TabsList className="w-full justify-center mb-6">
-              <TabsTrigger value="accuracy">Accuracy</TabsTrigger>
-              <TabsTrigger value="speed">Speed</TabsTrigger>
-              <TabsTrigger value="cost">Cost</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-            </TabsList>
+          <div className="glass-card p-8 max-w-3xl mx-auto">
+            <Tabs defaultValue="accuracy" className="w-full">
+              <TabsList className="w-full justify-center mb-6 glass-nav border-0">
+                <TabsTrigger value="accuracy" className="glass-button border-0">Accuracy</TabsTrigger>
+                <TabsTrigger value="speed" className="glass-button border-0">Speed</TabsTrigger>
+                <TabsTrigger value="cost" className="glass-button border-0">Cost</TabsTrigger>
+                <TabsTrigger value="security" className="glass-button border-0">Security</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="accuracy" className="space-y-3">
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                  <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              <TabsContent value="accuracy" className="space-y-3">
+                <div className="flex gap-4 items-start">
+                  <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                    <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold">Precise Token Calculations</h3>
+                    <p className="mt-2 text-muted-foreground">
+                      Our algorithms provide the most accurate token count estimations across all major AI models,
+                      helping you optimize your prompts with confidence.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Precise Token Calculations</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Our algorithms provide the most accurate token count estimations across all major AI models,
-                    helping you optimize your prompts with confidence.
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
 
-            <TabsContent value="speed" className="space-y-3">
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                  <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <TabsContent value="speed" className="space-y-3">
+                <div className="flex gap-4 items-start">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                    <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold">Real-time Analysis</h3>
+                    <p className="mt-2 text-muted-foreground">
+                      Get instant feedback on your token usage and processing speeds, allowing you to
+                      make quick adjustments and optimize for faster AI responses.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Real-time Analysis</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Get instant feedback on your token usage and processing speeds, allowing you to
-                    make quick adjustments and optimize for faster AI responses.
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
 
-            <TabsContent value="cost" className="space-y-3">
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-                  <Calculator className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <TabsContent value="cost" className="space-y-3">
+                <div className="flex gap-4 items-start">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <Calculator className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold">Cost Optimization</h3>
+                    <p className="mt-2 text-muted-foreground">
+                      Reduce your AI expenditure by up to 40% with our intelligent token optimization
+                      strategies and model comparison tools.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Cost Optimization</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Reduce your AI expenditure by up to 40% with our intelligent token optimization
-                    strategies and model comparison tools.
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
 
-            <TabsContent value="security" className="space-y-3">
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
-                  <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <TabsContent value="security" className="space-y-3">
+                <div className="flex gap-4 items-start">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                    <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold">Secure Analysis</h3>
+                    <p className="mt-2 text-muted-foreground">
+                      Your data never leaves your browser. All calculations and simulations are performed
+                      client-side, ensuring maximum privacy and security.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold">Secure Analysis</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Your data never leaves your browser. All calculations and simulations are performed
-                    client-side, ensuring maximum privacy and security.
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 -z-10"></div>
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 -z-10"></div>
+        <div className="absolute inset-0 animated-gradient -z-10"></div>
+        <div className="absolute inset-0 glass-hero"></div>
 
-        <div className="container px-4 md:px-6 mx-auto">
-          <div className="max-w-3xl mx-auto text-center  space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">Ready to Optimize Your AI Token Usage?</h2>
-            <p className="text-xl opacity-90">
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-white">Ready to Optimize Your AI Token Usage?</h2>
+            <p className="text-xl text-white/90">
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.
             </p>
             <div className="flex flex-col sm:flex-row gap-1 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-indigo-700 hover:bg-gray-100"
+                className="glass-button text-gray-800 dark:text-white border-0 bg-white/30 hover:bg-white/40"
                 asChild
               >
                 <Link to="/tools">
@@ -311,8 +321,7 @@ const Homepage = () => {
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white/10"
+                className="glass-button bg-transparent border border-white/30 text-white hover:bg-white/10"
                 asChild
               >
                 <Link to="/contact">
@@ -320,7 +329,7 @@ const Homepage = () => {
                 </Link>
               </Button>
             </div>
-            <div className="text-sm opacity-80 pt-2">
+            <div className="text-sm text-white/80 pt-2">
               <p>No sign-up required to try our basic tools</p>
             </div>
           </div>
@@ -328,11 +337,12 @@ const Homepage = () => {
       </section>
 
       {/* Code Example Section */}
-      <section className="py-12 md:py-16 bg-white dark:bg-gray-950">
-        <div className="container px-4 md:px-6 mx-auto">
+      <section className="py-12 md:py-16 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-gray-50/50 to-indigo-50/50 dark:from-gray-950/50 dark:via-gray-900/50 dark:to-indigo-950/50"></div>
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">For Developers, By Developers</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">For Developers, By Developers</h2>
               <p className="text-lg text-muted-foreground mb-4">
                 Tokenomy provides powerful APIs and libraries for integrating token optimization directly into your applications.
               </p>
@@ -359,10 +369,10 @@ const Homepage = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="outline" className="mt-6">View Documentation</Button>
+              <Button variant="outline" className="mt-6 glass-button border-0">View Documentation</Button>
             </div>
 
-            <div className="bg-gray-900 text-gray-50 p-4 rounded-lg shadow-xl">
+            <div className="enhanced-glass-card p-6 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1.5">
                   <div className="h-3 w-3 rounded-full bg-red-500"></div>

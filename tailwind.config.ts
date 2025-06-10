@@ -72,6 +72,13 @@ export default {
 			scale: {
 				'103': '1.03',
 			},
+			backdropBlur: {
+				xs: '2px',
+			},
+			backgroundImage: {
+				'glassmorphic-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+				'glassmorphic-border': 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent)',
+			},
 			keyframes: {
 				'accordion-down': {
 					from: {
@@ -104,6 +111,18 @@ export default {
 				slideInLeft: {
 					'0%': { transform: 'translateX(-100%)' },
 					'100%': { transform: 'translateX(0)' }
+				},
+				gradient: {
+					'0%, 100%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' }
+				},
+				floating: {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-20px)' }
+				},
+				shimmer: {
+					'0%': { backgroundPosition: '-200px 0' },
+					'100%': { backgroundPosition: 'calc(200px + 100%) 0' }
 				}
 			},
 			animation: {
@@ -112,7 +131,10 @@ export default {
 				'fade-in': 'fadeIn 0.3s ease-out forwards',
 				'scale-in': 'scaleIn 0.2s ease-out forwards',
 				'slide-in-right': 'slideInRight 0.3s ease-out forwards',
-				'slide-in-left': 'slideInLeft 0.3s ease-out forwards'
+				'slide-in-left': 'slideInLeft 0.3s ease-out forwards',
+				'gradient': 'gradient 15s ease infinite',
+				'floating': 'floating 6s ease-in-out infinite',
+				'shimmer': 'shimmer 2s infinite'
 			}
 		}
 	},

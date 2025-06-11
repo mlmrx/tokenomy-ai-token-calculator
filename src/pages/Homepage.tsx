@@ -305,8 +305,8 @@ const Homepage = () => {
 
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Ready to Optimize Your AI Token Usage?</h2>
-            <p className="text-xl text-white/90">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Ready to Optimize Your AI Token Usage?</h2>
+            <p className="text-xl text-gray/90">
               Join thousands of developers and content creators who are saving time and money with Tokenomy's tools.
             </p>
             <div className="flex flex-col sm:flex-row gap-1 justify-center">
@@ -321,7 +321,7 @@ const Homepage = () => {
               </Button>
               <Button
                 size="lg"
-                className="glass-button bg-transparent border border-white/30 text-white hover:bg-white/10"
+                className="glass-button bg-transparent border border-white/30 text-gray hover:bg-white/10"
                 asChild
               >
                 <Link to="/contact">
@@ -329,7 +329,7 @@ const Homepage = () => {
                 </Link>
               </Button>
             </div>
-            <div className="text-sm text-white/80 pt-2">
+            <div className="text-sm text-gray/80 pt-2">
               <p>No sign-up required to try our basic tools</p>
             </div>
           </div>

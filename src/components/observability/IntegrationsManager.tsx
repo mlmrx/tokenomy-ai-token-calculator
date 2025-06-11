@@ -7,7 +7,9 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, CheckCircle, XCircle, Globe, Database, AlertCircle, Key, Shield, ExternalLink } from "lucide-react";
+import { Settings, CheckCircle, XCircle, Globe, Database, AlertCircle, Key, Shield, ExternalLink, Code, Play, Eye } from "lucide-react";
+import IntegrationDocumentation from "./IntegrationDocumentation";
+import IntegrationTester from "./IntegrationTester";
 
 interface Integration {
   id: string;
@@ -21,11 +23,18 @@ interface Integration {
   usageEndpoint: string;
   requiredAuth: 'api_key' | 'oauth' | 'bearer' | 'basic' | 'azure_token';
   documentationUrl: string;
-  usageMethod: 'direct_endpoint' | 'response_metadata' | 'cloudwatch' | 'cost_api';
+  usageMethod: 'direct_endpoint' | 'response_metadata' | 'cloudwatch' | 'cost_api' | 'response_headers' | 'dashboard_only';
   apiKey?: string;
   healthCheck?: string;
   authHeaders: Record<string, string>;
   responseStructure: string;
+  sampleRequest?: string;
+  sampleResponse?: string;
+  validationRules?: {
+    endpoint?: RegExp[];
+    apiKey?: RegExp[];
+    requiredParams?: string[];
+  };
 }
 
 const IntegrationsManager: React.FC = () => {
@@ -45,7 +54,29 @@ const IntegrationsManager: React.FC = () => {
       healthCheck: 'https://api.openai.com/v1/models',
       authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json' },
       responseStructure: 'daily_costs[].line_items[]{name, cost}, total_cost',
-      usageMethod: 'direct_endpoint'
+      usageMethod: 'direct_endpoint',
+      sampleRequest: `curl --request GET \\
+  --url 'https://api.openai.com/v1/usage?date=2024-06-12' \\
+  --header 'Authorization: Bearer YOUR_API_KEY' \\
+  --header 'Content-Type: application/json'`,
+      sampleResponse: `{
+  "object": "list",
+  "daily_costs": [
+    {
+      "timestamp": 1718150400,
+      "line_items": [
+        {"name": "GPT-4o", "cost": 0.15},
+        {"name": "DALL-E 3", "cost": 0.08}
+      ]
+    }
+  ],
+  "total_cost": 0.23
+}`,
+      validationRules: {
+        endpoint: [/api\.openai\.com/],
+        apiKey: [/^sk-/],
+        requiredParams: ['Authorization']
+      }
     },
     {
       id: '2',
@@ -60,7 +91,25 @@ const IntegrationsManager: React.FC = () => {
       healthCheck: 'https://generativelanguage.googleapis.com/v1/models',
       authHeaders: { 'x-goog-api-key': '{api_key}', 'Content-Type': 'application/json' },
       responseStructure: 'usageMetadata{promptTokenCount, candidatesTokenCount, totalTokenCount}',
-      usageMethod: 'response_metadata'
+      usageMethod: 'response_metadata',
+      sampleRequest: `import google.generativeai as genai
+
+genai.configure(api_key="YOUR_API_KEY")
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content("Hello, world!")`,
+      sampleResponse: `{
+  "candidates": [...],
+  "usageMetadata": {
+    "promptTokenCount": 2,
+    "candidatesTokenCount": 8,
+    "totalTokenCount": 10
+  }
+}`,
+      validationRules: {
+        endpoint: [/generativelanguage\.googleapis\.com/],
+        apiKey: [/.{20,}/],
+        requiredParams: ['x-goog-api-key']
+      }
     },
     {
       id: '3',
@@ -77,7 +126,25 @@ const IntegrationsManager: React.FC = () => {
       healthCheck: 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CognitiveServices/accounts?api-version=2023-05-01',
       authHeaders: { 'Authorization': 'Bearer {access_token}', 'Content-Type': 'application/json' },
       responseStructure: 'value[]{unit, name{value, localizedValue}, currentValue, limit}',
-      usageMethod: 'direct_endpoint'
+      usageMethod: 'direct_endpoint',
+      sampleRequest: `curl -X GET \\
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \\
+  "https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CognitiveServices/locations/westus/usages?api-version=2023-05-01"`,
+      sampleResponse: `{
+  "value": [
+    {
+      "unit": "Count",
+      "name": {"value": "Text-Translation", "localizedValue": "Text-Translation"},
+      "quotaPeriod": "P1D",
+      "limit": 5000000.0,
+      "currentValue": 12345.0
+    }
+  ]
+}`,
+      validationRules: {
+        endpoint: [/management\.azure\.com/, /openai\.azure\.com/],
+        requiredParams: ['subscriptionId', 'location']
+      }
     },
     {
       id: '4',
@@ -94,7 +161,26 @@ const IntegrationsManager: React.FC = () => {
       healthCheck: 'https://bedrock.us-east-1.amazonaws.com/models',
       authHeaders: { 'Authorization': 'AWS4-HMAC-SHA256 {credentials}', 'Content-Type': 'application/x-amz-json-1.1' },
       responseStructure: 'CloudWatch Metrics: InvocationCount, InputTokenCount, OutputTokenCount',
-      usageMethod: 'cloudwatch'
+      usageMethod: 'cloudwatch',
+      sampleRequest: `// AWS SDK usage for CloudWatch metrics
+const cloudWatch = new CloudWatchClient({ region: 'us-east-1' });
+const params = {
+  MetricName: 'InvocationCount',
+  Namespace: 'AWS/Bedrock'
+};`,
+      sampleResponse: `{
+  "MetricDataResults": [
+    {
+      "Id": "bedrock_invocations",
+      "Values": [150, 200, 175],
+      "Timestamps": ["2024-06-12T10:00:00Z", ...]
+    }
+  ]
+}`,
+      validationRules: {
+        endpoint: [/amazonaws\.com/],
+        requiredParams: ['region']
+      }
     },
     {
       id: '5',
@@ -111,10 +197,138 @@ const IntegrationsManager: React.FC = () => {
       healthCheck: 'https://api.anthropic.com/v1/models',
       authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
       responseStructure: 'usage{input_tokens, output_tokens}',
-      usageMethod: 'response_metadata'
+      usageMethod: 'response_metadata',
+      sampleRequest: `import anthropic
+
+client = anthropic.Anthropic(api_key="YOUR_API_KEY")
+message = client.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello!"}]
+)`,
+      sampleResponse: `{
+  "id": "msg_01Abc...",
+  "type": "message",
+  "role": "assistant",
+  "content": [{"type": "text", "text": "Hello! It's nice to connect with you..."}],
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 17
+  }
+}`,
+      validationRules: {
+        endpoint: [/api\.anthropic\.com/],
+        apiKey: [/^sk-ant-/],
+        requiredParams: ['Authorization', 'anthropic-version']
+      }
     },
     {
       id: '6',
+      name: 'Mistral AI',
+      provider: 'mistral',
+      status: 'disconnected',
+      icon: '🇫🇷',
+      endpoint: 'https://api.mistral.ai/v1/chat/completions',
+      usageEndpoint: 'https://api.mistral.ai/v1/chat/completions',
+      requiredAuth: 'bearer',
+      documentationUrl: 'https://docs.mistral.ai/api/',
+      healthCheck: 'https://api.mistral.ai/v1/models',
+      authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      responseStructure: 'usage{prompt_tokens, completion_tokens}, headers{x-ratelimit-remaining-tokens-month}',
+      usageMethod: 'response_headers',
+      sampleRequest: `curl --location 'https://api.mistral.ai/v1/chat/completions' \\
+--header 'Content-Type: application/json' \\
+--header 'Accept: application/json' \\
+--header 'Authorization: Bearer YOUR_MISTRAL_API_KEY' \\
+--data '{"model": "mistral-large-latest", "messages": [{"role": "user", "content": "Hello!"}]}'`,
+      sampleResponse: `{
+  "id": "cmpl-e61f2a331a93441e88836a287b52b04c",
+  "choices": [...],
+  "usage": {
+    "prompt_tokens": 19,
+    "completion_tokens": 28,
+    "total_tokens": 47
+  }
+}
+Headers: x-ratelimit-remaining-tokens-month: 99998801`,
+      validationRules: {
+        endpoint: [/api\.mistral\.ai/],
+        apiKey: [/.{20,}/],
+        requiredParams: ['Authorization']
+      }
+    },
+    {
+      id: '7',
+      name: 'Cohere',
+      provider: 'cohere',
+      status: 'disconnected',
+      icon: '🔮',
+      endpoint: 'https://api.cohere.com/v1/chat',
+      usageEndpoint: 'https://api.cohere.com/v1/chat',
+      requiredAuth: 'bearer',
+      documentationUrl: 'https://docs.cohere.com/reference/chat',
+      healthCheck: 'https://api.cohere.com/v1/models',
+      authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json' },
+      responseStructure: 'meta.billed_units{input_tokens, output_tokens}',
+      usageMethod: 'response_metadata',
+      sampleRequest: `curl --request POST \\
+  --url https://api.cohere.com/v1/chat \\
+  --header 'Authorization: Bearer YOUR_COHERE_API_KEY' \\
+  --header 'Content-Type: application/json' \\
+  --data '{"message": "Tell me a fun fact", "model": "command-r-plus"}'`,
+      sampleResponse: `{
+  "text": "A fun fact about the Roman Empire...",
+  "generation_id": "c2a70b79-2243-4876-81a1-c6c74b46c1f8",
+  "meta": {
+    "billed_units": {
+      "input_tokens": 20,
+      "output_tokens": 105
+    }
+  }
+}`,
+      validationRules: {
+        endpoint: [/api\.cohere\.com/],
+        apiKey: [/.{20,}/],
+        requiredParams: ['Authorization']
+      }
+    },
+    {
+      id: '8',
+      name: 'AI21 Labs',
+      provider: 'ai21',
+      status: 'disconnected',
+      icon: '🇮🇱',
+      endpoint: 'https://api.ai21.com/studio/v1/j2-ultra/chat',
+      usageEndpoint: 'https://api.ai21.com/studio/v1/j2-ultra/chat',
+      requiredAuth: 'bearer',
+      documentationUrl: 'https://docs.ai21.com/reference/j2-chat-ref',
+      healthCheck: 'https://api.ai21.com/studio/v1/models',
+      authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json' },
+      responseStructure: 'Dashboard-only billing tracking',
+      usageMethod: 'dashboard_only',
+      sampleRequest: `curl --request POST \\
+  --url https://api.ai21.com/studio/v1/j2-ultra/chat \\
+  --header 'Authorization: Bearer YOUR_AI21_API_KEY' \\
+  --header 'Content-Type: application/json' \\
+  --data '{"messages": [{"role": "user", "content": "What are transformers?"}]}'`,
+      sampleResponse: `{
+  "id": "a21.chat-completion-1.20250611.123456.78910",
+  "outputs": [
+    {
+      "text": "Transformer models have several key advantages...",
+      "role": "assistant",
+      "finishReason": {"reason": "endoftext"}
+    }
+  ]
+}`,
+      validationRules: {
+        endpoint: [/api\.ai21\.com/],
+        apiKey: [/.{20,}/],
+        requiredParams: ['Authorization']
+      }
+    },
+    {
+      id: '9',
       name: 'Salesforce Einstein',
       provider: 'salesforce',
       status: 'disconnected',
@@ -125,7 +339,13 @@ const IntegrationsManager: React.FC = () => {
       documentationUrl: 'https://developer.salesforce.com/docs/atlas.en-us.einstein_platform.meta/einstein_platform/',
       authHeaders: { 'Authorization': 'Bearer {oauth_token}', 'Content-Type': 'application/json' },
       responseStructure: 'Coming Soon',
-      usageMethod: 'direct_endpoint'
+      usageMethod: 'direct_endpoint',
+      sampleRequest: 'Coming Soon',
+      sampleResponse: 'Coming Soon',
+      validationRules: {
+        endpoint: [/salesforce\.com/],
+        requiredParams: ['oauth_token']
+      }
     }
   ]);
 
@@ -139,6 +359,8 @@ const IntegrationsManager: React.FC = () => {
     resourceGroup: '' 
   });
   const [testInProgress, setTestInProgress] = useState<string | null>(null);
+  const [showDocumentation, setShowDocumentation] = useState<string | null>(null);
+  const [showTester, setShowTester] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleToggleConnection = async (integrationId: string) => {
@@ -166,7 +388,12 @@ const IntegrationsManager: React.FC = () => {
     try {
       new URL(endpoint);
       
-      // Check for provider-specific URL patterns
+      // Use validation rules if available
+      if (integration.validationRules?.endpoint) {
+        return integration.validationRules.endpoint.some(pattern => pattern.test(endpoint));
+      }
+      
+      // Fallback to provider-specific patterns
       switch (integration.provider) {
         case 'openai':
           return endpoint.includes('api.openai.com');
@@ -178,6 +405,12 @@ const IntegrationsManager: React.FC = () => {
           return endpoint.includes('amazonaws.com') || endpoint.includes('monitoring');
         case 'anthropic':
           return endpoint.includes('api.anthropic.com');
+        case 'mistral':
+          return endpoint.includes('api.mistral.ai');
+        case 'cohere':
+          return endpoint.includes('api.cohere.com');
+        case 'ai21':
+          return endpoint.includes('api.ai21.com');
         case 'salesforce':
           return endpoint.includes('salesforce.com');
         default:
@@ -191,7 +424,12 @@ const IntegrationsManager: React.FC = () => {
   const validateApiKey = (apiKey: string, integration: Integration): boolean => {
     if (!apiKey) return false;
     
-    // Check for provider-specific API key patterns
+    // Use validation rules if available
+    if (integration.validationRules?.apiKey) {
+      return integration.validationRules.apiKey.some(pattern => pattern.test(apiKey));
+    }
+    
+    // Fallback to provider-specific patterns
     switch (integration.provider) {
       case 'openai':
         return apiKey.startsWith('sk-');
@@ -203,6 +441,10 @@ const IntegrationsManager: React.FC = () => {
         return apiKey.startsWith('sk-ant-');
       case 'aws':
         return apiKey.includes('AKIA') || apiKey.length > 20;
+      case 'mistral':
+      case 'cohere':
+      case 'ai21':
+        return apiKey.length > 20;
       case 'salesforce':
         return apiKey.length > 20;
       default:
@@ -235,6 +477,25 @@ const IntegrationsManager: React.FC = () => {
         variant: "destructive",
       });
       return;
+    }
+    
+    // Check required parameters
+    if (integration.validationRules?.requiredParams) {
+      const missingParams = integration.validationRules.requiredParams.filter(param => {
+        if (param === 'Authorization' && !apiKey) return true;
+        if (param === 'subscriptionId' && !formData.subscriptionId) return true;
+        if (param === 'location' && !formData.location) return true;
+        return false;
+      });
+      
+      if (missingParams.length > 0) {
+        toast({
+          title: "Missing Required Parameters",
+          description: `Please provide: ${missingParams.join(', ')}`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
     
     setIntegrations(prev => prev.map(int => {
@@ -284,21 +545,31 @@ const IntegrationsManager: React.FC = () => {
       // Simulate API test with realistic delays
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Special handling for different providers
+      // Enhanced provider-specific testing
       let success = false;
       switch (integration.provider) {
         case 'openai':
         case 'anthropic':
-          success = endpoint.includes('api.') && apiKey?.startsWith('sk-');
+          success = endpoint.includes('api.') && apiKey?.match(integration.validationRules?.apiKey?.[0] || /.+/);
           break;
         case 'google':
           success = endpoint.includes('generativelanguage') && apiKey && apiKey.length > 20;
           break;
         case 'azure':
-          success = endpoint.includes('azure.com') || endpoint.includes('management.azure.com');
+          success = (endpoint.includes('azure.com') || endpoint.includes('management.azure.com')) && 
+                   (formData.subscriptionId || formData.accessToken);
           break;
         case 'aws':
           success = endpoint.includes('amazonaws.com');
+          break;
+        case 'mistral':
+          success = endpoint.includes('mistral.ai') && apiKey && apiKey.length > 20;
+          break;
+        case 'cohere':
+          success = endpoint.includes('cohere.com') && apiKey && apiKey.length > 20;
+          break;
+        case 'ai21':
+          success = endpoint.includes('ai21.com') && apiKey && apiKey.length > 20;
           break;
         case 'salesforce':
           success = false; // Coming soon
@@ -380,6 +651,9 @@ const IntegrationsManager: React.FC = () => {
               />
               <p className="text-xs text-muted-foreground mt-1">
                 {integration.provider === 'google' && "Get your API key from Google AI Studio"}
+                {integration.provider === 'mistral' && "Get your API key from La Plateforme"}
+                {integration.provider === 'cohere' && "Get your API key from Cohere Dashboard"}
+                {integration.provider === 'ai21' && "Get your API key from AI21 Studio"}
               </p>
             </div>
           </>
@@ -398,6 +672,9 @@ const IntegrationsManager: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {integration.provider === 'openai' && "Format: sk-..."}
               {integration.provider === 'anthropic' && "Format: sk-ant-..."}
+              {integration.provider === 'mistral' && "Get from La Plateforme dashboard"}
+              {integration.provider === 'cohere' && "Get from Cohere dashboard"}
+              {integration.provider === 'ai21' && "Get from AI21 Studio"}
             </p>
           </div>
         );
@@ -464,10 +741,14 @@ const IntegrationsManager: React.FC = () => {
         return <Badge variant="default">Direct API</Badge>;
       case 'response_metadata':
         return <Badge variant="secondary">Response Data</Badge>;
+      case 'response_headers':
+        return <Badge variant="outline">Response Headers</Badge>;
       case 'cloudwatch':
         return <Badge variant="outline">CloudWatch</Badge>;
       case 'cost_api':
         return <Badge variant="outline">Cost API</Badge>;
+      case 'dashboard_only':
+        return <Badge variant="destructive">Dashboard Only</Badge>;
       default:
         return <Badge variant="outline">Other</Badge>;
     }
@@ -515,6 +796,26 @@ const IntegrationsManager: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowDocumentation(
+                          showDocumentation === integration.id ? null : integration.id
+                        )}
+                        disabled={integration.status === 'testing'}
+                      >
+                        <Code className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowTester(
+                          showTester === integration.id ? null : integration.id
+                        )}
+                        disabled={integration.status === 'testing'}
+                      >
+                        <Play className="h-4 w-4" />
+                      </Button>
                       <Switch
                         checked={integration.status === 'connected'}
                         onCheckedChange={() => handleToggleConnection(integration.id)}
@@ -550,6 +851,14 @@ const IntegrationsManager: React.FC = () => {
                       <code className="text-xs bg-muted px-2 py-1 rounded">{integration.responseStructure}</code>
                     </div>
                   </div>
+
+                  {showDocumentation === integration.id && (
+                    <IntegrationDocumentation integration={integration} />
+                  )}
+
+                  {showTester === integration.id && (
+                    <IntegrationTester integration={integration} />
+                  )}
 
                   {editingIntegration === integration.id && (
                     <div className="border-t pt-4 space-y-4">

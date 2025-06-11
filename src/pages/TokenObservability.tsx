@@ -22,9 +22,12 @@ const TokenObservability = () => {
   const [selectedProvider, setSelectedProvider] = useState('all');
   const [isRealTime, setIsRealTime] = useState(true);
   const [importedData, setImportedData] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const handleDataImported = (data: any[]) => {
     setImportedData(data);
+    // Automatically switch to dashboard after importing data
+    setActiveTab('dashboard');
   };
 
   const exportData = () => {
@@ -158,41 +161,41 @@ const TokenObservability = () => {
 
         {/* Main Content */}
         <GlassmorphicTheme variant="card" className="rounded-2xl">
-          <Tabs defaultValue="dashboard" className="space-y-6 p-6">
-            <TabsList className="grid w-full grid-cols-9 bg-white/10 backdrop-blur-sm">
-              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 p-6">
+            <TabsList className="grid w-full grid-cols-9 glassmorphic-tabs bg-gradient-to-r from-slate-800/50 to-indigo-800/50 backdrop-blur-lg border border-white/10">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Activity className="h-4 w-4" />
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="import" className="flex items-center gap-2">
+              <TabsTrigger value="import" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Database className="h-4 w-4" />
                 Data Import
               </TabsTrigger>
-              <TabsTrigger value="integrations" className="flex items-center gap-2">
+              <TabsTrigger value="integrations" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Globe className="h-4 w-4" />
                 Integrations
               </TabsTrigger>
-              <TabsTrigger value="realtime" className="flex items-center gap-2">
+              <TabsTrigger value="realtime" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Eye className="h-4 w-4" />
                 Real-time
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <TabsTrigger value="analytics" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <TrendingUp className="h-4 w-4" />
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="costs" className="flex items-center gap-2">
+              <TabsTrigger value="costs" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <DollarSign className="h-4 w-4" />
                 Cost Analytics
               </TabsTrigger>
-              <TabsTrigger value="performance" className="flex items-center gap-2">
+              <TabsTrigger value="performance" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Clock className="h-4 w-4" />
                 Performance
               </TabsTrigger>
-              <TabsTrigger value="alerts" className="flex items-center gap-2">
+              <TabsTrigger value="alerts" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <AlertTriangle className="h-4 w-4" />
                 Alerts
               </TabsTrigger>
-              <TabsTrigger value="flow" className="flex items-center gap-2">
+              <TabsTrigger value="flow" className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600/80 data-[state=active]:to-indigo-600/80 data-[state=active]:backdrop-blur-md data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-white/10">
                 <Zap className="h-4 w-4" />
                 Token Flow
               </TabsTrigger>
@@ -236,6 +239,18 @@ const TokenObservability = () => {
           </Tabs>
         </GlassmorphicTheme>
       </div>
+      <style jsx global>{`
+        .glassmorphic-tabs {
+          --tab-highlight: rgba(255, 255, 255, 0.1);
+          border-radius: 0.75rem;
+          overflow: hidden;
+          backdrop-filter: blur(12px);
+        }
+        .glassmorphic-tabs [data-state=active] {
+          position: relative;
+          z-index: 10;
+        }
+      `}</style>
     </div>
   );
 };

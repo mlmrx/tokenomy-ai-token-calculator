@@ -41,7 +41,7 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="glass-button text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="glass-button text-purple-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300  dark:text-white"
                 asChild
               >
                 <Link to="/tools">

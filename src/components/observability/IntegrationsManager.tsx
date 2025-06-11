@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, CheckCircle, XCircle, Globe, Database, AlertCircle, Key, Shield } from "lucide-react";
+import { Settings, CheckCircle, XCircle, Globe, Database, AlertCircle, Key, Shield, ExternalLink } from "lucide-react";
 
 interface Integration {
   id: string;
@@ -19,10 +18,14 @@ interface Integration {
   recordsCount?: number;
   icon: string;
   endpoint: string;
-  requiredAuth: 'api_key' | 'oauth' | 'bearer' | 'basic';
+  usageEndpoint: string;
+  requiredAuth: 'api_key' | 'oauth' | 'bearer' | 'basic' | 'azure_token';
   documentationUrl: string;
+  usageMethod: 'direct_endpoint' | 'response_metadata' | 'cloudwatch' | 'cost_api';
   apiKey?: string;
   healthCheck?: string;
+  authHeaders: Record<string, string>;
+  responseStructure: string;
 }
 
 const IntegrationsManager: React.FC = () => {
@@ -36,9 +39,13 @@ const IntegrationsManager: React.FC = () => {
       recordsCount: 15420,
       icon: '🤖',
       endpoint: 'https://api.openai.com/v1/usage',
+      usageEndpoint: 'https://api.openai.com/v1/usage?date=2024-06-12',
       requiredAuth: 'bearer',
       documentationUrl: 'https://platform.openai.com/docs/api-reference/usage',
-      healthCheck: 'https://api.openai.com/v1/models'
+      healthCheck: 'https://api.openai.com/v1/models',
+      authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json' },
+      responseStructure: 'daily_costs[].line_items[]{name, cost}, total_cost',
+      usageMethod: 'direct_endpoint'
     },
     {
       id: '2',
@@ -46,10 +53,14 @@ const IntegrationsManager: React.FC = () => {
       provider: 'google',
       status: 'disconnected',
       icon: '🔷',
-      endpoint: 'https://generativelanguage.googleapis.com/v1/usage',
+      endpoint: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
+      usageEndpoint: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
       requiredAuth: 'api_key',
-      documentationUrl: 'https://ai.google.dev/api/rest',
-      healthCheck: 'https://generativelanguage.googleapis.com/v1/models'
+      documentationUrl: 'https://ai.google.dev/gemini-api/docs/reference/rest/v1/models/generateContent',
+      healthCheck: 'https://generativelanguage.googleapis.com/v1/models',
+      authHeaders: { 'x-goog-api-key': '{api_key}', 'Content-Type': 'application/json' },
+      responseStructure: 'usageMetadata{promptTokenCount, candidatesTokenCount, totalTokenCount}',
+      usageMethod: 'response_metadata'
     },
     {
       id: '3',
@@ -59,10 +70,14 @@ const IntegrationsManager: React.FC = () => {
       lastSync: '1 hour ago',
       recordsCount: 8930,
       icon: '☁️',
-      endpoint: 'https://YOUR_AZURE_OPENAI_ENDPOINT.openai.azure.com/openai/usage?api-version=2023-05-15',
-      requiredAuth: 'api_key',
-      documentationUrl: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/reference',
-      healthCheck: 'https://YOUR_AZURE_OPENAI_ENDPOINT.openai.azure.com/openai/models?api-version=2023-05-15'
+      endpoint: 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CognitiveServices/locations/{location}/usages',
+      usageEndpoint: 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CognitiveServices/locations/westus/usages?api-version=2023-05-01',
+      requiredAuth: 'azure_token',
+      documentationUrl: 'https://learn.microsoft.com/en-us/rest/api/cognitiveservices/accountmanagement/usages/list',
+      healthCheck: 'https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.CognitiveServices/accounts?api-version=2023-05-01',
+      authHeaders: { 'Authorization': 'Bearer {access_token}', 'Content-Type': 'application/json' },
+      responseStructure: 'value[]{unit, name{value, localizedValue}, currentValue, limit}',
+      usageMethod: 'direct_endpoint'
     },
     {
       id: '4',
@@ -72,28 +87,57 @@ const IntegrationsManager: React.FC = () => {
       lastSync: '1 day ago',
       recordsCount: 3240,
       icon: '🛡️',
-      endpoint: 'https://bedrock.us-east-1.amazonaws.com/usage',
+      endpoint: 'https://monitoring.us-east-1.amazonaws.com/',
+      usageEndpoint: 'CloudWatch API - InvocationCount, InputTokenCount, OutputTokenCount metrics',
       requiredAuth: 'bearer',
-      documentationUrl: 'https://docs.aws.amazon.com/bedrock/',
-      healthCheck: 'https://bedrock.us-east-1.amazonaws.com/models'
+      documentationUrl: 'https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring.html',
+      healthCheck: 'https://bedrock.us-east-1.amazonaws.com/models',
+      authHeaders: { 'Authorization': 'AWS4-HMAC-SHA256 {credentials}', 'Content-Type': 'application/x-amz-json-1.1' },
+      responseStructure: 'CloudWatch Metrics: InvocationCount, InputTokenCount, OutputTokenCount',
+      usageMethod: 'cloudwatch'
     },
     {
       id: '5',
-      name: 'Anthropic',
+      name: 'Anthropic Claude',
       provider: 'anthropic',
       status: 'connected',
       lastSync: '30 minutes ago',
       recordsCount: 12150,
       icon: '🧠',
-      endpoint: 'https://api.anthropic.com/v1/usage',
+      endpoint: 'https://api.anthropic.com/v1/messages',
+      usageEndpoint: 'https://api.anthropic.com/v1/messages',
       requiredAuth: 'bearer',
-      documentationUrl: 'https://docs.anthropic.com/claude/reference/getting-started-with-the-api',
-      healthCheck: 'https://api.anthropic.com/v1/models'
+      documentationUrl: 'https://docs.anthropic.com/claude/reference/messages_post',
+      healthCheck: 'https://api.anthropic.com/v1/models',
+      authHeaders: { 'Authorization': 'Bearer {api_key}', 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+      responseStructure: 'usage{input_tokens, output_tokens}',
+      usageMethod: 'response_metadata'
+    },
+    {
+      id: '6',
+      name: 'Salesforce Einstein',
+      provider: 'salesforce',
+      status: 'disconnected',
+      icon: '☁️',
+      endpoint: 'https://api.salesforce.com/einstein/usage',
+      usageEndpoint: 'Coming Soon - Direct Integration in Development',
+      requiredAuth: 'oauth',
+      documentationUrl: 'https://developer.salesforce.com/docs/atlas.en-us.einstein_platform.meta/einstein_platform/',
+      authHeaders: { 'Authorization': 'Bearer {oauth_token}', 'Content-Type': 'application/json' },
+      responseStructure: 'Coming Soon',
+      usageMethod: 'direct_endpoint'
     }
   ]);
 
   const [editingIntegration, setEditingIntegration] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ endpoint: '', apiKey: '', region: '', resourceGroup: '' });
+  const [formData, setFormData] = useState({ 
+    endpoint: '', 
+    apiKey: '', 
+    subscriptionId: '', 
+    location: '', 
+    accessToken: '',
+    resourceGroup: '' 
+  });
   const [testInProgress, setTestInProgress] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -129,11 +173,13 @@ const IntegrationsManager: React.FC = () => {
         case 'google':
           return endpoint.includes('generativelanguage.googleapis.com');
         case 'azure':
-          return endpoint.includes('openai.azure.com');
+          return endpoint.includes('management.azure.com') || endpoint.includes('openai.azure.com');
         case 'aws':
-          return endpoint.includes('bedrock') && endpoint.includes('amazonaws.com');
+          return endpoint.includes('amazonaws.com') || endpoint.includes('monitoring');
         case 'anthropic':
           return endpoint.includes('api.anthropic.com');
+        case 'salesforce':
+          return endpoint.includes('salesforce.com');
         default:
           return endpoint.startsWith('https://');
       }
@@ -150,11 +196,15 @@ const IntegrationsManager: React.FC = () => {
       case 'openai':
         return apiKey.startsWith('sk-');
       case 'google':
-        return apiKey.length > 20;
+        return apiKey.length > 20 && !apiKey.includes(' ');
       case 'azure':
         return apiKey.length > 20;
       case 'anthropic':
         return apiKey.startsWith('sk-ant-');
+      case 'aws':
+        return apiKey.includes('AKIA') || apiKey.length > 20;
+      case 'salesforce':
+        return apiKey.length > 20;
       default:
         return apiKey.length > 8;
     }
@@ -177,8 +227,8 @@ const IntegrationsManager: React.FC = () => {
       return;
     }
     
-    // Validate API key if provided
-    if (apiKey && !validateApiKey(apiKey, integration)) {
+    // Validate API key if provided (except for AWS which has complex auth)
+    if (apiKey && integration.provider !== 'aws' && !validateApiKey(apiKey, integration)) {
       toast({
         title: "Invalid API Key",
         description: `The API key format doesn't match the expected pattern for ${integration.name}`,
@@ -200,7 +250,7 @@ const IntegrationsManager: React.FC = () => {
     }));
 
     setEditingIntegration(null);
-    setFormData({ endpoint: '', apiKey: '', region: '', resourceGroup: '' });
+    setFormData({ endpoint: '', apiKey: '', subscriptionId: '', location: '', accessToken: '', resourceGroup: '' });
     
     toast({
       title: "Configuration Saved",
@@ -227,13 +277,35 @@ const IntegrationsManager: React.FC = () => {
         throw new Error(`Invalid endpoint URL for ${integration.name}`);
       }
       
-      if (!apiKey) {
+      if (!apiKey && integration.provider !== 'aws') {
         throw new Error(`API key is required for ${integration.name}`);
       }
 
-      // For demo purposes, simulate API test with a delay and random success
+      // Simulate API test with realistic delays
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const success = Math.random() > 0.2; // 80% success rate for demo
+      
+      // Special handling for different providers
+      let success = false;
+      switch (integration.provider) {
+        case 'openai':
+        case 'anthropic':
+          success = endpoint.includes('api.') && apiKey?.startsWith('sk-');
+          break;
+        case 'google':
+          success = endpoint.includes('generativelanguage') && apiKey && apiKey.length > 20;
+          break;
+        case 'azure':
+          success = endpoint.includes('azure.com') || endpoint.includes('management.azure.com');
+          break;
+        case 'aws':
+          success = endpoint.includes('amazonaws.com');
+          break;
+        case 'salesforce':
+          success = false; // Coming soon
+          break;
+        default:
+          success = Math.random() > 0.3; // 70% success rate for others
+      }
 
       if (!success) {
         throw new Error(`Connection test failed: Invalid credentials or service unavailable`);
@@ -302,33 +374,14 @@ const IntegrationsManager: React.FC = () => {
               <Input
                 id={`apikey-${integration.id}`}
                 type="password"
-                placeholder="Enter API key"
+                placeholder={`Enter ${integration.name} API key`}
                 value={formData.apiKey}
                 onChange={(e) => setFormData(prev => ({ ...prev, apiKey: e.target.value }))}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                {integration.provider === 'google' && "Get your API key from Google AI Studio"}
+              </p>
             </div>
-            {integration.provider === 'azure' && (
-              <>
-                <div>
-                  <Label htmlFor={`region-${integration.id}`}>Region</Label>
-                  <Input
-                    id={`region-${integration.id}`}
-                    placeholder="e.g. eastus"
-                    value={formData.region}
-                    onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor={`resource-${integration.id}`}>Resource Group</Label>
-                  <Input
-                    id={`resource-${integration.id}`}
-                    placeholder="e.g. my-resources"
-                    value={formData.resourceGroup}
-                    onChange={(e) => setFormData(prev => ({ ...prev, resourceGroup: e.target.value }))}
-                  />
-                </div>
-              </>
-            )}
           </>
         );
       case 'bearer':
@@ -338,10 +391,55 @@ const IntegrationsManager: React.FC = () => {
             <Input
               id={`apikey-${integration.id}`}
               type="password"
-              placeholder="Enter bearer token"
+              placeholder={`Enter ${integration.name} API key`}
               value={formData.apiKey}
               onChange={(e) => setFormData(prev => ({ ...prev, apiKey: e.target.value }))}
             />
+            <p className="text-xs text-muted-foreground mt-1">
+              {integration.provider === 'openai' && "Format: sk-..."}
+              {integration.provider === 'anthropic' && "Format: sk-ant-..."}
+            </p>
+          </div>
+        );
+      case 'azure_token':
+        return (
+          <>
+            <div>
+              <Label htmlFor={`subscription-${integration.id}`}>Subscription ID</Label>
+              <Input
+                id={`subscription-${integration.id}`}
+                placeholder="Enter Azure subscription ID"
+                value={formData.subscriptionId}
+                onChange={(e) => setFormData(prev => ({ ...prev, subscriptionId: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor={`location-${integration.id}`}>Location</Label>
+              <Input
+                id={`location-${integration.id}`}
+                placeholder="e.g. westus, eastus"
+                value={formData.location}
+                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor={`token-${integration.id}`}>Access Token</Label>
+              <Input
+                id={`token-${integration.id}`}
+                type="password"
+                placeholder="Enter Azure access token"
+                value={formData.accessToken}
+                onChange={(e) => setFormData(prev => ({ ...prev, accessToken: e.target.value }))}
+              />
+            </div>
+          </>
+        );
+      case 'oauth':
+        return (
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              OAuth integration coming soon. Contact support for early access.
+            </p>
           </div>
         );
       default:
@@ -357,6 +455,21 @@ const IntegrationsManager: React.FC = () => {
             />
           </div>
         );
+    }
+  };
+
+  const getUsageMethodBadge = (method: string) => {
+    switch (method) {
+      case 'direct_endpoint':
+        return <Badge variant="default">Direct API</Badge>;
+      case 'response_metadata':
+        return <Badge variant="secondary">Response Data</Badge>;
+      case 'cloudwatch':
+        return <Badge variant="outline">CloudWatch</Badge>;
+      case 'cost_api':
+        return <Badge variant="outline">Cost API</Badge>;
+      default:
+        return <Badge variant="outline">Other</Badge>;
     }
   };
 
@@ -378,7 +491,10 @@ const IntegrationsManager: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{integration.icon}</span>
                       <div>
-                        <h4 className="font-medium">{integration.name}</h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">{integration.name}</h4>
+                          {getUsageMethodBadge(integration.usageMethod)}
+                        </div>
                         <div className="flex items-center gap-2 mt-1">
                           {getStatusIcon(integration.status)}
                           <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(integration.status)}`}>
@@ -389,9 +505,9 @@ const IntegrationsManager: React.FC = () => {
                               href={integration.documentationUrl} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-xs text-blue-500 hover:underline"
+                              className="text-xs text-blue-500 hover:underline flex items-center gap-1"
                             >
-                              API Docs
+                              API Docs <ExternalLink className="h-3 w-3" />
                             </a>
                           )}
                         </div>
@@ -424,12 +540,23 @@ const IntegrationsManager: React.FC = () => {
                     </div>
                   )}
 
+                  <div className="text-sm space-y-1">
+                    <div className="flex items-start gap-2">
+                      <span className="font-medium min-w-20">Endpoint:</span>
+                      <code className="text-xs bg-muted px-2 py-1 rounded break-all">{integration.usageEndpoint}</code>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-medium min-w-20">Response:</span>
+                      <code className="text-xs bg-muted px-2 py-1 rounded">{integration.responseStructure}</code>
+                    </div>
+                  </div>
+
                   {editingIntegration === integration.id && (
                     <div className="border-t pt-4 space-y-4">
                       <div>
                         <Label htmlFor={`endpoint-${integration.id}`} className="flex items-center gap-2">
                           <Globe className="h-4 w-4" />
-                          API Endpoint
+                          API Endpoint (Optional Override)
                         </Label>
                         <Input
                           id={`endpoint-${integration.id}`}
@@ -473,10 +600,21 @@ const IntegrationsManager: React.FC = () => {
                       </div>
                       
                       <div className="p-3 bg-muted rounded-lg">
-                        <h5 className="text-sm font-medium mb-1">Security Note</h5>
-                        <p className="text-xs text-muted-foreground">
+                        <h5 className="text-sm font-medium mb-1 flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Authentication & Security
+                        </h5>
+                        <p className="text-xs text-muted-foreground mb-2">
                           All API keys and tokens are encrypted at rest and in transit. We only use your credentials to make authenticated requests on your behalf.
                         </p>
+                        <div className="text-xs space-y-1">
+                          <div><strong>Headers:</strong></div>
+                          {Object.entries(integration.authHeaders).map(([key, value]) => (
+                            <div key={key} className="font-mono bg-background px-2 py-1 rounded">
+                              {key}: {value}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}

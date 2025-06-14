@@ -550,26 +550,26 @@ Headers: x-ratelimit-remaining-tokens-month: 99998801`,
       switch (integration.provider) {
         case 'openai':
         case 'anthropic':
-          success = endpoint.includes('api.') && apiKey?.match(integration.validationRules?.apiKey?.[0] || /.+/);
+          success = endpoint.includes('api.') && Boolean(apiKey?.match(integration.validationRules?.apiKey?.[0] || /.+/));
           break;
         case 'google':
-          success = endpoint.includes('generativelanguage') && apiKey && apiKey.length > 20;
+          success = endpoint.includes('generativelanguage') && Boolean(apiKey) && apiKey.length > 20;
           break;
         case 'azure':
           success = (endpoint.includes('azure.com') || endpoint.includes('management.azure.com')) && 
-                   (formData.subscriptionId || formData.accessToken);
+                   Boolean(formData.subscriptionId || formData.accessToken);
           break;
         case 'aws':
           success = endpoint.includes('amazonaws.com');
           break;
         case 'mistral':
-          success = endpoint.includes('mistral.ai') && apiKey && apiKey.length > 20;
+          success = endpoint.includes('mistral.ai') && Boolean(apiKey) && apiKey.length > 20;
           break;
         case 'cohere':
-          success = endpoint.includes('cohere.com') && apiKey && apiKey.length > 20;
+          success = endpoint.includes('cohere.com') && Boolean(apiKey) && apiKey.length > 20;
           break;
         case 'ai21':
-          success = endpoint.includes('ai21.com') && apiKey && apiKey.length > 20;
+          success = endpoint.includes('ai21.com') && Boolean(apiKey) && apiKey.length > 20;
           break;
         case 'salesforce':
           success = false; // Coming soon

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import GlassmorphicTheme from "./GlassmorphicTheme";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -295,8 +296,26 @@ export default function EnergyUsageEstimator() {
 
   // --- Render ---
   return (
-    <TooltipProvider>
-      <Card className="w-full max-w-5xl mx-auto font-sans shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="space-y-6">
+      {/* Hero Section */}
+      <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Leaf className="h-8 w-8 text-green-600" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-500 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                Energy Usage Estimator
+              </h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Estimate AI environmental impact including energy consumption, emissions, water usage, and operational costs
+            </p>
+          </div>
+        </div>
+      </GlassmorphicTheme>
+      
+      <TooltipProvider>
+        <Card className="w-full max-w-5xl mx-auto font-sans shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
          {/* Header with Dynamic Theme */}
          <CardHeader className={`pb-4 ${headerClasses}`}>
             <div className="flex items-center gap-2 mb-1">
@@ -458,8 +477,9 @@ export default function EnergyUsageEstimator() {
             {/* ... V5 Footer ... */}
             <p className="text-muted-foreground mb-2 sm:mb-0">Equivalency Factors: EPA estimates. Water Factors: LBNL/Literature averages.</p><Button variant="link" size="sm" className="text-xs h-auto p-0" asChild><a href="https://mlco2.github.io/impact/" target="_blank" rel="noopener noreferrer">Learn more about AI Footprints</a></Button>
          </CardFooter>
-      </Card>
-    </TooltipProvider>
+     </Card>
+      </TooltipProvider>
+    </div>
   );
 }
 

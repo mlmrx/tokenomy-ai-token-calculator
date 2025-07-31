@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 // Assuming these are your shadcn/ui components. Adjust paths if necessary.
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import GlassmorphicTheme from './GlassmorphicTheme';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -485,7 +486,25 @@ const EnhancedAIContentDetector: React.FC = () => {
   
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 space-y-6 bg-white dark:bg-gray-900 rounded-xl shadow-2xl">
+    <div className="space-y-6">
+      {/* Hero Section */}
+      <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Search className="h-8 w-8 text-cyan-600" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                AI Content Detector
+              </h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Advanced AI detection using multi-layered analysis including text and image files
+            </p>
+          </div>
+        </div>
+      </GlassmorphicTheme>
+      
+      <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 space-y-6 bg-white dark:bg-gray-900 rounded-xl shadow-2xl">
       <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -748,6 +767,7 @@ const EnhancedAIContentDetector: React.FC = () => {
        <footer className="text-center text-xs text-gray-400 dark:text-gray-500 py-4">
         AI Content Detector Pro &copy; {new Date().getFullYear()}
       </footer>
+      </div>
     </div>
   );
 };

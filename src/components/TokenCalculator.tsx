@@ -36,6 +36,7 @@ import VisualizationTab from "./VisualizationTab";
 import ProcessFlowEnhanced from "./ProcessFlowEnhanced";
 import EnergyConsumptionTab from "./EnergyConsumptionTab";
 import ExportData from "./ExportData";
+import GlassmorphicTheme from "./GlassmorphicTheme";
 
 // Create a comprehensive TypeScript interface for the Web Speech API
 interface SpeechRecognition extends EventTarget {
@@ -314,14 +315,27 @@ const TokenCalculator: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Hero Section */}
+      <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Calculator className="h-8 w-8 text-blue-600" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                AI Token Calculator
+              </h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Calculate tokens, costs, and analyze your content across different AI models
+            </p>
+          </div>
+        </div>
+      </GlassmorphicTheme>
+      
       <Card className="w-full shadow-lg">
         <div className="p-4 md:p-6 relative token-bg-gradient rounded-t-lg" 
           style={{background: `linear-gradient(135deg, ${modelTheme.primary}aa 0%, ${modelTheme.secondary}dd 100%)`}}>
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">AI Token Analysis</h2>
-            <p className="text-sm md:text-base text-center text-white opacity-90 mb-6">
-              Calculate tokens, costs, and analyze your content across different AI models
-            </p>
             
             <div className="w-full max-w-5xl">
               <div className="relative">

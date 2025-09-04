@@ -6,6 +6,7 @@ import TokenSpeedSimulator from "../components/TokenSpeedSimulator";
 import MemoryCalculator from "../components/MemoryCalculator";
 import EnergyUsageEstimator from "../components/EnergyUsageEstimator";
 import AIContentDetector from "../components/AIContentDetector";
+import PromptProcessingVisualizer from "../components/PromptProcessingVisualizer";
 import GpuMonitoring from "./GpuMonitoring";
 import TokenObservability from "./TokenObservability";
 import TokenLeaderboard from "./TokenLeaderboard";
@@ -25,7 +26,7 @@ const Index = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam && ['calculator', 'observability', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor','token-leaderboard'].includes(tabParam)) {
+    if (tabParam && ['calculator', 'observability', 'speed', 'memory', 'energy', 'detector', 'gpu-monitor','token-leaderboard', 'prompt-visualizer'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [location]);
@@ -61,7 +62,9 @@ const Index = () => {
         return <GpuMonitoring />;
       case "token-leaderboard":
         return <TokenLeaderboard />;
-        case "observability":
+      case "prompt-visualizer":
+        return <PromptProcessingVisualizer />;
+      case "observability":
         return <TokenObservability />;
       default:
         return <TokenCalculator />;

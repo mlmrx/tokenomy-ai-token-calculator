@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { GpuGrid } from "../../gpu-monitor/ui/GpuGrid";
 import { GpuLeaderboard } from "../../gpu-monitor/ui/GpuLeaderboard";
 import Footer from "@/components/Footer";
+import GlassmorphicTheme from "@/components/GlassmorphicTheme";
 import { AlertTriangle, Activity, Zap, DollarSign, Leaf, RefreshCw } from "lucide-react";
 
 interface SystemAlert {
@@ -80,31 +81,39 @@ const GpuMonitoring = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">GPU Token Throughput Monitor</h1>
-            <p className="text-muted-foreground">
-              Real-time monitoring of GPU performance, token throughput, and cost efficiency
-            </p>
+      <main className="flex-1 container mx-auto px-4 py-8 space-y-6">
+        {/* Hero Section */}
+        <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Zap className="h-8 w-8 text-blue-600" />
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                  GPU Token Throughput Monitor
+                </h1>
+              </div>
+              <p className="text-lg text-muted-foreground">
+                Real-time monitoring of GPU performance, token throughput, and cost efficiency
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Activity className="h-3 w-3 mr-1" />
+                Live
+              </Badge>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-4 md:mt-0">
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              <Activity className="h-3 w-3 mr-1" />
-              Live
-            </Badge>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleRefresh}
-              disabled={refreshing}
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
-          </div>
-        </div>
+        </GlassmorphicTheme>
 
         {/* System Alerts */}
         {systemAlerts.length > 0 && (

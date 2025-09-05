@@ -8,6 +8,7 @@ import LiveTicker from "@/components/leaderboard/LiveTicker";
 import EnhancedComparePanel from "@/components/leaderboard/EnhancedComparePanel";
 import UserDataUpload from "@/components/leaderboard/UserDataUpload";
 import TrendsTab from "@/components/leaderboard/TrendsTab";
+import GlassmorphicTheme from "@/components/GlassmorphicTheme";
 import { Trophy, TrendingUp, Zap, DollarSign } from "lucide-react";
 
 const TokenLeaderboard = () => {
@@ -24,21 +25,25 @@ const TokenLeaderboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700">
       <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Header Section */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <Trophy className="h-8 w-8 text-yellow-500" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
-              AI Token Leaderboard
-            </h1>
+        {/* Hero Section */}
+        <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Trophy className="h-8 w-8 text-yellow-500" />
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                  AI Token Leaderboard
+                </h1>
+              </div>
+              <p className="text-lg text-muted-foreground">
+                Real-time comparison of AI providers' token processing capabilities, costs, and environmental impact
+              </p>
+              <Badge variant="secondary" className="text-sm">
+                Live Data • Updated Every 6 Hours
+              </Badge>
+            </div>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Real-time comparison of AI providers' token processing capabilities, costs, and environmental impact
-          </p>
-          <Badge variant="secondary" className="text-sm">
-            Live Data • Updated Every 6 Hours
-          </Badge>
-        </div>
+        </GlassmorphicTheme>
 
         {/* Live Ticker */}
         <LiveTicker />

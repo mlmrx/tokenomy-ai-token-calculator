@@ -21,6 +21,7 @@ import {
   Database,
   Sparkles
 } from 'lucide-react';
+import GlassmorphicTheme from './GlassmorphicTheme';
 
 interface ProcessingStage {
   id: string;
@@ -329,20 +330,23 @@ const PromptProcessingVisualizer = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <div className="space-y-6">
       {/* Hero Section */}
-      <div className="text-center space-y-6 mb-12">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-indigo-600/20 blur-3xl -z-10 rounded-full"></div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            AI Prompt Processing Visualizer
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Deep dive into every microsecond of AI processing. Visualize tokenization, attention mechanisms, 
-            neural network layers, and response generation in real-time.
-          </p>
+      <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Brain className="h-8 w-8 text-purple-600" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                AI Prompt Processing Visualizer
+              </h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Deep dive into every microsecond of AI processing. Visualize tokenization, attention mechanisms, neural network layers, and response generation in real-time.
+            </p>
+          </div>
         </div>
-      </div>
+      </GlassmorphicTheme>
 
       {/* Input Section */}
       <Card className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors">

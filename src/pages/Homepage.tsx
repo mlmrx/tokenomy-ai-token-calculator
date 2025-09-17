@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
+import ToolsGrid from "@/components/ToolsGrid";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 
@@ -62,6 +63,9 @@ const Homepage = () => {
           </div>
         </div>
       </section>
+
+      {/* SEO-Optimized Tools Grid */}
+      <ToolsGrid />
 
       {/* Features Section */}
       <section className="py-4 md:py-4 relative">

@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -97,6 +97,331 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      community_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_categories: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          post_count: number | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          post_count?: number | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          post_count?: number | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_comments: {
+        Row: {
+          content: string
+          created_at: string
+          downvote_count: number | null
+          id: string
+          is_edited: boolean | null
+          is_solution: boolean | null
+          parent_id: string | null
+          post_id: string
+          updated_at: string
+          upvote_count: number | null
+          user_id: string
+          vote_score: number | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          downvote_count?: number | null
+          id?: string
+          is_edited?: boolean | null
+          is_solution?: boolean | null
+          parent_id?: string | null
+          post_id: string
+          updated_at?: string
+          upvote_count?: number | null
+          user_id: string
+          vote_score?: number | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          downvote_count?: number | null
+          id?: string
+          is_edited?: boolean | null
+          is_solution?: boolean | null
+          parent_id?: string | null
+          post_id?: string
+          updated_at?: string
+          upvote_count?: number | null
+          user_id?: string
+          vote_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      community_notifications: {
+        Row: {
+          actor_id: string | null
+          comment_id: string | null
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string | null
+          post_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          post_id?: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          post_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_notifications_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          category_id: string
+          comment_count: number | null
+          content: string
+          created_at: string
+          downvote_count: number | null
+          excerpt: string | null
+          id: string
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          metadata: Json | null
+          post_type: Database["public"]["Enums"]["post_type"]
+          published_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["post_status"]
+          tags: string[] | null
+          title: string
+          updated_at: string
+          upvote_count: number | null
+          user_id: string
+          view_count: number | null
+          vote_score: number | null
+        }
+        Insert: {
+          category_id: string
+          comment_count?: number | null
+          content: string
+          created_at?: string
+          downvote_count?: number | null
+          excerpt?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          metadata?: Json | null
+          post_type?: Database["public"]["Enums"]["post_type"]
+          published_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["post_status"]
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          upvote_count?: number | null
+          user_id: string
+          view_count?: number | null
+          vote_score?: number | null
+        }
+        Update: {
+          category_id?: string
+          comment_count?: number | null
+          content?: string
+          created_at?: string
+          downvote_count?: number | null
+          excerpt?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          metadata?: Json | null
+          post_type?: Database["public"]["Enums"]["post_type"]
+          published_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["post_status"]
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          upvote_count?: number | null
+          user_id?: string
+          view_count?: number | null
+          vote_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "community_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_votes: {
+        Row: {
+          comment_id: string | null
+          created_at: string
+          id: string
+          post_id: string | null
+          user_id: string
+          vote_type: number
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id: string
+          vote_type: number
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id?: string
+          vote_type?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_votes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_votes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       configuration_audit_log: {
         Row: {
@@ -430,6 +755,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_reputation: {
+        Row: {
+          achievements: Json | null
+          badges: Database["public"]["Enums"]["user_badge"][] | null
+          comment_count: number | null
+          created_at: string
+          downvotes_received: number | null
+          id: string
+          last_active_date: string | null
+          post_count: number | null
+          solution_count: number | null
+          streak_days: number | null
+          total_score: number | null
+          updated_at: string
+          upvotes_received: number | null
+          user_id: string
+        }
+        Insert: {
+          achievements?: Json | null
+          badges?: Database["public"]["Enums"]["user_badge"][] | null
+          comment_count?: number | null
+          created_at?: string
+          downvotes_received?: number | null
+          id?: string
+          last_active_date?: string | null
+          post_count?: number | null
+          solution_count?: number | null
+          streak_days?: number | null
+          total_score?: number | null
+          updated_at?: string
+          upvotes_received?: number | null
+          user_id: string
+        }
+        Update: {
+          achievements?: Json | null
+          badges?: Database["public"]["Enums"]["user_badge"][] | null
+          comment_count?: number | null
+          created_at?: string
+          downvotes_received?: number | null
+          id?: string
+          last_active_date?: string | null
+          post_count?: number | null
+          solution_count?: number | null
+          streak_days?: number | null
+          total_score?: number | null
+          updated_at?: string
+          upvotes_received?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           granted_at: string | null
@@ -486,8 +862,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
         }
         Returns: boolean
       }
@@ -506,6 +882,29 @@ export type Database = {
         | "RTX3090"
         | "A6000"
         | "Custom"
+      notification_type:
+        | "mention"
+        | "reply"
+        | "vote"
+        | "achievement"
+        | "follow"
+        | "post_featured"
+      post_status: "draft" | "published" | "archived" | "featured"
+      post_type:
+        | "discussion"
+        | "question"
+        | "tutorial"
+        | "showcase"
+        | "announcement"
+      user_badge:
+        | "contributor"
+        | "expert"
+        | "mentor"
+        | "moderator"
+        | "pioneer"
+        | "helpful"
+        | "solver"
+        | "teacher"
       user_role: "admin" | "user" | "viewer"
     }
     CompositeTypes: {
@@ -643,6 +1042,32 @@ export const Constants = {
         "RTX3090",
         "A6000",
         "Custom",
+      ],
+      notification_type: [
+        "mention",
+        "reply",
+        "vote",
+        "achievement",
+        "follow",
+        "post_featured",
+      ],
+      post_status: ["draft", "published", "archived", "featured"],
+      post_type: [
+        "discussion",
+        "question",
+        "tutorial",
+        "showcase",
+        "announcement",
+      ],
+      user_badge: [
+        "contributor",
+        "expert",
+        "mentor",
+        "moderator",
+        "pioneer",
+        "helpful",
+        "solver",
+        "teacher",
       ],
       user_role: ["admin", "user", "viewer"],
     },

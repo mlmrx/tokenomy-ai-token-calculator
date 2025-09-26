@@ -54,6 +54,9 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
                 </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/community" className="px-4 py-2 hover:bg-accent rounded-md text-primary font-medium">Join Community</Link>
+                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>
@@ -89,6 +92,10 @@ const Header = () => {
             <Link to="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <PhoneCall size={16} />
               Contact
+            </Link>
+            <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
+              <Users size={16} />
+              Join Community
             </Link>
           </nav>
         </div>

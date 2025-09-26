@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import ToolsGrid from "@/components/ToolsGrid";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 import CommunityPreview from "@/components/CommunityPreview";
 
@@ -48,6 +48,16 @@ const Homepage = () => {
               >
                 <Link to="/tools">
                   Try our tools - Free <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button 
+                size="lg" 
+                className="glass-button bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+                asChild
+              >
+                <Link to="/community">
+                  <Users className="mr-2 h-4 w-4" />
+                  Join Community
                 </Link>
               </Button>
               <Button size="lg" className="glass-button bg-white/20 text-gray-800 dark:text-white border-0" asChild>

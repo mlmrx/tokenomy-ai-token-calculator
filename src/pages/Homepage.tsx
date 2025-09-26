@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ToolsGrid from "@/components/ToolsGrid";
 import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles } from 'lucide-react';
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
+import CommunityPreview from "@/components/CommunityPreview";
 
 const Homepage = () => {
   return (
@@ -301,6 +302,9 @@ const Homepage = () => {
           </div>
         </div>
       </section>
+
+      {/* Community Preview Section */}
+      <CommunityPreview />
 
       {/* CTA Section */}
       <section className="py-12 relative overflow-hidden">

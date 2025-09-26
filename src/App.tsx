@@ -18,6 +18,8 @@ import GpuMonitoring from "./pages/GpuMonitoring";
 import TokenLeaderboard from "./pages/TokenLeaderboard";
 import TokenObservability from "./pages/TokenObservability";
 import NotFound from "./pages/NotFound";
+import Community from "./pages/Community";
+import Auth from "./pages/Auth";
 
 // Individual tool pages
 import TokenCalculatorPage from "./pages/tools/TokenCalculatorPage";
@@ -50,7 +52,8 @@ const App = () => (
                   <Route path="/features" element={<Features />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/tools" element={<Index />} />
-                  
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/auth" element={<Auth />} />
                   {/* Individual tool pages for SEO */}
                   <Route path="/tools/token-calculator" element={<TokenCalculatorPage />} />
                   <Route path="/tools/token-observability" element={<TokenObservabilityPage />} />

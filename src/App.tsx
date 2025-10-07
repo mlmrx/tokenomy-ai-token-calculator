@@ -21,6 +21,11 @@ import NotFound from "./pages/NotFound";
 import Community from "./pages/Community";
 import Auth from "./pages/Auth";
 
+// Feature capability pages
+import UnifiedCostGraph from "./pages/features/UnifiedCostGraph";
+import PolicyBudgetRouting from "./pages/features/PolicyBudgetRouting";
+import AgentCommerceRails from "./pages/features/AgentCommerceRails";
+
 // Individual tool pages
 import TokenCalculatorPage from "./pages/tools/TokenCalculatorPage";
 import TokenObservabilityPage from "./pages/tools/TokenObservabilityPage";
@@ -69,6 +74,11 @@ const App = () => (
                   <Route path="/gpu-monitoring" element={<GpuMonitoring />} />
                   <Route path="/token-leaderboard" element={<TokenLeaderboard />} />
                   <Route path="/observability" element={<TokenObservability />} />
+                  
+                  {/* Feature Capability Pages */}
+                  <Route path="/features/unified-cost-graph" element={<UnifiedCostGraph />} />
+                  <Route path="/features/policy-budget-routing" element={<PolicyBudgetRouting />} />
+                  <Route path="/features/agent-commerce-rails" element={<AgentCommerceRails />} />
                   
                   <Route path="*" element={<NotFound />} />
                 </Routes>

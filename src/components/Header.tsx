@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -75,8 +75,15 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/tools/prompt-visualizer" className="px-8 py-2 hover:bg-accent rounded-md">Prompt Visualizer</Link>
                 </SheetClose>
+                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Features</div>
                 <SheetClose asChild>
-                  <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
+                  <Link to="/features/unified-cost-graph" className="px-8 py-2 hover:bg-accent rounded-md">Unified Cost Graph</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/policy-budget-routing" className="px-8 py-2 hover:bg-accent rounded-md">Policy Budget Routing</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/agent-commerce-rails" className="px-8 py-2 hover:bg-accent rounded-md">Agent Commerce Rails</Link>
                 </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Know Us</div>
                 <SheetClose asChild>
@@ -267,10 +274,68 @@ const Header = () => {
               </NavigationMenuList>
             </NavigationMenu>
             
-            <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <Lightbulb size={16} />
-              Features
-            </Link>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
+                    <Lightbulb size={16} />
+                    Features
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[300px] gap-2 p-4">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/unified-cost-graph"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <BarChart3 size={16} />
+                              <span className="text-sm font-medium leading-none">Unified Cost Graph</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Real-time cost & latency observability
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/policy-budget-routing"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <GitBranch size={16} />
+                              <span className="text-sm font-medium leading-none">Policy Budget Routing</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Intelligent routing with SLO constraints
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/agent-commerce-rails"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <DollarSign size={16} />
+                              <span className="text-sm font-medium leading-none">Agent Commerce Rails</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Usage-verified billing & rev-share
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
             
             <NavigationMenu>
               <NavigationMenuList>

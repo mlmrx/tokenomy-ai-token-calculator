@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -47,9 +47,34 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/" className="px-4 py-2 hover:bg-accent rounded-md">Home</Link>
                 </SheetClose>
+                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Tools</div>
                 <SheetClose asChild>
-                  <Link to="/tools" className="px-4 py-2 hover:bg-accent rounded-md">Tools</Link>
-                </SheetClose>              
+                  <Link to="/tools/token-calculator" className="px-8 py-2 hover:bg-accent rounded-md">Token Calculator</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/token-speed-simulator" className="px-8 py-2 hover:bg-accent rounded-md">Token Speed Simulator</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/memory-calculator" className="px-8 py-2 hover:bg-accent rounded-md">Memory Calculator</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/energy-usage-estimator" className="px-8 py-2 hover:bg-accent rounded-md">Energy Usage Estimator</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/ai-content-detector" className="px-8 py-2 hover:bg-accent rounded-md">AI Content Detector</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/gpu-monitoring" className="px-8 py-2 hover:bg-accent rounded-md">GPU Monitoring</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/token-leaderboard" className="px-8 py-2 hover:bg-accent rounded-md">Token Leaderboard</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/token-observability" className="px-8 py-2 hover:bg-accent rounded-md">Token Observability</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/prompt-visualizer" className="px-8 py-2 hover:bg-accent rounded-md">Prompt Visualizer</Link>
+                </SheetClose>
                 <SheetClose asChild>
                   <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 </SheetClose>
@@ -82,10 +107,166 @@ const Header = () => {
               <Home size={16} />
               Home
             </Link>
-            <Link to="/tools" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <CreditCard size={16} />
-              Tools
-            </Link>         
+            
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
+                    <CreditCard size={16} />
+                    Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/token-calculator"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Calculator size={16} />
+                              <span className="text-sm font-medium leading-none">Token Calculator</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Calculate token usage
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/token-speed-simulator"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Zap size={16} />
+                              <span className="text-sm font-medium leading-none">Speed Simulator</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Simulate token speed
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/memory-calculator"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <MemoryStick size={16} />
+                              <span className="text-sm font-medium leading-none">Memory Calculator</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Calculate memory needs
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/energy-usage-estimator"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Leaf size={16} />
+                              <span className="text-sm font-medium leading-none">Energy Estimator</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Estimate energy usage
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/ai-content-detector"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <FileSearch size={16} />
+                              <span className="text-sm font-medium leading-none">AI Content Detector</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Detect AI content
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/gpu-monitoring"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Gauge size={16} />
+                              <span className="text-sm font-medium leading-none">GPU Monitoring</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Monitor GPU usage
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/token-leaderboard"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Trophy size={16} />
+                              <span className="text-sm font-medium leading-none">Token Leaderboard</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Compare model performance
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/token-observability"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Activity size={16} />
+                              <span className="text-sm font-medium leading-none">Token Observability</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Monitor token metrics
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/prompt-visualizer"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Eye size={16} />
+                              <span className="text-sm font-medium leading-none">Prompt Visualizer</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Visualize prompts
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
             <Link to="/features" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
               <Lightbulb size={16} />
               Features

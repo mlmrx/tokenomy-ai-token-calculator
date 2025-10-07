@@ -6,11 +6,19 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, Trophy } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -45,14 +53,15 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/features" className="px-4 py-2 hover:bg-accent rounded-md">Features</Link>
                 </SheetClose>
+                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Know Us</div>
                 <SheetClose asChild>
-                  <Link to="/pricing" className="px-4 py-2 hover:bg-accent rounded-md">Pricing</Link>
+                  <Link to="/pricing" className="px-8 py-2 hover:bg-accent rounded-md">Pricing</Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link to="/about" className="px-4 py-2 hover:bg-accent rounded-md">About</Link>
+                  <Link to="/about" className="px-8 py-2 hover:bg-accent rounded-md">About</Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link to="/contact" className="px-4 py-2 hover:bg-accent rounded-md">Contact</Link>
+                  <Link to="/contact" className="px-8 py-2 hover:bg-accent rounded-md">Contact</Link>
                 </SheetClose>
                 <SheetClose asChild>
                   <Link to="/community" className="px-4 py-2 hover:bg-accent rounded-md text-primary font-medium">Join Community</Link>
@@ -81,18 +90,70 @@ const Header = () => {
               <Lightbulb size={16} />
               Features
             </Link>
-            <Link to="/pricing" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <CreditCard size={16} />
-              Pricing
-            </Link>
-            <Link to="/about" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <Users size={16} />
-              About
-            </Link>
-            <Link to="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <PhoneCall size={16} />
-              Contact
-            </Link>
+            
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
+                    <Users size={16} />
+                    Know Us
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[200px] gap-2 p-4">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/pricing"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <CreditCard size={16} />
+                              <span className="text-sm font-medium leading-none">Pricing</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              View our pricing plans
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/about"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Users size={16} />
+                              <span className="text-sm font-medium leading-none">About</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Learn more about us
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/contact"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <PhoneCall size={16} />
+                              <span className="text-sm font-medium leading-none">Contact</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Get in touch with us
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
             <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
               <Users size={16} />
               Join Community

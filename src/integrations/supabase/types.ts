@@ -56,6 +56,60 @@ export type Database = {
         }
         Relationships: []
       }
+      anomalies: {
+        Row: {
+          anomaly_type: string
+          auto_ticket_id: string | null
+          baseline_value: number | null
+          detected_at: string
+          dimension_attribution: Json | null
+          id: string
+          metadata: Json | null
+          metric_name: string
+          observed_value: number | null
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          tenant_id: string
+          z_score: number | null
+        }
+        Insert: {
+          anomaly_type: string
+          auto_ticket_id?: string | null
+          baseline_value?: number | null
+          detected_at?: string
+          dimension_attribution?: Json | null
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          observed_value?: number | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          tenant_id: string
+          z_score?: number | null
+        }
+        Update: {
+          anomaly_type?: string
+          auto_ticket_id?: string | null
+          baseline_value?: number | null
+          detected_at?: string
+          dimension_attribution?: Json | null
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          observed_value?: number | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          tenant_id?: string
+          z_score?: number | null
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           api_key_hash: string
@@ -95,6 +149,104 @@ export type Database = {
           permissions?: Json | null
           rate_limit_per_hour?: number | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      budget_alerts: {
+        Row: {
+          acknowledged: boolean
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          budget_amount_usd: number
+          budget_id: string
+          current_spend_usd: number
+          id: string
+          metadata: Json | null
+          percentage_used: number
+          triggered_at: string
+        }
+        Insert: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          budget_amount_usd: number
+          budget_id: string
+          current_spend_usd: number
+          id?: string
+          metadata?: Json | null
+          percentage_used: number
+          triggered_at?: string
+        }
+        Update: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          budget_amount_usd?: number
+          budget_id?: string
+          current_spend_usd?: number
+          id?: string
+          metadata?: Json | null
+          percentage_used?: number
+          triggered_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_alerts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budgets: {
+        Row: {
+          alert_channels: Json | null
+          alert_threshold_pct: number
+          budget_amount_usd: number
+          budget_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          name: string
+          scope: string
+          scope_id: string | null
+          tenant_id: string
+          updated_at: string
+          window_hours: number
+        }
+        Insert: {
+          alert_channels?: Json | null
+          alert_threshold_pct?: number
+          budget_amount_usd: number
+          budget_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          scope: string
+          scope_id?: string | null
+          tenant_id: string
+          updated_at?: string
+          window_hours?: number
+        }
+        Update: {
+          alert_channels?: Json | null
+          alert_threshold_pct?: number
+          budget_amount_usd?: number
+          budget_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          scope?: string
+          scope_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+          window_hours?: number
         }
         Relationships: []
       }
@@ -462,6 +614,104 @@ export type Database = {
         }
         Relationships: []
       }
+      credits: {
+        Row: {
+          amount_usd: number
+          balance_usd: number
+          created_at: string
+          credit_type: string
+          expires_at: string | null
+          id: string
+          issued_by: string | null
+          metadata: Json | null
+          reason: string | null
+          tenant_id: string
+        }
+        Insert: {
+          amount_usd: number
+          balance_usd: number
+          created_at?: string
+          credit_type?: string
+          expires_at?: string | null
+          id?: string
+          issued_by?: string | null
+          metadata?: Json | null
+          reason?: string | null
+          tenant_id: string
+        }
+        Update: {
+          amount_usd?: number
+          balance_usd?: number
+          created_at?: string
+          credit_type?: string
+          expires_at?: string | null
+          id?: string
+          issued_by?: string | null
+          metadata?: Json | null
+          reason?: string | null
+          tenant_id?: string
+        }
+        Relationships: []
+      }
+      entitlements: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          is_active: boolean
+          metadata: Json | null
+          plan_id: string | null
+          quota_reset_day: number
+          soft_limit: boolean
+          tenant_id: string
+          tps_cap: number | null
+          tu_quota_monthly: number | null
+          tu_used_current_period: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          plan_id?: string | null
+          quota_reset_day?: number
+          soft_limit?: boolean
+          tenant_id: string
+          tps_cap?: number | null
+          tu_quota_monthly?: number | null
+          tu_used_current_period?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          plan_id?: string | null
+          quota_reset_day?: number
+          soft_limit?: boolean
+          tenant_id?: string
+          tps_cap?: number | null
+          tu_quota_monthly?: number | null
+          tu_used_current_period?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entitlements_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       file_configurations: {
         Row: {
           applied_at: string | null
@@ -549,6 +799,107 @@ export type Database = {
           max_temperature_c?: number | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      invoice_items: {
+        Row: {
+          amount_usd: number
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          metadata: Json | null
+          quantity: number
+          unit_price_usd: number
+        }
+        Insert: {
+          amount_usd: number
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          metadata?: Json | null
+          quantity: number
+          unit_price_usd: number
+        }
+        Update: {
+          amount_usd?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          metadata?: Json | null
+          quantity?: number
+          unit_price_usd?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          created_at: string
+          credits_applied_usd: number
+          currency: string
+          due_date: string | null
+          finalized_at: string | null
+          id: string
+          invoice_number: string
+          metadata: Json | null
+          paid_at: string | null
+          period_end: string
+          period_start: string
+          status: string
+          stripe_invoice_id: string | null
+          subtotal_usd: number
+          tax_usd: number
+          tenant_id: string
+          total_usd: number
+        }
+        Insert: {
+          created_at?: string
+          credits_applied_usd?: number
+          currency?: string
+          due_date?: string | null
+          finalized_at?: string | null
+          id?: string
+          invoice_number: string
+          metadata?: Json | null
+          paid_at?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+          stripe_invoice_id?: string | null
+          subtotal_usd?: number
+          tax_usd?: number
+          tenant_id: string
+          total_usd?: number
+        }
+        Update: {
+          created_at?: string
+          credits_applied_usd?: number
+          currency?: string
+          due_date?: string | null
+          finalized_at?: string | null
+          id?: string
+          invoice_number?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+          stripe_invoice_id?: string | null
+          subtotal_usd?: number
+          tax_usd?: number
+          tenant_id?: string
+          total_usd?: number
         }
         Relationships: []
       }
@@ -692,6 +1043,155 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          base_price_usd: number | null
+          billing_period: string
+          created_at: string
+          description: string | null
+          display_order: number
+          features: Json | null
+          id: string
+          included_tu: number | null
+          is_active: boolean
+          name: string
+          plan_type: string
+          price_per_1k_tu: number | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          base_price_usd?: number | null
+          billing_period?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          features?: Json | null
+          id?: string
+          included_tu?: number | null
+          is_active?: boolean
+          name: string
+          plan_type: string
+          price_per_1k_tu?: number | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          base_price_usd?: number | null
+          billing_period?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          features?: Json | null
+          id?: string
+          included_tu?: number | null
+          is_active?: boolean
+          name?: string
+          plan_type?: string
+          price_per_1k_tu?: number | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      policy_decisions: {
+        Row: {
+          call_id: string | null
+          created_at: string
+          explain: Json | null
+          hedged: boolean
+          id: string
+          policy_id: string
+          request_context: Json
+          selected_route: string
+          session_id: string | null
+          telemetry_event_id: string | null
+          tenant_id: string
+          ts: string
+          utility_score: number | null
+          workflow_id: string | null
+        }
+        Insert: {
+          call_id?: string | null
+          created_at?: string
+          explain?: Json | null
+          hedged?: boolean
+          id?: string
+          policy_id: string
+          request_context: Json
+          selected_route: string
+          session_id?: string | null
+          telemetry_event_id?: string | null
+          tenant_id: string
+          ts?: string
+          utility_score?: number | null
+          workflow_id?: string | null
+        }
+        Update: {
+          call_id?: string | null
+          created_at?: string
+          explain?: Json | null
+          hedged?: boolean
+          id?: string
+          policy_id?: string
+          request_context?: Json
+          selected_route?: string
+          session_id?: string | null
+          telemetry_event_id?: string | null
+          tenant_id?: string
+          ts?: string
+          utility_score?: number | null
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_decisions_telemetry_event_id_fkey"
+            columns: ["telemetry_event_id"]
+            isOneToOne: false
+            referencedRelation: "telemetry_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_matrix: {
+        Row: {
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          in_cost_per_1k_tu: number
+          metadata: Json | null
+          model: string
+          out_cost_per_1k_tu: number
+          provider: string
+          region: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          in_cost_per_1k_tu: number
+          metadata?: Json | null
+          model: string
+          out_cost_per_1k_tu: number
+          provider: string
+          region?: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          in_cost_per_1k_tu?: number
+          metadata?: Json | null
+          model?: string
+          out_cost_per_1k_tu?: number
+          provider?: string
+          region?: string
+        }
+        Relationships: []
+      }
       pricing_models: {
         Row: {
           cost_per_hour_usd: number | null
@@ -754,6 +1254,424 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      route_candidates: {
+        Row: {
+          call_id: string
+          created_at: string
+          expected_cost_usd: number | null
+          health_score: number | null
+          id: string
+          model: string
+          predicted_p95_ms: number | null
+          provider: string
+          region: string
+          selected: boolean
+        }
+        Insert: {
+          call_id: string
+          created_at?: string
+          expected_cost_usd?: number | null
+          health_score?: number | null
+          id?: string
+          model: string
+          predicted_p95_ms?: number | null
+          provider: string
+          region: string
+          selected?: boolean
+        }
+        Update: {
+          call_id?: string
+          created_at?: string
+          expected_cost_usd?: number | null
+          health_score?: number | null
+          id?: string
+          model?: string
+          predicted_p95_ms?: number | null
+          provider?: string
+          region?: string
+          selected?: boolean
+        }
+        Relationships: []
+      }
+      route_health: {
+        Row: {
+          health_score: number
+          id: string
+          is_healthy: boolean
+          measured_at: string
+          metadata: Json | null
+          model: string
+          p50_latency_ms: number
+          p95_latency_ms: number
+          p99_latency_ms: number
+          provider: string
+          region: string
+          requests_count: number
+          route_id: string
+          success_rate: number
+        }
+        Insert: {
+          health_score: number
+          id?: string
+          is_healthy?: boolean
+          measured_at?: string
+          metadata?: Json | null
+          model: string
+          p50_latency_ms: number
+          p95_latency_ms: number
+          p99_latency_ms: number
+          provider: string
+          region: string
+          requests_count: number
+          route_id: string
+          success_rate: number
+        }
+        Update: {
+          health_score?: number
+          id?: string
+          is_healthy?: boolean
+          measured_at?: string
+          metadata?: Json | null
+          model?: string
+          p50_latency_ms?: number
+          p95_latency_ms?: number
+          p99_latency_ms?: number
+          provider?: string
+          region?: string
+          requests_count?: number
+          route_id?: string
+          success_rate?: number
+        }
+        Relationships: []
+      }
+      routing_policies: {
+        Row: {
+          admission: Json | null
+          audit_config: Json | null
+          canary_percent: number
+          created_at: string
+          created_by: string | null
+          fallbacks: Json | null
+          id: string
+          is_active: boolean
+          objectives: Json
+          policy_id: string
+          priority: string
+          routes: Json
+          scope: string
+          shadow_mode: boolean
+          tenant_id: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          admission?: Json | null
+          audit_config?: Json | null
+          canary_percent?: number
+          created_at?: string
+          created_by?: string | null
+          fallbacks?: Json | null
+          id?: string
+          is_active?: boolean
+          objectives: Json
+          policy_id: string
+          priority?: string
+          routes: Json
+          scope: string
+          shadow_mode?: boolean
+          tenant_id: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          admission?: Json | null
+          audit_config?: Json | null
+          canary_percent?: number
+          created_at?: string
+          created_by?: string | null
+          fallbacks?: Json | null
+          id?: string
+          is_active?: boolean
+          objectives?: Json
+          policy_id?: string
+          priority?: string
+          routes?: Json
+          scope?: string
+          shadow_mode?: boolean
+          tenant_id?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      slo_burn_rates: {
+        Row: {
+          burn_rate: number
+          conforming: boolean
+          error_budget_remaining: number
+          id: string
+          measured_at: string
+          metadata: Json | null
+          slo_profile_id: string
+          window_hours: number
+        }
+        Insert: {
+          burn_rate: number
+          conforming: boolean
+          error_budget_remaining: number
+          id?: string
+          measured_at?: string
+          metadata?: Json | null
+          slo_profile_id: string
+          window_hours: number
+        }
+        Update: {
+          burn_rate?: number
+          conforming?: boolean
+          error_budget_remaining?: number
+          id?: string
+          measured_at?: string
+          metadata?: Json | null
+          slo_profile_id?: string
+          window_hours?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "slo_burn_rates_slo_profile_id_fkey"
+            columns: ["slo_profile_id"]
+            isOneToOne: false
+            referencedRelation: "slo_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slo_profiles: {
+        Row: {
+          budget_cpm_usd: number
+          created_at: string
+          error_budget_percent: number
+          id: string
+          is_active: boolean
+          name: string
+          owner_email: string | null
+          p95_latency_ms: number
+          success_rate: number
+          tenant_id: string
+          updated_at: string
+          workflow_id: string
+        }
+        Insert: {
+          budget_cpm_usd: number
+          created_at?: string
+          error_budget_percent?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          owner_email?: string | null
+          p95_latency_ms: number
+          success_rate: number
+          tenant_id: string
+          updated_at?: string
+          workflow_id: string
+        }
+        Update: {
+          budget_cpm_usd?: number
+          created_at?: string
+          error_budget_percent?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          owner_email?: string | null
+          p95_latency_ms?: number
+          success_rate?: number
+          tenant_id?: string
+          updated_at?: string
+          workflow_id?: string
+        }
+        Relationships: []
+      }
+      telemetry_events: {
+        Row: {
+          cached: boolean
+          call_id: string
+          cost_in_usd: number | null
+          cost_out_usd: number | null
+          created_at: string
+          duration_ms: number
+          error_message: string | null
+          http_status: number
+          id: string
+          input_tokens: number
+          model: string
+          output_tokens: number
+          prompt_hash: string | null
+          provider: string
+          region: string
+          retry_count: number
+          session_id: string
+          span_id: string | null
+          tags: Json | null
+          tenant_id: string
+          total_cost_usd: number | null
+          trace_id: string | null
+          ts: string
+          tu_calculated: number | null
+          user_id: string | null
+        }
+        Insert: {
+          cached?: boolean
+          call_id: string
+          cost_in_usd?: number | null
+          cost_out_usd?: number | null
+          created_at?: string
+          duration_ms: number
+          error_message?: string | null
+          http_status?: number
+          id?: string
+          input_tokens: number
+          model: string
+          output_tokens: number
+          prompt_hash?: string | null
+          provider: string
+          region?: string
+          retry_count?: number
+          session_id: string
+          span_id?: string | null
+          tags?: Json | null
+          tenant_id: string
+          total_cost_usd?: number | null
+          trace_id?: string | null
+          ts?: string
+          tu_calculated?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          cached?: boolean
+          call_id?: string
+          cost_in_usd?: number | null
+          cost_out_usd?: number | null
+          created_at?: string
+          duration_ms?: number
+          error_message?: string | null
+          http_status?: number
+          id?: string
+          input_tokens?: number
+          model?: string
+          output_tokens?: number
+          prompt_hash?: string | null
+          provider?: string
+          region?: string
+          retry_count?: number
+          session_id?: string
+          span_id?: string | null
+          tags?: Json | null
+          tenant_id?: string
+          total_cost_usd?: number | null
+          trace_id?: string | null
+          ts?: string
+          tu_calculated?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      tu_config: {
+        Row: {
+          alpha: number
+          created_at: string
+          description: string | null
+          id: string
+          model: string
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          alpha?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          model: string
+          provider: string
+          updated_at?: string
+        }
+        Update: {
+          alpha?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          model?: string
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      usage_ledger: {
+        Row: {
+          amount_usd: number
+          created_at: string
+          evidence_ref: string | null
+          id: string
+          invoice_id: string | null
+          invoiced: boolean
+          latency_ms: number
+          ledger_id: string
+          pricing_snapshot_id: string
+          telemetry_event_id: string | null
+          tenant_id: string
+          ts: string
+          tu_in: number
+          tu_out: number
+          unit_price_usd: number
+          user_id: string | null
+          workflow_id: string | null
+        }
+        Insert: {
+          amount_usd: number
+          created_at?: string
+          evidence_ref?: string | null
+          id?: string
+          invoice_id?: string | null
+          invoiced?: boolean
+          latency_ms: number
+          ledger_id: string
+          pricing_snapshot_id: string
+          telemetry_event_id?: string | null
+          tenant_id: string
+          ts?: string
+          tu_in: number
+          tu_out: number
+          unit_price_usd: number
+          user_id?: string | null
+          workflow_id?: string | null
+        }
+        Update: {
+          amount_usd?: number
+          created_at?: string
+          evidence_ref?: string | null
+          id?: string
+          invoice_id?: string | null
+          invoiced?: boolean
+          latency_ms?: number
+          ledger_id?: string
+          pricing_snapshot_id?: string
+          telemetry_event_id?: string | null
+          tenant_id?: string
+          ts?: string
+          tu_in?: number
+          tu_out?: number
+          unit_price_usd?: number
+          user_id?: string | null
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_ledger_telemetry_event_id_fkey"
+            columns: ["telemetry_event_id"]
+            isOneToOne: false
+            referencedRelation: "telemetry_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_reputation: {
         Row: {
@@ -856,6 +1774,15 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_tu: {
+        Args: {
+          p_input_tokens: number
+          p_model: string
+          p_output_tokens: number
+          p_provider: string
+        }
+        Returns: number
+      }
       generate_api_key: {
         Args: Record<PropertyKey, never>
         Returns: string

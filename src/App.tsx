@@ -30,6 +30,13 @@ import UnifiedCostGraph from "./pages/features/UnifiedCostGraph";
 import PolicyBudgetRouting from "./pages/features/PolicyBudgetRouting";
 import AgentCommerceRails from "./pages/features/AgentCommerceRails";
 
+// Research pages
+import AINewsHub from "./pages/research/AINewsHub";
+import ModelBenchmarks from "./pages/research/ModelBenchmarks";
+import ResearchPapers from "./pages/research/ResearchPapers";
+import InnovationTracker from "./pages/research/InnovationTracker";
+import ConferenceCalendar from "./pages/research/ConferenceCalendar";
+
 // Individual tool pages
 import TokenCalculatorPage from "./pages/tools/TokenCalculatorPage";
 import TokenObservabilityPage from "./pages/tools/TokenObservabilityPage";
@@ -87,6 +94,13 @@ const App = () => (
                   <Route path="/features/unified-cost-graph" element={<UnifiedCostGraph />} />
                   <Route path="/features/policy-budget-routing" element={<PolicyBudgetRouting />} />
                   <Route path="/features/agent-commerce-rails" element={<AgentCommerceRails />} />
+                  
+                  {/* Research Pages */}
+                  <Route path="/research/ai-news-hub" element={<AINewsHub />} />
+                  <Route path="/research/model-benchmarks" element={<ModelBenchmarks />} />
+                  <Route path="/research/research-papers" element={<ResearchPapers />} />
+                  <Route path="/research/innovation-tracker" element={<InnovationTracker />} />
+                  <Route path="/research/conference-calendar" element={<ConferenceCalendar />} />
                   
                   <Route path="*" element={<NotFound />} />
                 </Routes>

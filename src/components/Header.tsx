@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign, Microscope, Newspaper, Award, Rocket, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -84,6 +84,22 @@ const Header = () => {
                 </SheetClose>
                 <SheetClose asChild>
                   <Link to="/features/agent-commerce-rails" className="px-8 py-2 hover:bg-accent rounded-md">Agent Commerce Rails</Link>
+                </SheetClose>
+                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Research</div>
+                <SheetClose asChild>
+                  <Link to="/research/ai-news-hub" className="px-8 py-2 hover:bg-accent rounded-md">AI News Hub</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/research/model-benchmarks" className="px-8 py-2 hover:bg-accent rounded-md">Model Benchmarks</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/research/research-papers" className="px-8 py-2 hover:bg-accent rounded-md">Research Papers</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/research/innovation-tracker" className="px-8 py-2 hover:bg-accent rounded-md">Innovation Tracker</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/research/conference-calendar" className="px-8 py-2 hover:bg-accent rounded-md">Conference Calendar</Link>
                 </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Know Us</div>
                 <SheetClose asChild>
@@ -350,6 +366,76 @@ const Header = () => {
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
                               Full-stack telemetry & AI routing
                             </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
+                    <Microscope size={16} />
+                    Research
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2 bg-background z-50">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link to="/research/ai-news-hub" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="flex items-center gap-2">
+                              <Newspaper size={16} />
+                              <span className="text-sm font-medium leading-none">AI News Hub</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">Latest AI & robotics news</p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link to="/research/model-benchmarks" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="flex items-center gap-2">
+                              <Award size={16} />
+                              <span className="text-sm font-medium leading-none">Model Benchmarks</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">Performance comparisons</p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link to="/research/research-papers" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="flex items-center gap-2">
+                              <FileSearch size={16} />
+                              <span className="text-sm font-medium leading-none">Research Papers</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">Curated publications</p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link to="/research/innovation-tracker" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="flex items-center gap-2">
+                              <Rocket size={16} />
+                              <span className="text-sm font-medium leading-none">Innovation Tracker</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">Product launches & startups</p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link to="/research/conference-calendar" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="flex items-center gap-2">
+                              <Calendar size={16} />
+                              <span className="text-sm font-medium leading-none">Conference Calendar</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">Events & deadlines</p>
                           </Link>
                         </NavigationMenuLink>
                       </li>

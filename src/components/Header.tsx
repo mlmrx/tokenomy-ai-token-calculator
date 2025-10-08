@@ -96,7 +96,16 @@ const Header = () => {
                   <Link to="/contact" className="px-8 py-2 hover:bg-accent rounded-md">Contact</Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link to="/community" className="px-4 py-2 hover:bg-accent rounded-md text-primary font-medium">Join Community</Link>
+                  <Link to="/community" className="px-4 py-2 hover:bg-accent rounded-md flex items-center gap-2">
+                    <Users size={16} />
+                    Community
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/enterprise-observability" className="px-4 py-2 hover:bg-accent rounded-md flex items-center gap-2">
+                    <Activity size={16} />
+                    Enterprise
+                  </Link>
                 </SheetClose>
               </div>
             </SheetContent>
@@ -402,7 +411,12 @@ const Header = () => {
             
             <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
               <Users size={16} />
-              Join Community
+              Community
+            </Link>
+            
+            <Link to="/enterprise-observability" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Activity size={16} />
+              Enterprise
             </Link>
           </nav>
         </div>

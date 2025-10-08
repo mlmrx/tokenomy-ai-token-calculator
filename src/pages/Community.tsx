@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +59,7 @@ interface Post {
 
 const Community = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -207,23 +208,19 @@ const Community = () => {
                 Connect with AI developers, share insights, and optimize token usage together
               </p>
               
-              {user ? (
-                <Link to="/community/new-post">
-                  <Button size="lg" className="glass-button bg-white/20 text-gray-800 dark:text-white border-0">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Start Discussion
-                  </Button>
-                </Link>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button size="lg" className="glass-button bg-white/20 text-gray-800 dark:text-white border-0" asChild>
-                    <Link to="/auth">Join Community</Link>
-                  </Button>
-                  <Button size="lg" variant="outline" className="glass-button border-white/30">
-                    Browse Discussions
-                  </Button>
-                </div>
-              )}
+              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                <Button 
+                  size="lg" 
+                  className="glass-button bg-white/20 text-gray-800 dark:text-white border-0"
+                  onClick={() => user ? navigate('/community/new') : navigate('/auth')}
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Start Discussion
+                </Button>
+                <Button size="lg" variant="outline" className="glass-button border-white/30" onClick={() => !user && navigate('/auth')}>
+                  {user ? 'Browse' : 'Join'} Community
+                </Button>
+              </div>
 
               {/* Community Stats */}
               <div className="glass-card p-6 max-w-3xl mx-auto">

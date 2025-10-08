@@ -19,7 +19,11 @@ import TokenLeaderboard from "./pages/TokenLeaderboard";
 import TokenObservability from "./pages/TokenObservability";
 import NotFound from "./pages/NotFound";
 import Community from "./pages/Community";
+import CommunityPost from "./pages/CommunityPost";
+import CreateCommunityPost from "./pages/CreateCommunityPost";
+import CommunityProfile from "./pages/CommunityProfile";
 import Auth from "./pages/Auth";
+import EnterpriseObservability from "./pages/EnterpriseObservability";
 
 // Feature capability pages
 import UnifiedCostGraph from "./pages/features/UnifiedCostGraph";
@@ -58,6 +62,10 @@ const App = () => (
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/tools" element={<Index />} />
                   <Route path="/community" element={<Community />} />
+                  <Route path="/community/post/:slug" element={<CommunityPost />} />
+                  <Route path="/community/new" element={<CreateCommunityPost />} />
+                  <Route path="/community/user/:userId" element={<CommunityProfile />} />
+                  <Route path="/enterprise-observability" element={<EnterpriseObservability />} />
                   <Route path="/auth" element={<Auth />} />
                   {/* Individual tool pages for SEO */}
                   <Route path="/tools/token-calculator" element={<TokenCalculatorPage />} />

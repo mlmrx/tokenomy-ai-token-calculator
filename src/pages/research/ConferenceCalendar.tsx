@@ -121,8 +121,52 @@ export default function ConferenceCalendar() {
   return (
     <>
       <Helmet>
-        <title>AI Conference Calendar - Events & Deadlines | Tokenomy</title>
-        <meta name="description" content="Complete calendar of AI and robotics conferences including NeurIPS, ICML, CVPR, ICLR. Track submission deadlines, dates, and locations." />
+        <title>AI Conference Calendar 2025-2026 - NeurIPS, ICML, CVPR, ICLR Deadlines | Tokenomy</title>
+        <meta name="description" content="Complete AI and robotics conference calendar for 2025-2026. Track submission deadlines, acceptance dates, and locations for NeurIPS, ICML, CVPR, ICLR, ACL, IROS. Find academic and industry AI events worldwide." />
+        <meta name="keywords" content="AI conferences 2025, machine learning conferences, NeurIPS 2025, ICML 2026, CVPR 2026, ICLR 2026, ACL 2026, IROS 2025, AI conference deadlines, paper submission deadlines, AI events calendar, robotics conferences, deep learning conferences, computer vision conferences, NLP conferences" />
+        <meta name="author" content="Tokenomy Research Team" />
+        <link rel="canonical" href="https://tokenomy.dev/research/conference-calendar" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="AI Conference Calendar 2025-2026 - Track Major AI & Robotics Events" />
+        <meta property="og:description" content="Complete calendar of AI conferences including NeurIPS, ICML, CVPR, ICLR with submission deadlines and acceptance dates. Plan your AI research publications." />
+        <meta property="og:url" content="https://tokenomy.dev/research/conference-calendar" />
+        <meta property="og:site_name" content="Tokenomy" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Conference Calendar 2025-2026 | Tokenomy" />
+        <meta name="twitter:description" content="Track NeurIPS, ICML, CVPR, ICLR and more AI conferences. Never miss submission deadlines." />
+        
+        {/* Structured Data for Event Listings */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "AI and Robotics Conference Calendar",
+            "description": "Comprehensive calendar of major AI, machine learning, and robotics conferences worldwide",
+            "itemListElement": conferences.map((conf, index) => ({
+              "@type": "Event",
+              "position": index + 1,
+              "name": conf.fullName,
+              "alternateName": conf.name,
+              "startDate": conf.date.split("-")[0],
+              "endDate": conf.date.split("-")[1] || conf.date.split("-")[0],
+              "eventAttendanceMode": conf.virtual ? "https://schema.org/MixedEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+              "location": {
+                "@type": "Place",
+                "name": conf.location
+              },
+              "description": `${conf.fullName} - ${conf.topics.join(", ")}`,
+              "eventStatus": "https://schema.org/EventScheduled",
+              "organizer": {
+                "@type": "Organization",
+                "name": conf.name
+              }
+            }))
+          })}
+        </script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">

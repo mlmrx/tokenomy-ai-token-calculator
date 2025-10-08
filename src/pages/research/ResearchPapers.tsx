@@ -129,8 +129,57 @@ export default function ResearchPapers() {
   return (
     <>
       <Helmet>
-        <title>AI Research Papers - Latest Publications | Tokenomy</title>
-        <meta name="description" content="Curated collection of groundbreaking AI research papers. Stay updated with latest publications on LLMs, robotics, multimodal AI, and safety from top institutions." />
+        <title>AI Research Papers 2025 - Latest Transformers, Diffusion Models, Reinforcement Learning | Tokenomy</title>
+        <meta name="description" content="Latest AI and ML research papers from NeurIPS, ICML, CVPR, ICLR. Attention mechanisms, diffusion models, reinforcement learning, LLM training, vision transformers, retrieval-augmented generation. Arxiv preprints and peer-reviewed publications." />
+        <meta name="keywords" content="AI research papers 2025, machine learning papers, NeurIPS papers, ICML papers, ICLR papers, CVPR papers, attention mechanisms, transformer architecture, diffusion models, reinforcement learning, LLM training, vision transformers, RAG, arxiv AI papers, deep learning research, neural network papers" />
+        <meta name="author" content="Tokenomy Research Team" />
+        <link rel="canonical" href="https://tokenomy.dev/research/research-papers" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="AI Research Papers - Latest ML Publications & Breakthroughs" />
+        <meta property="og:description" content="Curated collection of groundbreaking AI research papers from top conferences. Transformers, diffusion models, RL, and more." />
+        <meta property="og:url" content="https://tokenomy.dev/research/research-papers" />
+        <meta property="og:site_name" content="Tokenomy" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Research Papers 2025 | Tokenomy" />
+        <meta name="twitter:description" content="Latest AI research: transformers, diffusion models, RL, LLMs. Papers from NeurIPS, ICML, ICLR." />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ScholarlyArticle",
+            "headline": "AI Research Papers Repository",
+            "description": "Curated collection of the latest artificial intelligence and machine learning research papers",
+            "keywords": "AI research, machine learning papers, deep learning, transformers, diffusion models",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Tokenomy"
+            },
+            "about": [
+              {
+                "@type": "ScholarlyArticle",
+                "name": "Attention Is All You Need"
+              },
+              {
+                "@type": "ScholarlyArticle",
+                "name": "Diffusion Models Beat GANs"
+              },
+              {
+                "@type": "ScholarlyArticle",
+                "name": "Reinforcement Learning with Human Feedback"
+              }
+            ],
+            "educationalLevel": "Graduate",
+            "audience": {
+              "@type": "EducationalAudience",
+              "educationalRole": "Researcher"
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">

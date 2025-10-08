@@ -92,8 +92,53 @@ export default function ModelBenchmarks() {
   return (
     <>
       <Helmet>
-        <title>AI Model Benchmarks - Performance Comparison | Tokenomy</title>
-        <meta name="description" content="Compare AI model performance across reasoning, multimodal understanding, speed, and efficiency benchmarks. MMLU, HumanEval, ChartQA scores for GPT-5, Claude 4, Gemini 2.5, and more." />
+        <title>AI Model Benchmarks 2025 - GPT-5, Claude 3.5 Opus, Gemini 2.0 Performance Comparison | Tokenomy</title>
+        <meta name="description" content="Comprehensive AI model benchmarks comparing GPT-5, Claude 3.5 Opus, Gemini 2.0 Ultra, Llama 4, and Mistral Large 3. MMLU scores, reasoning capabilities, coding performance, context windows, and speed comparisons." />
+        <meta name="keywords" content="AI model benchmarks 2025, GPT-5 benchmarks, Claude 3.5 Opus performance, Gemini 2.0 Ultra benchmarks, Llama 4 benchmarks, Mistral Large 3, MMLU scores, AI model comparison, LLM benchmarks, reasoning benchmarks, coding benchmarks, AI performance metrics, context window comparison, tokens per second" />
+        <meta name="author" content="Tokenomy Research Team" />
+        <link rel="canonical" href="https://tokenomy.dev/research/model-benchmarks" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="AI Model Benchmarks - Compare GPT-5, Claude, Gemini Performance" />
+        <meta property="og:description" content="Detailed performance benchmarks and comparisons of leading AI models. MMLU scores, reasoning, coding, and speed metrics." />
+        <meta property="og:url" content="https://tokenomy.dev/research/model-benchmarks" />
+        <meta property="og:site_name" content="Tokenomy" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Model Benchmarks 2025 | Tokenomy" />
+        <meta name="twitter:description" content="Compare GPT-5, Claude 3.5 Opus, Gemini 2.0 Ultra benchmarks. MMLU, reasoning, coding performance." />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": "AI Model Performance Benchmarks",
+            "description": "Comprehensive benchmarks and performance metrics for leading AI language models",
+            "keywords": "AI benchmarks, model performance, MMLU, reasoning, coding, GPT-5, Claude, Gemini",
+            "creator": {
+              "@type": "Organization",
+              "name": "Tokenomy Research Team"
+            },
+            "about": [
+              {
+                "@type": "Thing",
+                "name": "Artificial Intelligence"
+              },
+              {
+                "@type": "Thing",
+                "name": "Machine Learning Benchmarks"
+              },
+              {
+                "@type": "Thing",
+                "name": "Large Language Models"
+              }
+            ],
+            "measurementTechnique": "MMLU, HumanEval, reasoning tasks, context window tests"
+          })}
+        </script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">

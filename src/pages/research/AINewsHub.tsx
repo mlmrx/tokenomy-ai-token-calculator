@@ -127,8 +127,59 @@ export default function AINewsHub() {
   return (
     <>
       <Helmet>
-        <title>AI News Hub - Latest AI & Robotics Innovation | Tokenomy</title>
-        <meta name="description" content="Stay updated with breaking news on AI models, research breakthroughs, and robotics innovation. Real-time coverage of OpenAI, Anthropic, Google, Meta, and more." />
+        <title>AI News Hub 2025 - Latest GPT-5, Claude, Gemini Updates | Tokenomy</title>
+        <meta name="description" content="Latest AI news and announcements from OpenAI GPT-5, Anthropic Claude 3.5 Opus, Google Gemini 2.0, Meta Llama 4, Mistral AI. Real-time updates on LLM releases, AI research breakthroughs, and industry developments." />
+        <meta name="keywords" content="AI news 2025, GPT-5 news, Claude 3.5 Opus, Gemini 2.0 updates, Llama 4, Mistral AI news, OpenAI announcements, Anthropic updates, Google DeepMind news, AI research news, LLM updates, artificial intelligence news, machine learning news, AI breakthroughs" />
+        <meta name="author" content="Tokenomy Research Team" />
+        <link rel="canonical" href="https://tokenomy.dev/research/ai-news-hub" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="AI News Hub - Latest AI Updates & Announcements" />
+        <meta property="og:description" content="Real-time AI news from OpenAI, Anthropic, Google DeepMind, Meta AI, and Mistral. Stay updated on GPT-5, Claude, Gemini, and Llama developments." />
+        <meta property="og:url" content="https://tokenomy.dev/research/ai-news-hub" />
+        <meta property="og:site_name" content="Tokenomy" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI News Hub 2025 | Tokenomy" />
+        <meta name="twitter:description" content="Latest AI news: GPT-5, Claude 3.5 Opus, Gemini 2.0, Llama 4 updates and more." />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "AI News Hub",
+            "description": "Latest news and updates from the artificial intelligence industry",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Tokenomy",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://tokenomy.dev/favicon.png"
+              }
+            },
+            "mainEntity": {
+              "@type": "ItemList",
+              "itemListElement": latestNews.map((item, index) => ({
+                "@type": "NewsArticle",
+                "position": index + 1,
+                "headline": item.title,
+                "description": item.summary,
+                "datePublished": item.date,
+                "author": {
+                  "@type": "Organization",
+                  "name": item.source
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "Tokenomy"
+                }
+              }))
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">

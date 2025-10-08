@@ -119,8 +119,56 @@ export default function InnovationTracker() {
   return (
     <>
       <Helmet>
-        <title>Innovation Tracker - Latest AI & Robotics Breakthroughs | Tokenomy</title>
-        <meta name="description" content="Track the latest innovations in AI and robotics from Apple, Tesla, Meta, NVIDIA, and emerging startups. Real-time updates on product launches and breakthroughs." />
+        <title>AI Innovation Tracker 2025 - Latest Breakthroughs from Apple, Tesla, Meta, NVIDIA | Tokenomy</title>
+        <meta name="description" content="Track latest AI and robotics innovations from Apple Intelligence, Tesla Optimus, Meta Ray-Ban AI Glasses, NVIDIA ACE, Amazon Q. Monitor emerging AI startups like Sakana AI, Character.AI, Adept AI, Covariant." />
+        <meta name="keywords" content="AI innovation tracker, latest AI breakthroughs, Apple Intelligence, Tesla Optimus, Meta Ray-Ban AI, NVIDIA ACE, Amazon Q, Boston Dynamics Spot, AI startups 2025, Sakana AI, Character.AI, Adept AI, Covariant robotics, AI product launches, robotics innovations, edge AI, humanoid robots, enterprise AI" />
+        <meta name="author" content="Tokenomy Research Team" />
+        <link rel="canonical" href="https://tokenomy.dev/research/innovation-tracker" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="AI Innovation Tracker - Latest Product Launches & Breakthroughs" />
+        <meta property="og:description" content="Real-time tracking of AI innovations from Apple, Tesla, Meta, NVIDIA and emerging AI startups. Stay updated on the latest AI and robotics breakthroughs." />
+        <meta property="og:url" content="https://tokenomy.dev/research/innovation-tracker" />
+        <meta property="og:site_name" content="Tokenomy" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Innovation Tracker 2025 | Tokenomy" />
+        <meta name="twitter:description" content="Track latest AI breakthroughs from Apple Intelligence, Tesla Optimus, Meta, NVIDIA, and top AI startups." />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            "headline": "AI Innovation Tracker - Latest Product Launches and Breakthroughs",
+            "description": "Comprehensive tracking of AI and robotics innovations from major tech companies and emerging startups",
+            "keywords": "AI innovation, robotics, product launches, Apple Intelligence, Tesla Optimus, AI startups",
+            "author": {
+              "@type": "Organization",
+              "name": "Tokenomy Research Team"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Tokenomy"
+            },
+            "about": [
+              {
+                "@type": "Thing",
+                "name": "Artificial Intelligence"
+              },
+              {
+                "@type": "Thing",
+                "name": "Robotics"
+              },
+              {
+                "@type": "Thing",
+                "name": "Machine Learning"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">

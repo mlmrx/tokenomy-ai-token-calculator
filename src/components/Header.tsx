@@ -96,15 +96,12 @@ const Header = () => {
                   <Link to="/contact" className="px-8 py-2 hover:bg-accent rounded-md">Contact</Link>
                 </SheetClose>
                 <SheetClose asChild>
+                  <Link to="/enterprise-observability" className="px-8 py-2 hover:bg-accent rounded-md">Enterprise Observability</Link>
+                </SheetClose>
+                <SheetClose asChild>
                   <Link to="/community" className="px-4 py-2 hover:bg-accent rounded-md flex items-center gap-2">
                     <Users size={16} />
                     Community
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link to="/enterprise-observability" className="px-4 py-2 hover:bg-accent rounded-md flex items-center gap-2">
-                    <Activity size={16} />
-                    Enterprise
                   </Link>
                 </SheetClose>
               </div>
@@ -291,7 +288,7 @@ const Header = () => {
                     Features
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[300px] gap-2 p-4">
+                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2 bg-background z-50">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
@@ -336,6 +333,22 @@ const Header = () => {
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
                               Usage-verified billing & rev-share
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/enterprise-observability"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Activity size={16} />
+                              <span className="text-sm font-medium leading-none">Enterprise Observability</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Full-stack telemetry & AI routing
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -412,11 +425,6 @@ const Header = () => {
             <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
               <Users size={16} />
               Community
-            </Link>
-            
-            <Link to="/enterprise-observability" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <Activity size={16} />
-              Enterprise
             </Link>
           </nav>
         </div>

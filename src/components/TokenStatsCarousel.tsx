@@ -40,12 +40,34 @@ interface CompanyStatType {
   gradientId: string; // unique ID for Recharts <defs>
   foundedYear: number;
   headquarters: string;
+  avgCostPerMillionTokens: number; // USD per million tokens (blended rate)
 }
+
+/* -------------------------------------------------------------------------- */
+/* PRICING CALCULATION UTILITIES                                              */
+/* -------------------------------------------------------------------------- */
+// Calculate monthly cost based on token volume and pricing
+const calculateMonthlyCost = (tokens: number, costPerMillion: number): number => {
+  return (tokens * 1000000 * costPerMillion) / 1000000; // tokens in trillions * 1M * cost / 1M
+};
+
+// Format currency for display
+const formatCurrency = (amount: number): string => {
+  if (amount >= 1000000000) {
+    return `$${(amount / 1000000000).toFixed(2)}B`;
+  } else if (amount >= 1000000) {
+    return `$${(amount / 1000000).toFixed(1)}M`;
+  } else if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(0)}K`;
+  }
+  return `$${amount.toFixed(0)}`;
+};
 
 /* -------------------------------------------------------------------------- */
 /* DATA (2024-2025, trillions) - Updated for 2025 Trends                     */
 /* Source: Industry estimates based on public disclosures, infrastructure    */
 /* capacity, and observed API usage patterns (Q4 2024-Q1 2025).              */
+/* Pricing: Blended rates based on major cloud AI service pricing.           */
 /* -------------------------------------------------------------------------- */
 const companyStats: CompanyStatType[] = [
   {
@@ -56,6 +78,7 @@ const companyStats: CompanyStatType[] = [
       'Enterprise AI infrastructure, cloud-scale inference, and productivity AI',
     flagshipAIProduct: 'Azure OpenAI Service / Copilot',
     estimatedTokens: '≈ 2.8 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 4.50, // Blended Azure OpenAI pricing
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.42 },
       { month: 'Feb 24', tokens: 0.51 },
@@ -88,6 +111,7 @@ const companyStats: CompanyStatType[] = [
       'Multi-model cloud AI platform, enterprise automation, and conversational AI',
     flagshipAIProduct: 'AWS Bedrock / Amazon Q',
     estimatedTokens: '≈ 1.9 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 3.80, // Blended AWS Bedrock pricing
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.28 },
       { month: 'Feb 24', tokens: 0.35 },
@@ -120,6 +144,7 @@ const companyStats: CompanyStatType[] = [
       'Frontier AI models, reasoning systems, and multimodal intelligence',
     flagshipAIProduct: 'ChatGPT / GPT-4o & o1',
     estimatedTokens: '≈ 3.5 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 5.25, // Blended GPT-4o + o1 pricing
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.65 },
       { month: 'Feb 24', tokens: 0.82 },
@@ -152,6 +177,7 @@ const companyStats: CompanyStatType[] = [
       'Multimodal AI, long-context reasoning, and integrated AI experiences',
     flagshipAIProduct: 'Gemini 2.0 / Vertex AI',
     estimatedTokens: '≈ 2.4 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 3.50, // Blended Gemini 2.0 pricing
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.38 },
       { month: 'Feb 24', tokens: 0.48 },
@@ -184,6 +210,7 @@ const companyStats: CompanyStatType[] = [
       'Open-source LLMs, social AI integration, and metaverse intelligence',
     flagshipAIProduct: 'Llama 4 / Meta AI',
     estimatedTokens: '≈ 1.6 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 2.20, // Lower cost for internal/open-source model infrastructure
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.22 },
       { month: 'Feb 24', tokens: 0.28 },
@@ -215,6 +242,7 @@ const companyStats: CompanyStatType[] = [
     aiFocusArea: 'Constitutional AI, safety research, and enterprise reasoning models',
     flagshipAIProduct: 'Claude 3.5 Sonnet / Opus',
     estimatedTokens: '≈ 1.2 Trillion tokens / month', // Jan-25
+    avgCostPerMillionTokens: 4.80, // Blended Claude 3.5 pricing
     tokenHistory: [
       { month: 'Jan 24', tokens: 0.12 },
       { month: 'Feb 24', tokens: 0.16 },
@@ -317,18 +345,21 @@ const CompanyStatsCarousel: React.FC = () => {
                 >
                   <Card className="h-full border-2 border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-600 transition shadow-lg rounded-xl overflow-hidden flex flex-col">
                     <CardContent className="p-0 flex flex-col flex-grow"> {/* No padding, ensure content grows */}
-                      {/* Header Section */}
+                       {/* Header Section */}
                       <div
                         className={`bg-gradient-to-br ${comp.color} text-white p-6 rounded-t-xl relative`}
                       >
-                        {/* Removed Company Logo Img Tag */}
                         {/* Company Name */}
                         <h3 className="text-2xl font-bold mb-1">
                           {comp.name}
                         </h3>
                         {/* Latest Estimated Tokens */}
-                        <p className="text-lg font-bold mb-3 opacity-90">
+                        <p className="text-lg font-bold mb-1 opacity-90">
                           {comp.estimatedTokens}
+                        </p>
+                        {/* Monthly Cost Estimate */}
+                        <p className="text-base font-semibold mb-3 opacity-95">
+                          ≈ {formatCurrency(calculateMonthlyCost(endData?.tokens || 0, comp.avgCostPerMillionTokens))} / month
                         </p>
                         {/* Flagship Product Badge */}
                         <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
@@ -441,8 +472,18 @@ const CompanyStatsCarousel: React.FC = () => {
                         </div>
 
                         {/* Footer Info */}
-                        <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-400 dark:text-gray-500"> {/* Pushes to bottom */}
-                          Founded {comp.foundedYear} • HQ {comp.headquarters}
+                        <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                          {/* Cost per Million Tokens */}
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600 dark:text-gray-400">Avg Cost/M Tokens:</span>
+                            <span className="font-semibold text-gray-800 dark:text-white">
+                              ${comp.avgCostPerMillionTokens.toFixed(2)}
+                            </span>
+                          </div>
+                          {/* Founded and Location Row */}
+                          <div className="text-xs text-gray-400 dark:text-gray-500">
+                            Founded {comp.foundedYear} • HQ {comp.headquarters}
+                          </div>
                         </div>
                       </div>
                     </CardContent>

@@ -1,12 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AINewsMarquee from "@/components/AINewsMarquee";
 import Footer from "@/components/Footer";
 import ToolsGrid from "@/components/ToolsGrid";
-import { ArrowRight, BarChart, Calculator, LineChart, Brain, Zap, Shield, Code, Leaf, Search, Cpu, Trophy, Eye, CheckCircle, Timer, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart,
+  Calculator,
+  LineChart,
+  Brain,
+  Zap,
+  Shield,
+  Code,
+  Leaf,
+  Search,
+  Cpu,
+  Trophy,
+  Eye,
+  CheckCircle,
+  Timer,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import TokenStatsCarousel from "@/components/TokenStatsCarousel";
 import CommunityPreview from "@/components/CommunityPreview";
 
@@ -20,7 +39,7 @@ const Homepage = () => {
         {/* Animated Background */}
         <div className="absolute inset-0 animated-gradient -z-20"></div>
         <div className="absolute inset-0 glass-hero -z-10"></div>
-        
+
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full floating blur-sm"></div>
         <div className="absolute top-40 right-20 w-32 h-32 bg-purple-400/20 rounded-full floating-delayed blur-sm"></div>
@@ -35,15 +54,18 @@ const Homepage = () => {
                   The Complete AI Token Intelligence Platform
                 </span>
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 leading-tight">
-                Plan, Optimize & Monitor—
+                Plan, Optimize & Monitor
                 <br />
                 <span className="text-3xl md:text-4xl lg:text-5xl">From First Calculation to Production Scale</span>
               </h1>
-              
+
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                <strong className="text-foreground">Calculate costs</strong> · <strong className="text-foreground">Simulate speeds</strong> · <strong className="text-foreground">Estimate memory & energy</strong> · <strong className="text-foreground">Monitor production</strong>
+                <strong className="text-foreground">Calculate costs</strong> ·{" "}
+                <strong className="text-foreground">Simulate speeds</strong> ·{" "}
+                <strong className="text-foreground">Estimate memory & energy</strong> ·{" "}
+                <strong className="text-foreground">Monitor production</strong>
                 <br />
                 Comprehensive token intelligence tools built by AI practitioners, for modern AI teams.
               </p>
@@ -60,10 +82,10 @@ const Homepage = () => {
                   Explore All Tools
                 </Link>
               </Button>
-              
-              <Button 
-                size="lg" 
-                className="glass-button bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-[200px]" 
+
+              <Button
+                size="lg"
+                className="glass-button bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-[200px]"
                 asChild
               >
                 <Link to="/observability">
@@ -71,11 +93,11 @@ const Homepage = () => {
                   See Live Demo
                 </Link>
               </Button>
-              
-              <Button 
-                size="lg" 
+
+              <Button
+                size="lg"
                 variant="outline"
-                className="glass-button border-2 border-violet-500/30 hover:border-violet-500/50 hover:bg-violet-500/10 transition-all duration-300 min-w-[200px]" 
+                className="glass-button border-2 border-violet-500/30 hover:border-violet-500/50 hover:bg-violet-500/10 transition-all duration-300 min-w-[200px]"
                 asChild
               >
                 <Link to="/community">
@@ -101,7 +123,9 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-gray-900/50 dark:via-indigo-950/20 dark:to-purple-950/20"></div>
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Powerful Token Management Tools</h2>
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+              Powerful Token Management Tools
+            </h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Optimize your AI interactions with our comprehensive suite of token analysis tools
             </p>
@@ -132,9 +156,7 @@ const Homepage = () => {
                     <Eye className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Observability</h3>
-                  <p className="text-muted-foreground">
-                    Real-time monitoring and analytics for AI token usage
-                  </p>
+                  <p className="text-muted-foreground">Real-time monitoring and analytics for AI token usage</p>
                   <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/observability">View Observatory</Link>
                   </Button>
@@ -200,9 +222,7 @@ const Homepage = () => {
                     <Search className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <h3 className="text-xl font-semibold">AI Content Detector</h3>
-                  <p className="text-muted-foreground">
-                    Detect AI-generated text and verify original content
-                  </p>
+                  <p className="text-muted-foreground">Detect AI-generated text and verify original content</p>
                   <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=detector">Try Detector</Link>
                   </Button>
@@ -217,9 +237,7 @@ const Homepage = () => {
                     <Cpu className="h-6 w-6 text-rose-600 dark:text-rose-400" />
                   </div>
                   <h3 className="text-xl font-semibold">GPU Token Monitor</h3>
-                  <p className="text-muted-foreground">
-                    View token throughput statistics for individual GPUs
-                  </p>
+                  <p className="text-muted-foreground">View token throughput statistics for individual GPUs</p>
                   <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=gpu-monitor">View Monitor</Link>
                   </Button>
@@ -234,9 +252,7 @@ const Homepage = () => {
                     <Trophy className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
                   </div>
                   <h3 className="text-xl font-semibold">Token Leaderboard</h3>
-                  <p className="text-muted-foreground">
-                    View token Leaderboard
-                  </p>
+                  <p className="text-muted-foreground">View token Leaderboard</p>
                   <Button variant="outline" size="sm" className="glass-button border-0" asChild>
                     <Link to="/tools?tab=token-leaderboard">View Leaderboard</Link>
                   </Button>
@@ -252,7 +268,9 @@ const Homepage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-indigo-50/40 to-purple-50/80 dark:from-gray-900/80 dark:via-indigo-950/40 dark:to-purple-950/80"></div>
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Why Choose Tokenomy?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+              Why Choose Tokenomy?
+            </h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
               Our platform offers unique advantages for AI developers and content creators
             </p>
@@ -261,10 +279,18 @@ const Homepage = () => {
           <div className="glass-card p-8 max-w-3xl mx-auto">
             <Tabs defaultValue="accuracy" className="w-full">
               <TabsList className="w-full justify-center mb-6 glass-nav border-0">
-                <TabsTrigger value="accuracy" className="glass-button border-0">Accuracy</TabsTrigger>
-                <TabsTrigger value="speed" className="glass-button border-0">Speed</TabsTrigger>
-                <TabsTrigger value="cost" className="glass-button border-0">Cost</TabsTrigger>
-                <TabsTrigger value="security" className="glass-button border-0">Security</TabsTrigger>
+                <TabsTrigger value="accuracy" className="glass-button border-0">
+                  Accuracy
+                </TabsTrigger>
+                <TabsTrigger value="speed" className="glass-button border-0">
+                  Speed
+                </TabsTrigger>
+                <TabsTrigger value="cost" className="glass-button border-0">
+                  Cost
+                </TabsTrigger>
+                <TabsTrigger value="security" className="glass-button border-0">
+                  Security
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="accuracy" className="space-y-3">
@@ -290,8 +316,8 @@ const Homepage = () => {
                   <div>
                     <h3 className="text-xl font-semibold">Real-time Analysis</h3>
                     <p className="mt-2 text-muted-foreground">
-                      Get instant feedback on your token usage and processing speeds, allowing you to
-                      make quick adjustments and optimize for faster AI responses.
+                      Get instant feedback on your token usage and processing speeds, allowing you to make quick
+                      adjustments and optimize for faster AI responses.
                     </p>
                   </div>
                 </div>
@@ -305,8 +331,8 @@ const Homepage = () => {
                   <div>
                     <h3 className="text-xl font-semibold">Cost Optimization</h3>
                     <p className="mt-2 text-muted-foreground">
-                      Reduce your AI expenditure by up to 40% with our intelligent token optimization
-                      strategies and model comparison tools.
+                      Reduce your AI expenditure by up to 40% with our intelligent token optimization strategies and
+                      model comparison tools.
                     </p>
                   </div>
                 </div>
@@ -320,8 +346,8 @@ const Homepage = () => {
                   <div>
                     <h3 className="text-xl font-semibold">Secure Analysis</h3>
                     <p className="mt-2 text-muted-foreground">
-                      Your data never leaves your browser. All calculations and simulations are performed
-                      client-side, ensuring maximum privacy and security.
+                      Your data never leaves your browser. All calculations and simulations are performed client-side,
+                      ensuring maximum privacy and security.
                     </p>
                   </div>
                 </div>
@@ -360,9 +386,7 @@ const Homepage = () => {
                 className="glass-button bg-transparent border border-white/30 text-gray hover:bg-white/10"
                 asChild
               >
-                <Link to="/contact">
-                  Contact Us
-                </Link>
+                <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
             <div className="text-sm text-gray/80 pt-2">
@@ -378,16 +402,21 @@ const Homepage = () => {
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">For Developers, By Developers</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                For Developers, By Developers
+              </h2>
               <p className="text-lg text-muted-foreground mb-4">
-                Tokenomy provides powerful APIs and libraries for integrating token optimization directly into your applications.
+                Tokenomy provides powerful APIs and libraries for integrating token optimization directly into your
+                applications.
               </p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <Code className="h-5 w-5 text-purple-600 dark:text-purple-400 mt-0.5" />
                   <div>
                     <h3 className="text-lg font-semibold">Simple API Integration</h3>
-                    <p className="text-muted-foreground">Connect to our powerful token analysis tools with just a few lines of code</p>
+                    <p className="text-muted-foreground">
+                      Connect to our powerful token analysis tools with just a few lines of code
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -405,7 +434,9 @@ const Homepage = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="outline" className="mt-6 glass-button border-0">View Documentation</Button>
+              <Button variant="outline" className="mt-6 glass-button border-0">
+                View Documentation
+              </Button>
             </div>
 
             <div className="enhanced-glass-card p-6 shadow-xl">
@@ -419,47 +450,59 @@ const Homepage = () => {
               </div>
               <pre className="text-sm overflow-auto font-mono">
                 <code className="text-blue-400">import</code>
-                <code className="text-gray-50"> {"{"} tokenAnalyzer {"}"} </code>
+                <code className="text-gray-50">
+                  {" "}
+                  {"{"} tokenAnalyzer {"}"}{" "}
+                </code>
                 <code className="text-blue-400">from</code>
-                <code className="text-green-400"> 'tokenomy-js'</code>;<br /><br />
-
+                <code className="text-green-400"> 'tokenomy-js'</code>;<br />
+                <br />
                 <code className="text-purple-400">const</code>
                 <code className="text-gray-50"> analyzer = </code>
                 <code className="text-blue-400">new</code>
                 <code className="text-yellow-400"> tokenAnalyzer</code>
-                <code className="text-gray-50">({"{"}</code><br />
-                <code className="text-gray-50">  model: </code>
+                <code className="text-gray-50">({"{"}</code>
+                <br />
+                <code className="text-gray-50"> model: </code>
                 <code className="text-green-400">'gpt-4-turbo'</code>,<br />
-                <code className="text-gray-50">  options: {"{"} </code>
+                <code className="text-gray-50"> options: {"{"} </code>
                 <code className="text-gray-300">precision: </code>
                 <code className="text-blue-400">true</code>,<br />
-                <code className="text-gray-50">            debug: </code>
+                <code className="text-gray-50"> debug: </code>
                 <code className="text-blue-400">false</code>
-                <code className="text-gray-50"> {"}"}</code><br />
-                <code className="text-gray-50">{"}"})</code>;<br /><br />
-
-                <code className="text-green-400">// Analyze text and get token information</code><br />
+                <code className="text-gray-50"> {"}"}</code>
+                <br />
+                <code className="text-gray-50">{"}"})</code>;<br />
+                <br />
+                <code className="text-green-400">// Analyze text and get token information</code>
+                <br />
                 <code className="text-purple-400">async function</code>
                 <code className="text-yellow-300"> analyzePrompt</code>
-                <code className="text-gray-50">(text) {"{"}</code><br />
-                <code className="text-gray-50">  const result = </code>
+                <code className="text-gray-50">(text) {"{"}</code>
+                <br />
+                <code className="text-gray-50"> const result = </code>
                 <code className="text-blue-400">await</code>
-                <code className="text-gray-50"> analyzer.calculate(text);</code><br /><br />
-
-                <code className="text-gray-50">  console.log(</code>
+                <code className="text-gray-50"> analyzer.calculate(text);</code>
+                <br />
+                <br />
+                <code className="text-gray-50"> console.log(</code>
                 <code className="text-green-400">`Token count: </code>
                 <code className="text-gray-50">{"${result.tokens}"}</code>
                 <code className="text-green-400">`</code>
-                <code className="text-gray-50">);</code><br />
-                <code className="text-gray-50">  console.log(</code>
+                <code className="text-gray-50">);</code>
+                <br />
+                <code className="text-gray-50"> console.log(</code>
                 <code className="text-green-400">`Estimated cost: </code>
                 <code className="text-gray-50">{"${result.cost.toFixed(6)}"}</code>
                 <code className="text-green-400">`</code>
-                <code className="text-gray-50">);</code><br />
-                <code className="text-gray-50">  </code><br />
-                <code className="text-gray-50">  </code>
+                <code className="text-gray-50">);</code>
+                <br />
+                <code className="text-gray-50"> </code>
+                <br />
+                <code className="text-gray-50"> </code>
                 <code className="text-blue-400">return</code>
-                <code className="text-gray-50"> result;</code><br />
+                <code className="text-gray-50"> result;</code>
+                <br />
                 <code className="text-gray-50">{"}"}</code>
               </pre>
             </div>

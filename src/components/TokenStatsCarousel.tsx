@@ -40,28 +40,14 @@ interface CompanyStatType {
   gradientId: string; // unique ID for Recharts <defs>
   foundedYear: number;
   headquarters: string;
-  avgCostPerMillionTokens: number; // USD per million tokens (blended rate)
+  inputCostPerMillionTokens: number; // USD per million input tokens
+  outputCostPerMillionTokens: number; // USD per million output tokens
+  estimatedMonthlyCost: string; // Estimated monthly spend
 }
 
 /* -------------------------------------------------------------------------- */
-/* PRICING CALCULATION UTILITIES                                              */
+/* PRICING UTILITIES - Not used for display, costs are provided estimates    */
 /* -------------------------------------------------------------------------- */
-// Calculate monthly cost based on token volume and pricing
-const calculateMonthlyCost = (tokens: number, costPerMillion: number): number => {
-  return (tokens * 1000000 * costPerMillion) / 1000000; // tokens in trillions * 1M * cost / 1M
-};
-
-// Format currency for display
-const formatCurrency = (amount: number): string => {
-  if (amount >= 1000000000) {
-    return `$${(amount / 1000000000).toFixed(2)}B`;
-  } else if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(1)}M`;
-  } else if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(0)}K`;
-  }
-  return `$${amount.toFixed(0)}`;
-};
 
 /* -------------------------------------------------------------------------- */
 /* DATA (2024-2025, trillions) - Updated for 2025 Trends                     */
@@ -71,127 +57,30 @@ const formatCurrency = (amount: number): string => {
 /* -------------------------------------------------------------------------- */
 const companyStats: CompanyStatType[] = [
   {
-    name: 'Microsoft',
-    ceo: 'Satya Nadella',
-    position: 'Chairman & CEO',
-    aiFocusArea:
-      'Enterprise AI infrastructure, cloud-scale inference, and productivity AI',
-    flagshipAIProduct: 'Azure OpenAI Service / Copilot',
-    estimatedTokens: '≈ 2.8 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 4.50, // Blended Azure OpenAI pricing
-    tokenHistory: [
-      { month: 'Jan 24', tokens: 0.42 },
-      { month: 'Feb 24', tokens: 0.51 },
-      { month: 'Mar 24', tokens: 0.63 },
-      { month: 'Apr 24', tokens: 0.78 },
-      { month: 'May 24', tokens: 0.95 },
-      { month: 'Jun 24', tokens: 1.14 },
-      { month: 'Jul 24', tokens: 1.37 },
-      { month: 'Aug 24', tokens: 1.62 },
-      { month: 'Sep 24', tokens: 1.91 },
-      { month: 'Oct 24', tokens: 2.15 },
-      { month: 'Nov 24', tokens: 2.42 },
-      { month: 'Dec 24', tokens: 2.58 },
-      { month: 'Jan 25', tokens: 2.80 },
-    ],
-    imageUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
-    logoUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
-    color: 'from-blue-600 to-sky-500',
-    gradientId: 'msftGradient',
-    foundedYear: 1975,
-    headquarters: 'Redmond, Washington, USA',
-  },
-  {
-    name: 'Amazon',
-    ceo: 'Andy Jassy',
-    position: 'President & CEO',
-    aiFocusArea:
-      'Multi-model cloud AI platform, enterprise automation, and conversational AI',
-    flagshipAIProduct: 'AWS Bedrock / Amazon Q',
-    estimatedTokens: '≈ 1.9 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 3.80, // Blended AWS Bedrock pricing
-    tokenHistory: [
-      { month: 'Jan 24', tokens: 0.28 },
-      { month: 'Feb 24', tokens: 0.35 },
-      { month: 'Mar 24', tokens: 0.44 },
-      { month: 'Apr 24', tokens: 0.56 },
-      { month: 'May 24', tokens: 0.71 },
-      { month: 'Jun 24', tokens: 0.88 },
-      { month: 'Jul 24', tokens: 1.05 },
-      { month: 'Aug 24', tokens: 1.24 },
-      { month: 'Sep 24', tokens: 1.42 },
-      { month: 'Oct 24', tokens: 1.58 },
-      { month: 'Nov 24', tokens: 1.73 },
-      { month: 'Dec 24', tokens: 1.82 },
-      { month: 'Jan 25', tokens: 1.90 },
-    ],
-    imageUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Andy_Jassy_2022.jpg/440px-Andy_Jassy_2022.jpg',
-    logoUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
-    color: 'from-orange-500 to-yellow-400',
-    gradientId: 'amznGradient',
-    foundedYear: 1994,
-    headquarters: 'Seattle, Washington, USA',
-  },
-  {
-    name: 'OpenAI',
-    ceo: 'Sam Altman',
-    position: 'CEO',
-    aiFocusArea:
-      'Frontier AI models, reasoning systems, and multimodal intelligence',
-    flagshipAIProduct: 'ChatGPT / GPT-4o & o1',
-    estimatedTokens: '≈ 3.5 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 5.25, // Blended GPT-4o + o1 pricing
-    tokenHistory: [
-      { month: 'Jan 24', tokens: 0.65 },
-      { month: 'Feb 24', tokens: 0.82 },
-      { month: 'Mar 24', tokens: 1.05 },
-      { month: 'Apr 24', tokens: 1.32 },
-      { month: 'May 24', tokens: 1.64 },
-      { month: 'Jun 24', tokens: 1.98 },
-      { month: 'Jul 24', tokens: 2.28 },
-      { month: 'Aug 24', tokens: 2.56 },
-      { month: 'Sep 24', tokens: 2.84 },
-      { month: 'Oct 24', tokens: 3.05 },
-      { month: 'Nov 24', tokens: 3.22 },
-      { month: 'Dec 24', tokens: 3.38 },
-      { month: 'Jan 25', tokens: 3.50 },
-    ],
-    imageUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
-    logoUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg',
-    color: 'from-teal-500 to-emerald-500',
-    gradientId: 'openAIGra',
-    foundedYear: 2015,
-    headquarters: 'San Francisco, California, USA',
-  },
-  {
     name: 'Google',
     ceo: 'Sundar Pichai',
     position: 'CEO',
     aiFocusArea:
       'Multimodal AI, long-context reasoning, and integrated AI experiences',
     flagshipAIProduct: 'Gemini 2.0 / Vertex AI',
-    estimatedTokens: '≈ 2.4 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 3.50, // Blended Gemini 2.0 pricing
+    estimatedTokens: '≈ 480+ Trillion tokens / month',
+    inputCostPerMillionTokens: 1.25,
+    outputCostPerMillionTokens: 5.00,
+    estimatedMonthlyCost: '$600M+',
     tokenHistory: [
-      { month: 'Jan 24', tokens: 0.38 },
-      { month: 'Feb 24', tokens: 0.48 },
-      { month: 'Mar 24', tokens: 0.62 },
-      { month: 'Apr 24', tokens: 0.78 },
-      { month: 'May 24', tokens: 0.96 },
-      { month: 'Jun 24', tokens: 1.16 },
-      { month: 'Jul 24', tokens: 1.38 },
-      { month: 'Aug 24', tokens: 1.62 },
-      { month: 'Sep 24', tokens: 1.84 },
-      { month: 'Oct 24', tokens: 2.05 },
-      { month: 'Nov 24', tokens: 2.22 },
-      { month: 'Dec 24', tokens: 2.33 },
-      { month: 'Jan 25', tokens: 2.40 },
+      { month: 'Jan 24', tokens: 98 },
+      { month: 'Feb 24', tokens: 125 },
+      { month: 'Mar 24', tokens: 158 },
+      { month: 'Apr 24', tokens: 195 },
+      { month: 'May 24', tokens: 238 },
+      { month: 'Jun 24', tokens: 285 },
+      { month: 'Jul 24', tokens: 328 },
+      { month: 'Aug 24', tokens: 365 },
+      { month: 'Sep 24', tokens: 398 },
+      { month: 'Oct 24', tokens: 425 },
+      { month: 'Nov 24', tokens: 448 },
+      { month: 'Dec 24', tokens: 465 },
+      { month: 'Jan 25', tokens: 480 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
@@ -203,37 +92,74 @@ const companyStats: CompanyStatType[] = [
     headquarters: 'Mountain View, California, USA',
   },
   {
-    name: 'Meta',
-    ceo: 'Mark Zuckerberg',
-    position: 'Chairman & CEO',
+    name: 'OpenAI',
+    ceo: 'Sam Altman',
+    position: 'CEO',
     aiFocusArea:
-      'Open-source LLMs, social AI integration, and metaverse intelligence',
-    flagshipAIProduct: 'Llama 4 / Meta AI',
-    estimatedTokens: '≈ 1.6 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 2.20, // Lower cost for internal/open-source model infrastructure
+      'Frontier AI models, reasoning systems, and multimodal intelligence',
+    flagshipAIProduct: 'ChatGPT / GPT-4o & o1',
+    estimatedTokens: '≈ 260-270 Trillion tokens / month',
+    inputCostPerMillionTokens: 1.25,
+    outputCostPerMillionTokens: 10.00,
+    estimatedMonthlyCost: '$2.5-3B+',
     tokenHistory: [
-      { month: 'Jan 24', tokens: 0.22 },
-      { month: 'Feb 24', tokens: 0.28 },
-      { month: 'Mar 24', tokens: 0.36 },
-      { month: 'Apr 24', tokens: 0.46 },
-      { month: 'May 24', tokens: 0.58 },
-      { month: 'Jun 24', tokens: 0.72 },
-      { month: 'Jul 24', tokens: 0.87 },
-      { month: 'Aug 24', tokens: 1.02 },
-      { month: 'Sep 24', tokens: 1.18 },
-      { month: 'Oct 24', tokens: 1.32 },
-      { month: 'Nov 24', tokens: 1.45 },
-      { month: 'Dec 24', tokens: 1.54 },
-      { month: 'Jan 25', tokens: 1.60 },
+      { month: 'Jan 24', tokens: 55 },
+      { month: 'Feb 24', tokens: 72 },
+      { month: 'Mar 24', tokens: 95 },
+      { month: 'Apr 24', tokens: 122 },
+      { month: 'May 24', tokens: 148 },
+      { month: 'Jun 24', tokens: 172 },
+      { month: 'Jul 24', tokens: 195 },
+      { month: 'Aug 24', tokens: 215 },
+      { month: 'Sep 24', tokens: 232 },
+      { month: 'Oct 24', tokens: 245 },
+      { month: 'Nov 24', tokens: 255 },
+      { month: 'Dec 24', tokens: 262 },
+      { month: 'Jan 25', tokens: 270 },
     ],
     imageUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
     logoUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png',
-    color: 'from-blue-700 to-indigo-600',
-    gradientId: 'metaGradient',
-    foundedYear: 2004,
-    headquarters: 'Menlo Park, California, USA',
+      'https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg',
+    color: 'from-teal-500 to-emerald-500',
+    gradientId: 'openAIGra',
+    foundedYear: 2015,
+    headquarters: 'San Francisco, California, USA',
+  },
+  {
+    name: 'ByteDance / Baidu',
+    ceo: 'Zhang Yiming / Robin Li',
+    position: 'CEO / Co-founder & CEO',
+    aiFocusArea:
+      'Chinese AI infrastructure, search AI, and regional language models',
+    flagshipAIProduct: 'Doubao / Ernie Bot',
+    estimatedTokens: '≈ 30 Trillion tokens / month',
+    inputCostPerMillionTokens: 1.00,
+    outputCostPerMillionTokens: 7.00,
+    estimatedMonthlyCost: '$80-150M',
+    tokenHistory: [
+      { month: 'Jan 24', tokens: 5.2 },
+      { month: 'Feb 24', tokens: 7.8 },
+      { month: 'Mar 24', tokens: 10.5 },
+      { month: 'Apr 24', tokens: 13.2 },
+      { month: 'May 24', tokens: 16.0 },
+      { month: 'Jun 24', tokens: 18.5 },
+      { month: 'Jul 24', tokens: 21.0 },
+      { month: 'Aug 24', tokens: 23.2 },
+      { month: 'Sep 24', tokens: 25.0 },
+      { month: 'Oct 24', tokens: 26.5 },
+      { month: 'Nov 24', tokens: 28.0 },
+      { month: 'Dec 24', tokens: 29.0 },
+      { month: 'Jan 25', tokens: 30.0 },
+    ],
+    imageUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Robin_Li_2010.jpg/440px-Robin_Li_2010.jpg',
+    logoUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Baidu_logo.svg/200px-Baidu_logo.svg.png',
+    color: 'from-blue-600 to-cyan-500',
+    gradientId: 'chinaGradient',
+    foundedYear: 2000,
+    headquarters: 'Beijing, China',
   },
   {
     name: 'Anthropic',
@@ -241,22 +167,24 @@ const companyStats: CompanyStatType[] = [
     position: 'CEO',
     aiFocusArea: 'Constitutional AI, safety research, and enterprise reasoning models',
     flagshipAIProduct: 'Claude 3.5 Sonnet / Opus',
-    estimatedTokens: '≈ 1.2 Trillion tokens / month', // Jan-25
-    avgCostPerMillionTokens: 4.80, // Blended Claude 3.5 pricing
+    estimatedTokens: '≈ 2 Trillion tokens / month',
+    inputCostPerMillionTokens: 1.25,
+    outputCostPerMillionTokens: 8.00,
+    estimatedMonthlyCost: '$16-18M',
     tokenHistory: [
-      { month: 'Jan 24', tokens: 0.12 },
-      { month: 'Feb 24', tokens: 0.16 },
-      { month: 'Mar 24', tokens: 0.22 },
-      { month: 'Apr 24', tokens: 0.30 },
-      { month: 'May 24', tokens: 0.41 },
-      { month: 'Jun 24', tokens: 0.54 },
-      { month: 'Jul 24', tokens: 0.68 },
-      { month: 'Aug 24', tokens: 0.82 },
-      { month: 'Sep 24', tokens: 0.95 },
-      { month: 'Oct 24', tokens: 1.06 },
-      { month: 'Nov 24', tokens: 1.14 },
-      { month: 'Dec 24', tokens: 1.18 },
-      { month: 'Jan 25', tokens: 1.20 },
+      { month: 'Jan 24', tokens: 0.32 },
+      { month: 'Feb 24', tokens: 0.48 },
+      { month: 'Mar 24', tokens: 0.68 },
+      { month: 'Apr 24', tokens: 0.92 },
+      { month: 'May 24', tokens: 1.15 },
+      { month: 'Jun 24', tokens: 1.35 },
+      { month: 'Jul 24', tokens: 1.52 },
+      { month: 'Aug 24', tokens: 1.65 },
+      { month: 'Sep 24', tokens: 1.75 },
+      { month: 'Oct 24', tokens: 1.83 },
+      { month: 'Nov 24', tokens: 1.90 },
+      { month: 'Dec 24', tokens: 1.95 },
+      { month: 'Jan 25', tokens: 2.00 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg',
@@ -266,6 +194,41 @@ const companyStats: CompanyStatType[] = [
     gradientId: 'anthropicGradient',
     foundedYear: 2021,
     headquarters: 'San Francisco, California, USA',
+  },
+  {
+    name: 'Microsoft',
+    ceo: 'Satya Nadella',
+    position: 'Chairman & CEO',
+    aiFocusArea:
+      'Enterprise AI infrastructure, cloud-scale inference, and productivity AI',
+    flagshipAIProduct: 'Azure OpenAI Service / Copilot',
+    estimatedTokens: '≈ 1.7 Trillion tokens / month',
+    inputCostPerMillionTokens: 1.25,
+    outputCostPerMillionTokens: 10.00,
+    estimatedMonthlyCost: '$15-20M',
+    tokenHistory: [
+      { month: 'Jan 24', tokens: 0.28 },
+      { month: 'Feb 24', tokens: 0.42 },
+      { month: 'Mar 24', tokens: 0.58 },
+      { month: 'Apr 24', tokens: 0.76 },
+      { month: 'May 24', tokens: 0.95 },
+      { month: 'Jun 24', tokens: 1.12 },
+      { month: 'Jul 24', tokens: 1.28 },
+      { month: 'Aug 24', tokens: 1.42 },
+      { month: 'Sep 24', tokens: 1.52 },
+      { month: 'Oct 24', tokens: 1.60 },
+      { month: 'Nov 24', tokens: 1.66 },
+      { month: 'Dec 24', tokens: 1.68 },
+      { month: 'Jan 25', tokens: 1.70 },
+    ],
+    imageUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
+    logoUrl:
+      'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+    color: 'from-blue-600 to-sky-500',
+    gradientId: 'msftGradient',
+    foundedYear: 1975,
+    headquarters: 'Redmond, Washington, USA',
   },
 ];
 
@@ -359,7 +322,7 @@ const CompanyStatsCarousel: React.FC = () => {
                         </p>
                         {/* Monthly Cost Estimate */}
                         <p className="text-base font-semibold mb-3 opacity-95">
-                          ≈ {formatCurrency(calculateMonthlyCost(endData?.tokens || 0, comp.avgCostPerMillionTokens))} / month
+                          Est. Cost: {comp.estimatedMonthlyCost} / month
                         </p>
                         {/* Flagship Product Badge */}
                         <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
@@ -473,11 +436,11 @@ const CompanyStatsCarousel: React.FC = () => {
 
                         {/* Footer Info */}
                         <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                          {/* Cost per Million Tokens */}
+                          {/* Input/Output Pricing */}
                           <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600 dark:text-gray-400">Avg Cost/M Tokens:</span>
+                            <span className="text-gray-600 dark:text-gray-400">Input/Output:</span>
                             <span className="font-semibold text-gray-800 dark:text-white">
-                              ${comp.avgCostPerMillionTokens.toFixed(2)}
+                              ${comp.inputCostPerMillionTokens} / ${comp.outputCostPerMillionTokens} per M
                             </span>
                           </div>
                           {/* Founded and Location Row */}

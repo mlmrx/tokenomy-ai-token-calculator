@@ -124,7 +124,7 @@ const CommunityPreview: React.FC<CommunityPreviewProps> = ({ className }) => {
                       Browse Community
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="w-full glass-button border-primary/30">
+                  <Button asChild variant="outline" className="w-full glass-button border-primary/30 text-foreground hover:text-accent-foreground">
                     <Link to="/auth">
                       Join Discussions <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
@@ -223,7 +223,7 @@ const CommunityPreview: React.FC<CommunityPreviewProps> = ({ className }) => {
                   Explore Community <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="glass-button border-primary/30">
+              <Button size="lg" variant="outline" asChild className="glass-button border-primary/30 text-foreground hover:text-accent-foreground">
                 <Link to="/auth">
                   Sign Up Free
                 </Link>

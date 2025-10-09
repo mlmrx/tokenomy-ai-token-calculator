@@ -43,7 +43,7 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="glass-button text-purple-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300  dark:text-white"
+                className="glass-button bg-primary/90 text-primary-foreground hover:bg-primary border-0 shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
                 <Link to="/tools">
@@ -52,7 +52,7 @@ const Homepage = () => {
               </Button>
               <Button 
                 size="lg" 
-                className="glass-button bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+                className="glass-button bg-secondary/90 text-secondary-foreground hover:bg-secondary border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
                 asChild
               >
                 <Link to="/community">
@@ -60,7 +60,7 @@ const Homepage = () => {
                   Join Community
                 </Link>
               </Button>
-              <Button size="lg" className="glass-button bg-white/20 text-gray-800 dark:text-white border-0" asChild>
+              <Button size="lg" className="glass-button bg-accent/80 text-accent-foreground hover:bg-accent border-0 shadow-lg hover:shadow-xl transition-all duration-300" asChild>
                 <Link to="/features">
                   Learn More
                 </Link>

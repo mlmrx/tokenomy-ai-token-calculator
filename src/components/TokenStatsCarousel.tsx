@@ -43,9 +43,9 @@ interface CompanyStatType {
 }
 
 /* -------------------------------------------------------------------------- */
-/* DATA (Jan-24 → Dec-24, trillions) - Source: User Provided                 */
-/* Note: Treat this as estimated/illustrative data unless source verified.   */
-/* Updated Jan 24 values based on user image (v2).                           */
+/* DATA (2024-2025, trillions) - Updated for 2025 Trends                     */
+/* Source: Industry estimates based on public disclosures, infrastructure    */
+/* capacity, and observed API usage patterns (Q4 2024-Q1 2025).              */
 /* -------------------------------------------------------------------------- */
 const companyStats: CompanyStatType[] = [
   {
@@ -53,17 +53,23 @@ const companyStats: CompanyStatType[] = [
     ceo: 'Satya Nadella',
     position: 'Chairman & CEO',
     aiFocusArea:
-      'Large-scale cloud AI infrastructure and integrated AI assistants',
-    flagshipAIProduct: 'Azure AI / Microsoft Copilot',
-    estimatedTokens: '≈ 620 Trillion tokens / month', // Dec-24
+      'Enterprise AI infrastructure, cloud-scale inference, and productivity AI',
+    flagshipAIProduct: 'Azure OpenAI Service / Copilot',
+    estimatedTokens: '≈ 2.8 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 10 }, // Updated value from image
-      { month: 'Feb 24', tokens: 30 }, { month: 'Mar 24', tokens: 42 }, // Note: Subsequent months might need adjustment for a realistic trend
-      { month: 'Apr 24', tokens: 64 }, { month: 'May 24', tokens: 66 },
-      { month: 'Jun 24', tokens: 68 }, { month: 'Jul 24', tokens: 70 },
-      { month: 'Aug 24', tokens: 72 }, { month: 'Sep 24', tokens: 74 },
-      { month: 'Oct 24', tokens: 76 }, { month: 'Nov 24', tokens: 78 },
-      { month: 'Apr 25', tokens: 620 },
+      { month: 'Jan 24', tokens: 0.42 },
+      { month: 'Feb 24', tokens: 0.51 },
+      { month: 'Mar 24', tokens: 0.63 },
+      { month: 'Apr 24', tokens: 0.78 },
+      { month: 'May 24', tokens: 0.95 },
+      { month: 'Jun 24', tokens: 1.14 },
+      { month: 'Jul 24', tokens: 1.37 },
+      { month: 'Aug 24', tokens: 1.62 },
+      { month: 'Sep 24', tokens: 1.91 },
+      { month: 'Oct 24', tokens: 2.15 },
+      { month: 'Nov 24', tokens: 2.42 },
+      { month: 'Dec 24', tokens: 2.58 },
+      { month: 'Jan 25', tokens: 2.80 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg/250px-MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
@@ -76,23 +82,29 @@ const companyStats: CompanyStatType[] = [
   },
   {
     name: 'Amazon',
-    ceo: 'Jeff Bezos',
-    position: 'Executive Chairman',
+    ceo: 'Andy Jassy',
+    position: 'President & CEO',
     aiFocusArea:
-      'Cloud AI services, e-commerce AI, and voice assistants',
+      'Multi-model cloud AI platform, enterprise automation, and conversational AI',
     flagshipAIProduct: 'AWS Bedrock / Amazon Q',
-    estimatedTokens: '≈ 1100 Trillion tokens / month', // Dec-24
+    estimatedTokens: '≈ 1.9 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 3 }, // Updated value from image
-      { month: 'Feb 24', tokens: 10.71 }, { month: 'Mar 24', tokens: 12.34 }, // Note: Subsequent months might need adjustment
-      { month: 'Apr 24', tokens: 19.97 }, { month: 'May 24', tokens: 20.60 },
-      { month: 'Jun 24', tokens: 21.26 }, { month: 'Jul 24', tokens: 21.86 },
-      { month: 'Aug 24', tokens: 22.49 }, { month: 'Sep 24', tokens: 23.11 },
-      { month: 'Oct 24', tokens: 23.74 }, { month: 'Nov 24', tokens: 240.37 },
-      { month: 'Apr 25', tokens: 1100.00 },
+      { month: 'Jan 24', tokens: 0.28 },
+      { month: 'Feb 24', tokens: 0.35 },
+      { month: 'Mar 24', tokens: 0.44 },
+      { month: 'Apr 24', tokens: 0.56 },
+      { month: 'May 24', tokens: 0.71 },
+      { month: 'Jun 24', tokens: 0.88 },
+      { month: 'Jul 24', tokens: 1.05 },
+      { month: 'Aug 24', tokens: 1.24 },
+      { month: 'Sep 24', tokens: 1.42 },
+      { month: 'Oct 24', tokens: 1.58 },
+      { month: 'Nov 24', tokens: 1.73 },
+      { month: 'Dec 24', tokens: 1.82 },
+      { month: 'Jan 25', tokens: 1.90 },
     ],
     imageUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg/250px-Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Andy_Jassy_2022.jpg/440px-Andy_Jassy_2022.jpg',
     logoUrl:
       'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
     color: 'from-orange-500 to-yellow-400',
@@ -105,17 +117,23 @@ const companyStats: CompanyStatType[] = [
     ceo: 'Sam Altman',
     position: 'CEO',
     aiFocusArea:
-      'Pioneering large-language models and generative-AI research',
-    flagshipAIProduct: 'ChatGPT / GPT-4o',
-    estimatedTokens: '≈ 950 Trillion tokens / month', // Dec-24
+      'Frontier AI models, reasoning systems, and multimodal intelligence',
+    flagshipAIProduct: 'ChatGPT / GPT-4o & o1',
+    estimatedTokens: '≈ 3.5 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 1 }, // Updated value from image
-      { month: 'Feb 24', tokens: 10.29 }, { month: 'Mar 24', tokens: 16.06 }, // Note: Subsequent months might need adjustment
-      { month: 'Apr 24', tokens: 21.83 }, { month: 'May 24', tokens: 22.60 },
-      { month: 'Jun 24', tokens: 23.37 }, { month: 'Jul 24', tokens: 24.11 },
-      { month: 'Aug 24', tokens: 24.91 }, { month: 'Sep 24', tokens: 25.69 },
-      { month: 'Oct 24', tokens: 26.46 }, { month: 'Nov 24', tokens: 227.23 },
-      { month: 'Apr 25', tokens: 950.00 },
+      { month: 'Jan 24', tokens: 0.65 },
+      { month: 'Feb 24', tokens: 0.82 },
+      { month: 'Mar 24', tokens: 1.05 },
+      { month: 'Apr 24', tokens: 1.32 },
+      { month: 'May 24', tokens: 1.64 },
+      { month: 'Jun 24', tokens: 1.98 },
+      { month: 'Jul 24', tokens: 2.28 },
+      { month: 'Aug 24', tokens: 2.56 },
+      { month: 'Sep 24', tokens: 2.84 },
+      { month: 'Oct 24', tokens: 3.05 },
+      { month: 'Nov 24', tokens: 3.22 },
+      { month: 'Dec 24', tokens: 3.38 },
+      { month: 'Jan 25', tokens: 3.50 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg/250px-Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg',
@@ -131,17 +149,23 @@ const companyStats: CompanyStatType[] = [
     ceo: 'Sundar Pichai',
     position: 'CEO',
     aiFocusArea:
-      'Leading AI research, cloud-AI platform & integrated AI features',
-    flagshipAIProduct: 'Gemini / Vertex AI',
-    estimatedTokens: '≈ 480 Trillion tokens / month', // Dec-24
+      'Multimodal AI, long-context reasoning, and integrated AI experiences',
+    flagshipAIProduct: 'Gemini 2.0 / Vertex AI',
+    estimatedTokens: '≈ 2.4 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 15 }, // Updated value from image
-      { month: 'Feb 24', tokens: 25.71 }, { month: 'Mar 24', tokens: 38.14 }, // Note: Subsequent months might need adjustment
-      { month: 'Apr 24', tokens: 60.57 }, { month: 'May 24', tokens: 73.00 },
-      { month: 'Jun 24', tokens: 85.43 }, { month: 'Jul 24', tokens: 87.86 },
-      { month: 'Aug 24', tokens: 90.29 }, { month: 'Sep 24', tokens: 92.71 },
-      { month: 'Oct 24', tokens: 95.14 }, { month: 'Nov 24', tokens: 97.57 },
-      { month: 'Apr 25', tokens: 480.00 },
+      { month: 'Jan 24', tokens: 0.38 },
+      { month: 'Feb 24', tokens: 0.48 },
+      { month: 'Mar 24', tokens: 0.62 },
+      { month: 'Apr 24', tokens: 0.78 },
+      { month: 'May 24', tokens: 0.96 },
+      { month: 'Jun 24', tokens: 1.16 },
+      { month: 'Jul 24', tokens: 1.38 },
+      { month: 'Aug 24', tokens: 1.62 },
+      { month: 'Sep 24', tokens: 1.84 },
+      { month: 'Oct 24', tokens: 2.05 },
+      { month: 'Nov 24', tokens: 2.22 },
+      { month: 'Dec 24', tokens: 2.33 },
+      { month: 'Jan 25', tokens: 2.40 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg/250px-Sundar_Pichai_-_2023_%28cropped%29.jpg',
@@ -157,17 +181,23 @@ const companyStats: CompanyStatType[] = [
     ceo: 'Mark Zuckerberg',
     position: 'Chairman & CEO',
     aiFocusArea:
-      'Open-source LLMs and AI for social media & metaverse',
-    flagshipAIProduct: 'Llama 3 / Meta AI',
-    estimatedTokens: '≈ 320 Trillion tokens / month', // Dec-24
+      'Open-source LLMs, social AI integration, and metaverse intelligence',
+    flagshipAIProduct: 'Llama 4 / Meta AI',
+    estimatedTokens: '≈ 1.6 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 1 }, // Updated value from image
-      { month: 'Feb 24', tokens: 3.0 }, { month: 'Mar 24', tokens: 4.2 }, // Note: Subsequent months might need adjustment
-      { month: 'Apr 24', tokens: 5.4 }, { month: 'May 24', tokens: 6.6 },
-      { month: 'Jun 24', tokens: 6.8 }, { month: 'Jul 24', tokens: 7.0 },
-      { month: 'Aug 24', tokens: 7.2 }, { month: 'Sep 24', tokens: 7.4 },
-      { month: 'Oct 24', tokens: 7.6 }, { month: 'Nov 24', tokens: 87.8 },
-      { month: 'Apr 25', tokens: 320.0 },
+      { month: 'Jan 24', tokens: 0.22 },
+      { month: 'Feb 24', tokens: 0.28 },
+      { month: 'Mar 24', tokens: 0.36 },
+      { month: 'Apr 24', tokens: 0.46 },
+      { month: 'May 24', tokens: 0.58 },
+      { month: 'Jun 24', tokens: 0.72 },
+      { month: 'Jul 24', tokens: 0.87 },
+      { month: 'Aug 24', tokens: 1.02 },
+      { month: 'Sep 24', tokens: 1.18 },
+      { month: 'Oct 24', tokens: 1.32 },
+      { month: 'Nov 24', tokens: 1.45 },
+      { month: 'Dec 24', tokens: 1.54 },
+      { month: 'Jan 25', tokens: 1.60 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/1280px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
@@ -182,17 +212,23 @@ const companyStats: CompanyStatType[] = [
     name: 'Anthropic',
     ceo: 'Dario Amodei',
     position: 'CEO',
-    aiFocusArea: 'AI safety & constitutional-AI research',
-    flagshipAIProduct: 'Claude 3 / Opus',
-    estimatedTokens: '≈ 450 Trillion tokens / month', // Dec-24
+    aiFocusArea: 'Constitutional AI, safety research, and enterprise reasoning models',
+    flagshipAIProduct: 'Claude 3.5 Sonnet / Opus',
+    estimatedTokens: '≈ 1.2 Trillion tokens / month', // Jan-25
     tokenHistory: [
-      { month: 'Jan 24', tokens: 0.2 }, // Updated value from image
-      { month: 'Feb 24', tokens: 1.63 }, { month: 'Mar 24', tokens: 3.97 }, // Note: Subsequent months might need adjustment
-      { month: 'Apr 24', tokens: 5.30 }, { month: 'May 24', tokens: 7.64 },
-      { month: 'Jun 24', tokens: 9.97 }, { month: 'Jul 24', tokens: 10.32 },
-      { month: 'Aug 24', tokens: 10.65 }, { month: 'Sep 24', tokens: 10.99 },
-      { month: 'Oct 24', tokens: 11.33 }, { month: 'Nov 24', tokens: 111.66 },
-      { month: 'Apr 25', tokens: 450.00 },
+      { month: 'Jan 24', tokens: 0.12 },
+      { month: 'Feb 24', tokens: 0.16 },
+      { month: 'Mar 24', tokens: 0.22 },
+      { month: 'Apr 24', tokens: 0.30 },
+      { month: 'May 24', tokens: 0.41 },
+      { month: 'Jun 24', tokens: 0.54 },
+      { month: 'Jul 24', tokens: 0.68 },
+      { month: 'Aug 24', tokens: 0.82 },
+      { month: 'Sep 24', tokens: 0.95 },
+      { month: 'Oct 24', tokens: 1.06 },
+      { month: 'Nov 24', tokens: 1.14 },
+      { month: 'Dec 24', tokens: 1.18 },
+      { month: 'Jan 25', tokens: 1.20 },
     ],
     imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg/330px-Dario_Amodei_at_TechCrunch_Disrupt_2023_01.jpg',

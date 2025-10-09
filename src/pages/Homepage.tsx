@@ -28,41 +28,59 @@ const Homepage = () => {
 
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="flex flex-col items-center text-center space-y-6 md:space-y-8">
-            <div className="space-y-6 max-w-3xl">
-              <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
-                Trillions of Trillions AI/ML Tokens!
-              </p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600">
-                Predict. Optimize. Ship AI with confidence.
+            <div className="space-y-6 max-w-4xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-indigo-500/10 border border-violet-500/20 backdrop-blur-sm">
+                <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                  The Complete AI Token Intelligence Platform
+                </span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 leading-tight">
+                Plan, Optimize & Monitor—
+                <br />
+                <span className="text-3xl md:text-4xl lg:text-5xl">From First Calculation to Production Scale</span>
               </h1>
-              <p className="text-xl md:text-1xl text-muted-foreground max-w-1xl mx-auto">
-                Tokenomy forecasts token count, dollars, latency & energy before an API call, so your team ships without surprise bills.
+              
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                <strong className="text-foreground">Calculate costs</strong> · <strong className="text-foreground">Simulate speeds</strong> · <strong className="text-foreground">Estimate memory & energy</strong> · <strong className="text-foreground">Monitor production</strong>
+                <br />
+                Comprehensive token intelligence tools built by AI practitioners, for modern AI teams.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
                 size="lg"
-                className="glass-button bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                className="glass-button bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 min-w-[200px]"
                 asChild
               >
                 <Link to="/tools">
-                  Try our tools - Free <ArrowRight className="ml-2 h-4 w-4" />
+                  <Calculator className="mr-2 h-5 w-5" />
+                  Explore All Tools
                 </Link>
               </Button>
+              
               <Button 
                 size="lg" 
-                className="glass-button bg-secondary/90 text-secondary-foreground hover:bg-secondary border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+                className="glass-button bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-[200px]" 
+                asChild
+              >
+                <Link to="/observability">
+                  <Eye className="mr-2 h-5 w-5" />
+                  See Live Demo
+                </Link>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="glass-button border-2 border-violet-500/30 hover:border-violet-500/50 hover:bg-violet-500/10 transition-all duration-300 min-w-[200px]" 
                 asChild
               >
                 <Link to="/community">
-                  <Users className="mr-2 h-4 w-4" />
+                  <Users className="mr-2 h-5 w-5" />
                   Join Community
-                </Link>
-              </Button>
-              <Button size="lg" className="glass-button bg-accent/80 text-accent-foreground hover:bg-accent border-0 shadow-lg hover:shadow-xl transition-all duration-300" asChild>
-                <Link to="/features">
-                  Learn More
                 </Link>
               </Button>
             </div>

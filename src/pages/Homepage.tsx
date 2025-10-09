@@ -43,7 +43,7 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="glass-button bg-primary/90 text-primary-foreground hover:bg-primary border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="glass-button bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
                 asChild
               >
                 <Link to="/tools">

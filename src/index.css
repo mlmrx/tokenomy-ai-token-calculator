@@ -191,6 +191,29 @@
     box-shadow: 0 16px 40px 0 rgba(31, 38, 135, 0.4);
   }
 
+  /* Icon hover effects */
+  .icon-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .icon-hover:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  /* Global icon hover effects for lucide icons */
+  svg[class*="lucide"]:hover {
+    transition: all 0.3s ease;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  /* Specific color hover effects for feature cards */
+  .glass-feature:hover svg {
+    transition: all 0.3s ease;
+    filter: brightness(1.3) drop-shadow(0 0 8px currentColor);
+  }
+
   .animated-gradient {
     background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
     background-size: 400% 400%;

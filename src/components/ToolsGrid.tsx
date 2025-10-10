@@ -13,7 +13,8 @@ import {
   Trophy, 
   Brain,
   ArrowRight,
-  Lightbulb
+  Lightbulb,
+  DollarSign
 } from "lucide-react";
 
 const tools = [
@@ -116,6 +117,16 @@ const tools = [
     bgColor: "bg-orange-50",
     path: "/tools/alternatives-explorer",
     keywords: ["alternatives", "optimization", "cost savings"]
+  },
+  {
+    id: "cost-optimization-suite",
+    title: "Cost Optimization Suite",
+    description: "6-in-1 toolkit: compare providers, optimize prompts, batch processing & more",
+    icon: DollarSign,
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+    path: "/tools/cost-optimization",
+    keywords: ["cost reduction", "optimization", "ROI"]
   }
 ];
 

@@ -75,6 +75,12 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/tools/prompt-visualizer" className="px-8 py-2 hover:bg-accent rounded-md">Prompt Visualizer</Link>
                 </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/alternatives-explorer" className="px-8 py-2 hover:bg-accent rounded-md">AI Alternatives Explorer</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/tools/cost-optimization" className="px-8 py-2 hover:bg-accent rounded-md">Cost Optimization Suite</Link>
+                </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Features</div>
                 <SheetClose asChild>
                   <Link to="/features/unified-cost-graph" className="px-8 py-2 hover:bg-accent rounded-md">Unified Cost Graph</Link>
@@ -381,6 +387,22 @@ const Header = () => {
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
                               Find cost-effective alternatives
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/cost-optimization"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <DollarSign size={16} />
+                              <span className="text-sm font-medium leading-none">Cost Optimization Suite</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              6-in-1 cost reduction toolkit
                             </p>
                           </Link>
                         </NavigationMenuLink>

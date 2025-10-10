@@ -48,6 +48,7 @@ import GpuMonitoringPage from "./pages/tools/GpuMonitoringPage";
 import TokenLeaderboardPage from "./pages/tools/TokenLeaderboardPage";
 import PromptVisualizerPage from "./pages/tools/PromptVisualizerPage";
 import AlternativesExplorerPage from "./pages/tools/AlternativesExplorerPage";
+import CostOptimizationSuitePage from "./pages/tools/CostOptimizationSuitePage";
 
 const queryClient = new QueryClient();
 
@@ -85,7 +86,8 @@ const App = () => (
                   <Route path="/tools/gpu-monitoring" element={<GpuMonitoringPage />} />
                   <Route path="/tools/token-leaderboard" element={<TokenLeaderboardPage />} />
                   <Route path="/tools/prompt-visualizer" element={<PromptVisualizerPage />} />
-                  <Route path="/tools/alternatives-explorer" element={<AlternativesExplorerPage />} />
+          <Route path="/tools/alternatives-explorer" element={<AlternativesExplorerPage />} />
+          <Route path="/tools/cost-optimization" element={<CostOptimizationSuitePage />} />
                   
                   {/* Legacy routes for backward compatibility */}
                   <Route path="/gpu-monitoring" element={<GpuMonitoring />} />

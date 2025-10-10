@@ -30,6 +30,14 @@ const features = [
     animation: { delay: 0.3 }
   },
   {
+    title: "Advanced Telemetry",
+    description: "Real-time token usage insights with ML-powered forecasting and cost attribution across teams.",
+    icon: <Activity className="h-12 w-12 text-cyan-600" />,
+    color: "bg-cyan-50",
+    link: "/features/advanced-telemetry",
+    animation: { delay: 0.35 }
+  },
+  {
     title: "Token Calculator",
     description: "Precisely calculate tokens for any AI model. Understand and optimize your prompt usage for maximum efficiency.",
     icon: <Calculator className="h-12 w-12 text-blue-600" />,

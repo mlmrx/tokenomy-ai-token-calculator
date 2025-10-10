@@ -95,9 +95,10 @@ const App = () => (
                   <Route path="/observability" element={<TokenObservability />} />
                   
                   {/* Feature Capability Pages */}
-                  <Route path="/features/unified-cost-graph" element={<UnifiedCostGraph />} />
-                  <Route path="/features/policy-budget-routing" element={<PolicyBudgetRouting />} />
-                  <Route path="/features/agent-commerce-rails" element={<AgentCommerceRails />} />
+        <Route path="/features/unified-cost-graph" element={<UnifiedCostGraph />} />
+        <Route path="/features/policy-budget-routing" element={<PolicyBudgetRouting />} />
+        <Route path="/features/agent-commerce-rails" element={<AgentCommerceRails />} />
+        <Route path="/features/advanced-telemetry" element={<AdvancedTelemetry />} />
                   
                   {/* Research Pages */}
                   <Route path="/research/ai-news-hub" element={<AINewsHub />} />

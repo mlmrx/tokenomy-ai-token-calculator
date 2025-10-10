@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign, Microscope, Newspaper, Award, Rocket, Calendar } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign, Microscope, Newspaper, Award, Rocket, Calendar, Workflow, Target, Lock, CreditCard as BillingIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -91,6 +91,24 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/features/agent-commerce-rails" className="px-8 py-2 hover:bg-accent rounded-md">Agent Commerce Rails</Link>
                 </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/advanced-telemetry" className="px-8 py-2 hover:bg-accent rounded-md">Advanced Telemetry</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/token-flow-visualizer" className="px-8 py-2 hover:bg-accent rounded-md">Token Flow Visualizer</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/slo-monitoring" className="px-8 py-2 hover:bg-accent rounded-md">SLO Monitoring</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/policy-governance" className="px-8 py-2 hover:bg-accent rounded-md">Policy Governance</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/route-health" className="px-8 py-2 hover:bg-accent rounded-md">Route Health Monitor</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/features/billing-revenue" className="px-8 py-2 hover:bg-accent rounded-md">Billing & Revenue</Link>
+                </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Research</div>
                 <SheetClose asChild>
                   <Link to="/research/ai-news-hub" className="px-8 py-2 hover:bg-accent rounded-md">AI News Hub</Link>
@@ -151,7 +169,7 @@ const Header = () => {
                     Features
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2 bg-background z-50">
+                    <ul className="grid w-[500px] gap-2 p-4 md:grid-cols-2 bg-background z-50">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
@@ -203,11 +221,107 @@ const Header = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/enterprise-observability"
+                            to="/features/advanced-telemetry"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="flex items-center gap-2">
                               <Activity size={16} />
+                              <span className="text-sm font-medium leading-none">Advanced Telemetry</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Real-time token insights
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/token-flow-visualizer"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Workflow size={16} />
+                              <span className="text-sm font-medium leading-none">Token Flow Visualizer</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Visualize token patterns
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/slo-monitoring"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Target size={16} />
+                              <span className="text-sm font-medium leading-none">SLO Monitoring</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Track service objectives
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/policy-governance"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Lock size={16} />
+                              <span className="text-sm font-medium leading-none">Policy Governance</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Enforce usage policies
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/route-health"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Gauge size={16} />
+                              <span className="text-sm font-medium leading-none">Route Health Monitor</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Multi-region monitoring
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/features/billing-revenue"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <BillingIcon size={16} />
+                              <span className="text-sm font-medium leading-none">Billing & Revenue</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Automated billing system
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/enterprise-observability"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Eye size={16} />
                               <span className="text-sm font-medium leading-none">Enterprise Observability</span>
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">

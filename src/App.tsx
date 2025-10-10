@@ -29,6 +29,7 @@ import EnterpriseObservability from "./pages/EnterpriseObservability";
 import UnifiedCostGraph from "./pages/features/UnifiedCostGraph";
 import PolicyBudgetRouting from "./pages/features/PolicyBudgetRouting";
 import AgentCommerceRails from "./pages/features/AgentCommerceRails";
+import AdvancedTelemetry from "./pages/features/AdvancedTelemetry";
 
 // Research pages
 import AINewsHub from "./pages/research/AINewsHub";

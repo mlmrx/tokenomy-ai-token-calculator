@@ -74,7 +74,7 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
                 size="lg"
-                className="glass-button bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 min-w-[200px]"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 min-w-[200px]"
                 asChild
               >
                 <Link to="/tools">
@@ -85,7 +85,7 @@ const Homepage = () => {
 
               <Button
                 size="lg"
-                className="glass-button bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-[200px]"
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-[200px]"
                 asChild
               >
                 <Link to="/observability">

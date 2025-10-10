@@ -141,23 +141,23 @@ const Header = () => {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
-                    <CreditCard size={16} />
-                    Tools
+                    <Lightbulb size={16} />
+                    Features
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2">
+                    <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2 bg-background z-50">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/tools/token-calculator"
+                            to="/features/unified-cost-graph"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="flex items-center gap-2">
-                              <Calculator size={16} />
-                              <span className="text-sm font-medium leading-none">Token Calculator</span>
+                              <BarChart3 size={16} />
+                              <span className="text-sm font-medium leading-none">Unified Cost Graph</span>
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Calculate token usage
+                              Track costs across models
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -165,15 +165,15 @@ const Header = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/tools/token-speed-simulator"
+                            to="/features/policy-budget-routing"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="flex items-center gap-2">
-                              <Zap size={16} />
-                              <span className="text-sm font-medium leading-none">Speed Simulator</span>
+                              <GitBranch size={16} />
+                              <span className="text-sm font-medium leading-none">Policy Budget Routing</span>
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Simulate token speed
+                              Smart routing strategies
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -181,111 +181,15 @@ const Header = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/tools/memory-calculator"
+                            to="/features/agent-commerce-rails"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="flex items-center gap-2">
-                              <MemoryStick size={16} />
-                              <span className="text-sm font-medium leading-none">Memory Calculator</span>
+                              <DollarSign size={16} />
+                              <span className="text-sm font-medium leading-none">Agent Commerce Rails</span>
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Calculate memory needs
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/energy-usage-estimator"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Leaf size={16} />
-                              <span className="text-sm font-medium leading-none">Energy Estimator</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Estimate energy usage
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/ai-content-detector"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <FileSearch size={16} />
-                              <span className="text-sm font-medium leading-none">AI Content Detector</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Detect AI content
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/gpu-monitoring"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Gauge size={16} />
-                              <span className="text-sm font-medium leading-none">GPU Monitoring</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Monitor GPU usage
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/token-leaderboard"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Trophy size={16} />
-                              <span className="text-sm font-medium leading-none">Token Leaderboard</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Compare model performance
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/token-observability"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Activity size={16} />
-                              <span className="text-sm font-medium leading-none">Token Observability</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Monitor token metrics
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/tools/prompt-visualizer"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Eye size={16} />
-                              <span className="text-sm font-medium leading-none">Prompt Visualizer</span>
-                            </div>
-                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                              Visualize prompts
+                              Agent payment systems
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -300,8 +204,8 @@ const Header = () => {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="h-auto py-0 text-sm transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1 bg-transparent">
-                    <Lightbulb size={16} />
-                    Features
+                    <CreditCard size={16} />
+                    Tools
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-2 p-4 md:grid-cols-2 bg-background z-50">

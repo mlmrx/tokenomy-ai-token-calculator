@@ -30,6 +30,11 @@ import UnifiedCostGraph from "./pages/features/UnifiedCostGraph";
 import PolicyBudgetRouting from "./pages/features/PolicyBudgetRouting";
 import AgentCommerceRails from "./pages/features/AgentCommerceRails";
 import AdvancedTelemetry from "./pages/features/AdvancedTelemetry";
+import TokenFlowVisualizer from "./pages/features/TokenFlowVisualizer";
+import SLOMonitoring from "./pages/features/SLOMonitoring";
+import PolicyGovernance from "./pages/features/PolicyGovernance";
+import RouteHealth from "./pages/features/RouteHealth";
+import BillingRevenue from "./pages/features/BillingRevenue";
 
 // Research pages
 import AINewsHub from "./pages/research/AINewsHub";
@@ -100,6 +105,11 @@ const App = () => (
         <Route path="/features/policy-budget-routing" element={<PolicyBudgetRouting />} />
         <Route path="/features/agent-commerce-rails" element={<AgentCommerceRails />} />
         <Route path="/features/advanced-telemetry" element={<AdvancedTelemetry />} />
+        <Route path="/features/token-flow-visualizer" element={<TokenFlowVisualizer />} />
+        <Route path="/features/slo-monitoring" element={<SLOMonitoring />} />
+        <Route path="/features/policy-governance" element={<PolicyGovernance />} />
+        <Route path="/features/route-health" element={<RouteHealth />} />
+        <Route path="/features/billing-revenue" element={<BillingRevenue />} />
                   
                   {/* Research Pages */}
                   <Route path="/research/ai-news-hub" element={<AINewsHub />} />

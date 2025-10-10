@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { BarChart4, Zap, Database, Shield, FileText, Rocket, Search, Cpu, Trophy, Eye, Leaf, Calculator, LineChart, Activity, GitBranch, DollarSign } from "lucide-react";
+import { BarChart4, Zap, Database, Shield, FileText, Rocket, Search, Cpu, Trophy, Eye, Leaf, Calculator, LineChart, Activity, GitBranch, DollarSign, Workflow, Target, Lock, Gauge, CreditCard } from "lucide-react";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 
@@ -36,6 +36,46 @@ const features = [
     color: "bg-cyan-50",
     link: "/features/advanced-telemetry",
     animation: { delay: 0.35 }
+  },
+  {
+    title: "Token Flow Visualizer",
+    description: "Real-time visualization of token consumption patterns with bottleneck detection and throughput optimization.",
+    icon: <Workflow className="h-12 w-12 text-teal-600" />,
+    color: "bg-teal-50",
+    link: "/features/token-flow-visualizer",
+    animation: { delay: 0.38 }
+  },
+  {
+    title: "SLO Monitoring",
+    description: "Track service level objectives with real-time alerts and automated incident response for token operations.",
+    icon: <Target className="h-12 w-12 text-red-600" />,
+    color: "bg-red-50",
+    link: "/features/slo-monitoring",
+    animation: { delay: 0.4 }
+  },
+  {
+    title: "Policy Governance",
+    description: "Define and enforce token usage policies with role-based access control and compliance reporting.",
+    icon: <Lock className="h-12 w-12 text-slate-600" />,
+    color: "bg-slate-50",
+    link: "/features/policy-governance",
+    animation: { delay: 0.42 }
+  },
+  {
+    title: "Route Health Monitor",
+    description: "Multi-region route monitoring with automatic failover and performance tracking across providers.",
+    icon: <Gauge className="h-12 w-12 text-orange-600" />,
+    color: "bg-orange-50",
+    link: "/features/route-health",
+    animation: { delay: 0.44 }
+  },
+  {
+    title: "Billing & Revenue",
+    description: "Automated billing with revenue analytics, usage tracking, and invoice generation for enterprise teams.",
+    icon: <CreditCard className="h-12 w-12 text-emerald-600" />,
+    color: "bg-emerald-50",
+    link: "/features/billing-revenue",
+    animation: { delay: 0.46 }
   },
   {
     title: "Token Calculator",

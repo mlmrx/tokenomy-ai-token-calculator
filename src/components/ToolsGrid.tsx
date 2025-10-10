@@ -12,7 +12,8 @@ import {
   Monitor, 
   Trophy, 
   Brain,
-  ArrowRight
+  ArrowRight,
+  Lightbulb
 } from "lucide-react";
 
 const tools = [
@@ -105,6 +106,16 @@ const tools = [
     bgColor: "bg-pink-50",
     path: "/tools/prompt-visualizer",
     keywords: ["visualization", "neural network", "architecture"]
+  },
+  {
+    id: "alternatives-explorer",
+    title: "AI Alternatives Explorer",
+    description: "Discover cost-effective alternatives to GPUs, LLMs, and inference strategies",
+    icon: Lightbulb,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+    path: "/tools/alternatives-explorer",
+    keywords: ["alternatives", "optimization", "cost savings"]
   }
 ];
 

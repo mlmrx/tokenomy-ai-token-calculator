@@ -369,6 +369,22 @@ const Header = () => {
                           </Link>
                         </NavigationMenuLink>
                       </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/tools/alternatives-explorer"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Lightbulb size={16} />
+                              <span className="text-sm font-medium leading-none">AI Alternatives</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Find cost-effective alternatives
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>

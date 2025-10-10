@@ -47,6 +47,7 @@ import AIContentDetectorPage from "./pages/tools/AIContentDetectorPage";
 import GpuMonitoringPage from "./pages/tools/GpuMonitoringPage";
 import TokenLeaderboardPage from "./pages/tools/TokenLeaderboardPage";
 import PromptVisualizerPage from "./pages/tools/PromptVisualizerPage";
+import AlternativesExplorerPage from "./pages/tools/AlternativesExplorerPage";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,7 @@ const App = () => (
                   <Route path="/tools/gpu-monitoring" element={<GpuMonitoringPage />} />
                   <Route path="/tools/token-leaderboard" element={<TokenLeaderboardPage />} />
                   <Route path="/tools/prompt-visualizer" element={<PromptVisualizerPage />} />
+                  <Route path="/tools/alternatives-explorer" element={<AlternativesExplorerPage />} />
                   
                   {/* Legacy routes for backward compatibility */}
                   <Route path="/gpu-monitoring" element={<GpuMonitoring />} />

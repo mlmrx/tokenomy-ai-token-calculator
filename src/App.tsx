@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
+import Documentation from "./pages/Documentation";
 import Index from "./pages/Index";
 import GpuMonitoring from "./pages/GpuMonitoring";
 import TokenLeaderboard from "./pages/TokenLeaderboard";
@@ -75,6 +76,7 @@ const App = () => (
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/features" element={<Features />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/documentation" element={<Documentation />} />
                   <Route path="/tools" element={<Index />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/community/post/:slug" element={<CommunityPost />} />

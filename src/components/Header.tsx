@@ -6,7 +6,7 @@ import LoginDialog from "@/components/LoginDialog";
 import UserMenu from "@/components/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/components/theme-provider";
-import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign, Microscope, Newspaper, Award, Rocket, Calendar, Workflow, Target, Lock, CreditCard as BillingIcon } from "lucide-react";
+import { Sun, Moon, Menu, Linkedin, Github, Share2, Mail, Home, Lightbulb, CreditCard, Users, PhoneCall, ChevronDown, Calculator, Zap, MemoryStick, Leaf, FileSearch, Gauge, Trophy, Activity, Eye, BarChart3, GitBranch, DollarSign, Microscope, Newspaper, Award, Rocket, Calendar, Workflow, Target, Lock, CreditCard as BillingIcon, Book } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -134,6 +134,9 @@ const Header = () => {
                 </SheetClose>
                 <SheetClose asChild>
                   <Link to="/contact" className="px-8 py-2 hover:bg-accent rounded-md">Contact</Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/documentation" className="px-8 py-2 hover:bg-accent rounded-md">Documentation</Link>
                 </SheetClose>
                 <SheetClose asChild>
                   <Link to="/enterprise-observability" className="px-8 py-2 hover:bg-accent rounded-md">Enterprise Observability</Link>
@@ -659,6 +662,11 @@ const Header = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+            
+            <Link to="/documentation" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Book size={16} />
+              Docs
+            </Link>
             
             <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
               <Users size={16} />

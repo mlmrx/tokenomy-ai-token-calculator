@@ -657,16 +657,27 @@ const Header = () => {
                           </Link>
                         </NavigationMenuLink>
                       </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/documentation"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Book size={16} />
+                              <span className="text-sm font-medium leading-none">Documentation</span>
+                            </div>
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                              Technical documentation
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            
-            <Link to="/documentation" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
-              <Book size={16} />
-              Docs
-            </Link>
             
             <Link to="/community" className="transition-colors hover:text-primary text-primary font-medium flex items-center gap-1">
               <Users size={16} />

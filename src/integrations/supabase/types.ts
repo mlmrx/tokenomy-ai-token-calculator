@@ -580,7 +580,7 @@ export type Database = {
           action: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           new_values: Json | null
           old_values: Json | null
           record_id: string | null
@@ -592,7 +592,7 @@ export type Database = {
           action: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
           record_id?: string | null
@@ -604,7 +604,7 @@ export type Database = {
           action?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
           record_id?: string | null
@@ -1783,10 +1783,8 @@ export type Database = {
         }
         Returns: number
       }
-      generate_api_key: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_api_key: { Args: never; Returns: string }
+      get_current_tenant_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -1794,10 +1792,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      refresh_leaderboard_aggregates: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      refresh_leaderboard_aggregates: { Args: never; Returns: undefined }
     }
     Enums: {
       alert_type: "critical" | "warning" | "info"

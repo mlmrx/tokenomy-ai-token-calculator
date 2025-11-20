@@ -125,6 +125,10 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/research/conference-calendar" className="px-8 py-2 hover:bg-accent rounded-md">Conference Calendar</Link>
                 </SheetClose>
+                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Learning</div>
+                <SheetClose asChild>
+                  <Link to="/learning/ai-hub" className="px-8 py-2 hover:bg-accent rounded-md">AI Learning Hub</Link>
+                </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Know Us</div>
                 <SheetClose asChild>
                   <Link to="/pricing" className="px-8 py-2 hover:bg-accent rounded-md">Pricing</Link>
@@ -599,6 +603,11 @@ const Header = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+            
+            <Link to="/learning/ai-hub" className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1">
+              <Book size={16} />
+              Learning
+            </Link>
             
             <NavigationMenu>
               <NavigationMenuList>

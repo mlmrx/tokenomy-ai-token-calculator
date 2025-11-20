@@ -43,6 +43,7 @@ import ModelBenchmarks from "./pages/research/ModelBenchmarks";
 import ResearchPapers from "./pages/research/ResearchPapers";
 import InnovationTracker from "./pages/research/InnovationTracker";
 import ConferenceCalendar from "./pages/research/ConferenceCalendar";
+import AILearningHub from "./pages/AILearningHub";
 
 // Individual tool pages
 import TokenCalculatorPage from "./pages/tools/TokenCalculatorPage";
@@ -119,6 +120,9 @@ const App = () => (
                   <Route path="/research/research-papers" element={<ResearchPapers />} />
                   <Route path="/research/innovation-tracker" element={<InnovationTracker />} />
                   <Route path="/research/conference-calendar" element={<ConferenceCalendar />} />
+                  
+                  {/* Learning Pages */}
+                  <Route path="/learning/ai-hub" element={<AILearningHub />} />
                   
                   <Route path="*" element={<NotFound />} />
                 </Routes>

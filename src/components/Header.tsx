@@ -129,6 +129,9 @@ const Header = () => {
                 <SheetClose asChild>
                   <Link to="/learning/ai-hub" className="px-8 py-2 hover:bg-accent rounded-md">AI Learning Hub</Link>
                 </SheetClose>
+                <SheetClose asChild>
+                  <Link to="/learning/dashboard" className="px-8 py-2 hover:bg-accent rounded-md">My Dashboard</Link>
+                </SheetClose>
                 <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Know Us</div>
                 <SheetClose asChild>
                   <Link to="/pricing" className="px-8 py-2 hover:bg-accent rounded-md">Pricing</Link>

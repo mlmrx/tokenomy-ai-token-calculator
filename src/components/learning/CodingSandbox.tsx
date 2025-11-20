@@ -52,7 +52,11 @@ export const CodingSandbox: React.FC<CodingSandboxProps> = ({ exerciseId, module
         .single();
 
       if (error) throw error;
-      setExercise(data);
+      const exerciseData = {
+        ...data,
+        test_cases: Array.isArray(data.test_cases) ? data.test_cases : []
+      } as unknown as Exercise;
+      setExercise(exerciseData);
       setCode(data.starter_code);
     } catch (error) {
       console.error('Error loading exercise:', error);

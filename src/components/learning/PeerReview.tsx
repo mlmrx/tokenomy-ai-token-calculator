@@ -26,7 +26,7 @@ interface Submission {
   submitted_at: string;
   profiles: {
     username: string;
-  };
+  } | null;
 }
 
 interface Review {
@@ -38,7 +38,7 @@ interface Review {
   created_at: string;
   profiles: {
     username: string;
-  };
+  } | null;
 }
 
 export const PeerReview: React.FC<PeerReviewProps> = ({ moduleId }) => {
@@ -69,7 +69,7 @@ export const PeerReview: React.FC<PeerReviewProps> = ({ moduleId }) => {
         .limit(10);
 
       if (error) throw error;
-      setSubmissions(data || []);
+      setSubmissions((data || []) as Submission[]);
     } catch (error) {
       console.error('Error loading submissions:', error);
     }
@@ -87,7 +87,7 @@ export const PeerReview: React.FC<PeerReviewProps> = ({ moduleId }) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setReviews(data || []);
+      setReviews((data || []) as Review[]);
     } catch (error) {
       console.error('Error loading reviews:', error);
     }

@@ -26,6 +26,9 @@ import { useToast } from "@/hooks/use-toast";
 import ModuleContentViewer from "@/components/learning/ModuleContentViewer";
 import QuizComponent from "@/components/learning/QuizComponent";
 import DiscussionForum from "@/components/learning/DiscussionForum";
+import { CodingSandbox } from "@/components/learning/CodingSandbox";
+import { ProjectSubmission } from "@/components/learning/ProjectSubmission";
+import { PeerReview } from "@/components/learning/PeerReview";
 
 const LearningCoursePage: React.FC = () => {
   const { courseId } = useParams();
@@ -374,8 +377,20 @@ const LearningCoursePage: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="learn" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="learn">Learn</TabsTrigger>
+                <TabsTrigger value="code">
+                  <Code className="h-4 w-4 mr-2" />
+                  Practice
+                </TabsTrigger>
+                <TabsTrigger value="projects">
+                  <Award className="h-4 w-4 mr-2" />
+                  Projects
+                </TabsTrigger>
+                <TabsTrigger value="reviews">
+                  <Users className="h-4 w-4 mr-2" />
+                  Peer Review
+                </TabsTrigger>
                 <TabsTrigger value="discuss">
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Discussions
@@ -412,6 +427,21 @@ const LearningCoursePage: React.FC = () => {
                     </Card>
                   </>
                 )}
+              </TabsContent>
+
+              <TabsContent value="code">
+                <CodingSandbox 
+                  exerciseId={selectedModule?.id || ''} 
+                  moduleId={selectedModule?.id || ''} 
+                />
+              </TabsContent>
+
+              <TabsContent value="projects">
+                <ProjectSubmission moduleId={selectedModule?.id || ''} />
+              </TabsContent>
+
+              <TabsContent value="reviews">
+                <PeerReview moduleId={selectedModule?.id || ''} />
               </TabsContent>
 
               <TabsContent value="discuss">

@@ -23,6 +23,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { AIRecommendations } from "@/components/learning/AIRecommendations";
 
 const AILearningHub: React.FC = () => {
   const navigate = useNavigate();
@@ -249,8 +250,16 @@ const AILearningHub: React.FC = () => {
         </Card>
       </section>
 
+      {/* AI Recommendations */}
+      {user && (
+        <section className="max-w-7xl mx-auto px-4 mb-12">
+          <AIRecommendations />
+        </section>
+      )}
+
       {/* Learning Paths Grid */}
       <section className="max-w-7xl mx-auto px-4 pb-20">
+        <h2 className="text-2xl font-bold mb-6">All Learning Paths</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPaths.map((path) => (
             <Card key={path.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">

@@ -285,6 +285,50 @@ export type Database = {
           },
         ]
       }
+      coding_exercises: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty: string
+          id: string
+          module_id: string
+          solution_code: string | null
+          starter_code: string
+          test_cases: Json
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          difficulty: string
+          id?: string
+          module_id: string
+          solution_code?: string | null
+          starter_code: string
+          test_cases?: Json
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty?: string
+          id?: string
+          module_id?: string
+          solution_code?: string | null
+          starter_code?: string
+          test_cases?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coding_exercises_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_bookmarks: {
         Row: {
           created_at: string
@@ -1291,6 +1335,47 @@ export type Database = {
           },
         ]
       }
+      peer_reviews: {
+        Row: {
+          created_at: string
+          feedback: string
+          helpful_count: number
+          id: string
+          rating: number
+          reviewer_id: string
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          feedback: string
+          helpful_count?: number
+          id?: string
+          rating: number
+          reviewer_id: string
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          feedback?: string
+          helpful_count?: number
+          id?: string
+          rating?: number
+          reviewer_id?: string
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_reviews_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "project_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           base_price_usd: number | null
@@ -1502,6 +1587,56 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      project_submissions: {
+        Row: {
+          code_content: string
+          demo_url: string | null
+          description: string
+          github_url: string | null
+          id: string
+          module_id: string
+          status: string
+          submitted_at: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code_content: string
+          demo_url?: string | null
+          description: string
+          github_url?: string | null
+          id?: string
+          module_id: string
+          status?: string
+          submitted_at?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code_content?: string
+          demo_url?: string | null
+          description?: string
+          github_url?: string | null
+          id?: string
+          module_id?: string
+          status?: string
+          submitted_at?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_submissions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       route_candidates: {
         Row: {
@@ -1950,6 +2085,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_code_attempts: {
+        Row: {
+          code: string
+          created_at: string
+          exercise_id: string
+          id: string
+          passed: boolean
+          tests_passed: number
+          total_tests: number
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          exercise_id: string
+          id?: string
+          passed?: boolean
+          tests_passed?: number
+          total_tests?: number
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          exercise_id?: string
+          id?: string
+          passed?: boolean
+          tests_passed?: number
+          total_tests?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_code_attempts_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "coding_exercises"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_enrollments: {
         Row: {

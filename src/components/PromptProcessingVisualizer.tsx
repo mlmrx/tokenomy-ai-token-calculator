@@ -825,11 +825,8 @@ const PromptProcessingVisualizer = () => {
     }
 
     setIsPlaying(true);
-    setCurrentStage(0);
-    setProgress(0);
-
-    let stageIndex = 0;
-    let stageProgress = 0;
+    let stageIndex = currentStage;
+    let stageProgress = progress;
 
     intervalRef.current = setInterval(() => {
       const currentStageData = stages[stageIndex];
@@ -856,6 +853,13 @@ const PromptProcessingVisualizer = () => {
     setCurrentStage(0);
     setProgress(0);
     if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const goToStage = (index: number) => {
+    setIsPlaying(false);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setCurrentStage(index);
+    setProgress(0);
   };
 
   const renderAttentionMatrix = () => (
@@ -910,18 +914,40 @@ const PromptProcessingVisualizer = () => {
     <div className="space-y-6">
       {/* Hero Section */}
       <GlassmorphicTheme variant="hero" className="p-6 rounded-2xl">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <Brain className="h-8 w-8 text-purple-600" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                AI Prompt Processing Visualizer
-              </h1>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Deep dive into every microsecond of AI processing. Visualize tokenization, attention mechanisms, neural network layers, and response generation in real-time.
-            </p>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Brain className="h-8 w-8 text-purple-600" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              AI Prompt Processing Visualizer
+            </h1>
           </div>
+          <p className="text-lg text-muted-foreground">
+            Deep dive into every microsecond of AI processing. Visualize tokenization, attention mechanisms, neural network layers, and response generation in real-time.
+          </p>
+          <Card className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800">
+            <CardContent className="pt-4">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-2 text-sm">
+                  <p className="font-semibold text-blue-900 dark:text-blue-100">How to navigate:</p>
+                  <ul className="space-y-1 text-blue-800 dark:text-blue-200">
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="h-3 w-3" />
+                      <span><strong>Click any stage</strong> in the left pipeline to jump directly to it</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="h-3 w-3" />
+                      <span><strong>Switch tabs</strong> (Overview, Tokenization, Attention, Neural Layers) to see stage-specific details</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="h-3 w-3" />
+                      <span><strong>Play/Pause</strong> to watch the full animation or explore at your own pace</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </GlassmorphicTheme>
 
@@ -959,31 +985,43 @@ const PromptProcessingVisualizer = () => {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Processing Pipeline</CardTitle>
+              <CardTitle className="text-lg flex items-center justify-between">
+                <span>Processing Pipeline</span>
+                <Badge variant="outline" className="text-xs font-normal">Click to navigate</Badge>
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Click any stage to jump directly to it
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {stages.map((stage, index) => (
-                <div
+                <button
                   key={stage.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                  onClick={() => goToStage(index)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all cursor-pointer hover:scale-102 ${
                     index === currentStage
-                      ? 'bg-primary/10 border-2 border-primary/30 scale-105'
+                      ? 'bg-primary/10 border-2 border-primary/30 scale-105 shadow-md'
                       : index < currentStage
-                      ? 'bg-green-50 border border-green-200'
-                      : 'bg-muted/30'
+                      ? 'bg-green-50 border border-green-200 hover:bg-green-100'
+                      : 'bg-muted/30 hover:bg-muted/50 border border-transparent'
                   }`}
                 >
                   <div className={`p-2 rounded-full bg-gradient-to-r ${stage.color} text-white`}>
                     {stage.icon}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-left">
                     <div className="font-medium text-sm">{stage.name}</div>
-                    <div className="text-xs text-muted-foreground">{stage.description}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-1">{stage.description}</div>
                     {index === currentStage && (
                       <Progress value={progress} className="mt-2 h-1" />
                     )}
                   </div>
-                </div>
+                  {index < currentStage && (
+                    <div className="text-green-600">
+                      <Activity className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
               ))}
             </CardContent>
           </Card>
@@ -1165,110 +1203,449 @@ const PromptProcessingVisualizer = () => {
 
                 <TabsContent value="tokens" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Token Breakdown</h3>
-                    <div className="bg-muted/30 p-4 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Original Text:</div>
-                      <div className="text-lg mb-4 p-2 bg-white rounded border">{inputText}</div>
-                      
-                      <div className="text-sm text-muted-foreground mb-2">Tokenized Output:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {tokens.map((token, idx) => (
-                          <div
-                            key={idx}
-                            className="flex flex-col items-center bg-white border rounded-lg p-2 hover:shadow-md transition-shadow cursor-pointer"
-                            style={{
-                              borderColor: `hsl(${200 + (token.attention * 100)}, 60%, 60%)`,
-                              transform: currentStage >= 1 ? 'scale(1)' : 'scale(0.8)',
-                              opacity: currentStage >= 1 ? 1 : 0.5,
-                              transition: 'all 0.3s ease'
-                            }}
-                          >
-                            <div className="font-mono text-sm">{token.token}</div>
-                            <div className="text-xs text-muted-foreground">ID: {token.id}</div>
-                            <div className="text-xs text-blue-600">Pos: {token.position}</div>
-                          </div>
-                        ))}
+                    {/* Stage-specific header */}
+                    {currentStage < 1 && (
+                      <Card className="bg-amber-50 border-amber-200">
+                        <CardContent className="pt-6">
+                          <p className="text-sm text-amber-900 flex items-center gap-2">
+                            <Info className="h-4 w-4" />
+                            Tokenization occurs in Stage 2. Navigate to "Tokenization" stage to see this process in action.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    <div className={currentStage < 1 ? 'opacity-50 pointer-events-none' : ''}>
+                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                        <Split className="h-5 w-5" />
+                        Token Breakdown
+                        {currentStage >= 1 && <Badge variant="default">Active</Badge>}
+                      </h3>
+                      <div className="bg-muted/30 p-4 rounded-lg">
+                        <div className="text-sm text-muted-foreground mb-2">Original Text:</div>
+                        <div className="text-lg mb-4 p-2 bg-white rounded border">{inputText}</div>
+                        
+                        <div className="text-sm text-muted-foreground mb-2">Tokenized Output ({tokens.length} tokens):</div>
+                        <div className="flex flex-wrap gap-2">
+                          {tokens.map((token, idx) => (
+                            <TooltipProvider key={idx}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div
+                                    className="flex flex-col items-center bg-white border rounded-lg p-2 hover:shadow-md transition-all cursor-pointer"
+                                    style={{
+                                      borderColor: currentStage >= 1 ? `hsl(${200 + (token.attention * 100)}, 60%, 60%)` : 'hsl(0, 0%, 80%)',
+                                      transform: currentStage >= 1 ? 'scale(1)' : 'scale(0.95)',
+                                      opacity: currentStage >= 1 ? 1 : 0.5,
+                                      transition: 'all 0.3s ease',
+                                      animation: currentStage === 1 ? `fadeIn 0.3s ease-in-out ${idx * 0.05}s both` : 'none'
+                                    }}
+                                  >
+                                    <div className="font-mono text-sm font-semibold">{token.token}</div>
+                                    <div className="text-xs text-muted-foreground">ID: {token.id}</div>
+                                    <div className="text-xs text-blue-600">Pos: {Math.floor(token.position)}</div>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="space-y-1 text-xs">
+                                    <div><strong>Token:</strong> "{token.token}"</div>
+                                    <div><strong>ID:</strong> {token.id}</div>
+                                    <div><strong>Position:</strong> {Math.floor(token.position)}</div>
+                                    <div><strong>Attention:</strong> {(token.attention * 100).toFixed(0)}%</div>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          ))}
+                        </div>
                       </div>
+
+                      {/* Current stage insights */}
+                      {currentStage === 1 && (
+                        <Card className="mt-4 border-purple-200 bg-purple-50">
+                          <CardHeader>
+                            <CardTitle className="text-base">Current Process: Tokenization</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="space-y-2 text-sm">
+                              <li className="flex items-start gap-2">
+                                <ArrowRight className="h-4 w-4 text-purple-600 mt-0.5" />
+                                <span>Breaking "{inputText.substring(0, 30)}..." into {tokens.length} subword tokens using BPE algorithm</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <ArrowRight className="h-4 w-4 text-purple-600 mt-0.5" />
+                                <span>Each token assigned unique ID from 50K vocabulary</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <ArrowRight className="h-4 w-4 text-purple-600 mt-0.5" />
+                                <span>Position indices: 0 to {tokens.length - 1}</span>
+                              </li>
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {currentStage >= 2 && renderEmbeddingVisualization()}
                     </div>
-                    {renderEmbeddingVisualization()}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="attention" className="space-y-6">
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold">Multi-Head Attention Visualization</h3>
-                    {renderAttentionMatrix()}
-                    
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg">
-                      <h4 className="font-semibold mb-3">Attention Mechanism Details</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <strong>Query (Q):</strong> What information to look for
-                        </div>
-                        <div>
-                          <strong>Key (K):</strong> What information is available
-                        </div>
-                        <div>
-                          <strong>Value (V):</strong> The actual information content
-                        </div>
-                        <div>
-                          <strong>Attention Score:</strong> Q·K similarity measure
-                        </div>
-                      </div>
+                    {/* Stage indicator */}
+                    {currentStage < 3 && (
+                      <Card className="bg-amber-50 border-amber-200">
+                        <CardContent className="pt-6">
+                          <p className="text-sm text-amber-900 flex items-center gap-2">
+                            <Info className="h-4 w-4" />
+                            Multi-head attention occurs in Stage 4. Navigate there to see attention patterns.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    <div className={currentStage < 3 ? 'opacity-50 pointer-events-none' : ''}>
+                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                        <Eye className="h-5 w-5" />
+                        Multi-Head Attention Visualization
+                        {currentStage >= 3 && <Badge variant="default">Active</Badge>}
+                      </h3>
+
+                      {/* Attention heatmap */}
+                      {currentStage >= 3 && (
+                        <>
+                          {renderAttentionMatrix()}
+                          
+                          <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+                            <CardHeader>
+                              <CardTitle className="text-base">Attention Mechanism Components</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className="p-3 bg-white rounded-lg">
+                                  <div className="font-semibold flex items-center gap-2 mb-2">
+                                    <Hash className="h-4 w-4 text-blue-600" />
+                                    Query (Q)
+                                  </div>
+                                  <p className="text-muted-foreground">What information each token is looking for. Learned projection of input embeddings.</p>
+                                </div>
+                                <div className="p-3 bg-white rounded-lg">
+                                  <div className="font-semibold flex items-center gap-2 mb-2">
+                                    <Database className="h-4 w-4 text-green-600" />
+                                    Key (K)
+                                  </div>
+                                  <p className="text-muted-foreground">What information each token offers. Used to compute similarity with queries.</p>
+                                </div>
+                                <div className="p-3 bg-white rounded-lg">
+                                  <div className="font-semibold flex items-center gap-2 mb-2">
+                                    <Sparkles className="h-4 w-4 text-purple-600" />
+                                    Value (V)
+                                  </div>
+                                  <p className="text-muted-foreground">The actual information content. These are aggregated based on attention weights.</p>
+                                </div>
+                                <div className="p-3 bg-white rounded-lg">
+                                  <div className="font-semibold flex items-center gap-2 mb-2">
+                                    <TrendingUp className="h-4 w-4 text-amber-600" />
+                                    Attention Score
+                                  </div>
+                                  <p className="text-muted-foreground">Softmax(Q·K^T / √d_k). Determines how much each token attends to others.</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Live attention insights */}
+                          {currentStage === 3 && (
+                            <Card className="border-amber-200 bg-amber-50">
+                              <CardHeader>
+                                <CardTitle className="text-base">Current Process: Multi-Head Attention</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="space-y-3 text-sm">
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-amber-600 mt-0.5" />
+                                    <span>Computing attention across all {tokens.length} tokens in parallel</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-amber-600 mt-0.5" />
+                                    <span>96 attention heads processing different aspects simultaneously</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-amber-600 mt-0.5" />
+                                    <span>Total operations: {tokens.length}² × 96 = {(tokens.length * tokens.length * 96).toLocaleString()} attention scores</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-amber-600 mt-0.5" />
+                                    <span>Darker cells = stronger attention relationships between tokens</span>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+
+                          {/* Example interpretation */}
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-base">How to Read the Heatmap</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2 text-sm">
+                              <p>Each row represents one token's attention to all other tokens (including itself).</p>
+                              <p><strong>Brighter colors</strong> indicate stronger attention - the model considers these tokens more relevant to each other.</p>
+                              <p><strong>Example:</strong> In "What are the benefits", the token "benefits" might attend strongly to "What" and "are" to understand the question structure.</p>
+                            </CardContent>
+                          </Card>
+                        </>
+                      )}
                     </div>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="neural" className="space-y-6">
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold">Neural Network Layers</h3>
-                    
-                    {/* Layer Selector */}
-                    <div className="flex gap-2 flex-wrap">
-                      {Array.from({length: 12}, (_, i) => (
-                        <Button
-                          key={i}
-                          variant={activeLayer === i ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setActiveLayer(i)}
-                        >
-                          Layer {i + 1}
-                        </Button>
-                      ))}
-                    </div>
+                    {/* Stage indicator */}
+                    {currentStage < 4 && (
+                      <Card className="bg-amber-50 border-amber-200">
+                        <CardContent className="pt-6">
+                          <p className="text-sm text-amber-900 flex items-center gap-2">
+                            <Info className="h-4 w-4" />
+                            Transformer layers process in Stage 5. Navigate there to see neural network operations.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
 
-                    {/* Layer Visualization */}
-                    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg">
-                      <h4 className="font-semibold mb-4">Transformer Layer {activeLayer + 1}</h4>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between p-3 bg-white rounded border">
-                          <span>Multi-Head Attention</span>
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-500 h-2 rounded-full transition-all duration-1000"
-                              style={{ width: currentStage >= 4 ? '100%' : '0%' }}
-                            />
+                    <div className={currentStage < 4 ? 'opacity-50 pointer-events-none' : ''}>
+                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                        <Layers className="h-5 w-5" />
+                        Neural Network Architecture
+                        {currentStage >= 4 && <Badge variant="default">Active</Badge>}
+                      </h3>
+
+                      {currentStage >= 4 && (
+                        <>
+                          {/* Architecture Overview */}
+                          <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+                            <CardHeader>
+                              <CardTitle className="text-base">Transformer Block Architecture</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                  <div className="p-3 bg-white rounded-lg">
+                                    <div className="font-semibold mb-2">Total Layers</div>
+                                    <div className="text-2xl font-bold text-indigo-600">96 layers</div>
+                                    <p className="text-xs text-muted-foreground mt-1">GPT-4 architecture</p>
+                                  </div>
+                                  <div className="p-3 bg-white rounded-lg">
+                                    <div className="font-semibold mb-2">Parameters per Layer</div>
+                                    <div className="text-2xl font-bold text-purple-600">~1.7B</div>
+                                    <p className="text-xs text-muted-foreground mt-1">Weights & biases</p>
+                                  </div>
+                                  <div className="p-3 bg-white rounded-lg">
+                                    <div className="font-semibold mb-2">Attention Heads</div>
+                                    <div className="text-2xl font-bold text-blue-600">96 heads</div>
+                                    <p className="text-xs text-muted-foreground mt-1">Parallel processing</p>
+                                  </div>
+                                  <div className="p-3 bg-white rounded-lg">
+                                    <div className="font-semibold mb-2">FFN Hidden Size</div>
+                                    <div className="text-2xl font-bold text-green-600">6,400</div>
+                                    <p className="text-xs text-muted-foreground mt-1">4× expansion ratio</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Layer Selector */}
+                          <div>
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold">Explore Individual Layers</h4>
+                              <Badge variant="outline">Layer {activeLayer + 1} of 96</Badge>
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              {Array.from({length: 12}, (_, i) => (
+                                <Button
+                                  key={i}
+                                  variant={activeLayer === i ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => setActiveLayer(i)}
+                                  className="min-w-[80px]"
+                                >
+                                  Layer {i + 1}
+                                </Button>
+                              ))}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="min-w-[80px]"
+                                disabled
+                              >
+                                ... 96
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-white rounded border">
-                          <span>Feed Forward Network</span>
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-green-500 h-2 rounded-full transition-all duration-1000"
-                              style={{ width: currentStage >= 5 ? '100%' : '0%' }}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-white rounded border">
-                          <span>Layer Normalization</span>
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-purple-500 h-2 rounded-full transition-all duration-1000"
-                              style={{ width: currentStage >= 5 ? '100%' : '0%' }}
-                            />
-                          </div>
-                        </div>
-                      </div>
+
+                          {/* Layer Details */}
+                          <Card className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/50 dark:to-slate-800/50">
+                            <CardHeader>
+                              <CardTitle className="text-base flex items-center gap-2">
+                                <Network className="h-5 w-5" />
+                                Transformer Layer {activeLayer + 1} Operations
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              <div className="space-y-3">
+                                <div className="flex items-start justify-between p-4 bg-white dark:bg-slate-800 rounded-lg border-l-4 border-blue-500">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Eye className="h-4 w-4 text-blue-600" />
+                                      <span className="font-semibold">Multi-Head Self-Attention</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Computes relationships between all {tokens.length} tokens. 96 heads process different aspects in parallel.</p>
+                                    <div className="mt-2 text-xs text-blue-600">Operations: {(tokens.length * tokens.length * 96).toLocaleString()}</div>
+                                  </div>
+                                  <div className="w-32 ml-4">
+                                    <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                      <div 
+                                        className="bg-blue-500 h-2 rounded-full transition-all duration-1000"
+                                        style={{ width: currentStage >= 4 ? '100%' : '0%' }}
+                                      />
+                                    </div>
+                                    <div className="text-xs text-center mt-1 text-muted-foreground">
+                                      {currentStage >= 4 ? 'Active' : 'Pending'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-start justify-between p-4 bg-white dark:bg-slate-800 rounded-lg border-l-4 border-purple-500">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Merge className="h-4 w-4 text-purple-600" />
+                                      <span className="font-semibold">Add & Normalize (Post-Attention)</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Residual connection: x + Attention(x). Then LayerNorm to stabilize activations.</p>
+                                    <div className="mt-2 text-xs text-purple-600">Prevents vanishing gradients in deep networks</div>
+                                  </div>
+                                  <div className="w-32 ml-4">
+                                    <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                      <div 
+                                        className="bg-purple-500 h-2 rounded-full transition-all duration-1000"
+                                        style={{ width: currentStage >= 4 ? '100%' : '0%' }}
+                                      />
+                                    </div>
+                                    <div className="text-xs text-center mt-1 text-muted-foreground">
+                                      {currentStage >= 4 ? 'Active' : 'Pending'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-start justify-between p-4 bg-white dark:bg-slate-800 rounded-lg border-l-4 border-green-500">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Network className="h-4 w-4 text-green-600" />
+                                      <span className="font-semibold">Feed-Forward Network (FFN)</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Two-layer MLP: 1,600 → 6,400 → 1,600 dimensions. GELU activation. Most parameters here!</p>
+                                    <div className="mt-2 text-xs text-green-600">~20M parameters in this sub-layer alone</div>
+                                  </div>
+                                  <div className="w-32 ml-4">
+                                    <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                      <div 
+                                        className="bg-green-500 h-2 rounded-full transition-all duration-1000"
+                                        style={{ width: currentStage >= 4 ? '100%' : '0%' }}
+                                      />
+                                    </div>
+                                    <div className="text-xs text-center mt-1 text-muted-foreground">
+                                      {currentStage >= 4 ? 'Active' : 'Pending'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-start justify-between p-4 bg-white dark:bg-slate-800 rounded-lg border-l-4 border-amber-500">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Merge className="h-4 w-4 text-amber-600" />
+                                      <span className="font-semibold">Add & Normalize (Post-FFN)</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Second residual: x + FFN(x). Final LayerNorm before output to next layer.</p>
+                                    <div className="mt-2 text-xs text-amber-600">Output ready for Layer {activeLayer + 2}</div>
+                                  </div>
+                                  <div className="w-32 ml-4">
+                                    <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                      <div 
+                                        className="bg-amber-500 h-2 rounded-full transition-all duration-1000"
+                                        style={{ width: currentStage >= 4 ? '100%' : '0%' }}
+                                      />
+                                    </div>
+                                    <div className="text-xs text-center mt-1 text-muted-foreground">
+                                      {currentStage >= 4 ? 'Active' : 'Pending'}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Layer specialization insights */}
+                          {currentStage === 4 && (
+                            <Card className="border-red-200 bg-red-50">
+                              <CardHeader>
+                                <CardTitle className="text-base">Current Process: Transformer Layers</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="space-y-3 text-sm">
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-red-600 mt-0.5" />
+                                    <span><strong>Early layers (1-24):</strong> Learn syntax, grammar, basic word relationships</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-red-600 mt-0.5" />
+                                    <span><strong>Middle layers (25-72):</strong> Develop semantic understanding, context integration</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-red-600 mt-0.5" />
+                                    <span><strong>Late layers (73-96):</strong> Reasoning, abstract concepts, task-specific representations</span>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <ArrowRight className="h-4 w-4 text-red-600 mt-0.5" />
+                                    <span><strong>Processing time:</strong> All 96 layers for {tokens.length} tokens ≈ 1-2 seconds on A100 GPU</span>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+
+                          {/* Performance breakdown */}
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-base flex items-center gap-2">
+                                <Cpu className="h-5 w-5" />
+                                Computational Breakdown
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="p-3 bg-muted/30 rounded">
+                                  <div className="text-xs text-muted-foreground">Total Parameters</div>
+                                  <div className="text-lg font-bold">163 Billion</div>
+                                </div>
+                                <div className="p-3 bg-muted/30 rounded">
+                                  <div className="text-xs text-muted-foreground">Operations/Token</div>
+                                  <div className="text-lg font-bold">~163B FLOPs</div>
+                                </div>
+                                <div className="p-3 bg-muted/30 rounded">
+                                  <div className="text-xs text-muted-foreground">Memory per Layer</div>
+                                  <div className="text-lg font-bold">~6.8 GB</div>
+                                </div>
+                                <div className="p-3 bg-muted/30 rounded">
+                                  <div className="text-xs text-muted-foreground">Throughput (A100)</div>
+                                  <div className="text-lg font-bold">~30 tok/s</div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </>
+                      )}
                     </div>
                   </div>
                 </TabsContent>
